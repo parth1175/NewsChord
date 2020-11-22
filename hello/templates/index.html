@@ -22,9 +22,10 @@
 
     {% if form %}
     <div class="col text-center" style="padding: 30px;">
-        <form method="POST" action="{% url 'index' %}"> /////////////////////////////////////////////
+        <form method="POST" action="{% url 'index' %}">
             {% csrf_token %}
             <div class="row">
+              <p>here1</p>
                 <div class="form-group col text-center">
                     {{ form.title }}
                 </div>
