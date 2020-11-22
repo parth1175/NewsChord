@@ -22,16 +22,16 @@
 
     {% if form %}
     <div class="col text-center" style="padding: 30px;">
-        <form method="POST" action="{% url 'tasks' %}"> /////////////////////////////////////////////
+        <form method="POST" action="{% url 'index' %}"> /////////////////////////////////////////////
             {% csrf_token %}
             <div class="row">
                 <div class="form-group col text-center">
-                    {{ form.title | add_css:"form-control" }}
+                    {{ form.title }}
                 </div>
             </div>
             <div class="row">
                 <div class="form-group col text-center">
-                    {{ form.description | add_css:"form-control" }}
+                    {{ form.description }}
                 </div>
             </div>
             <div class="row">
