@@ -17,4 +17,4 @@ class TaskForm(forms.Form):
     # title = forms.CharField(max_length=200)
     title = forms.CharField()
     # description = forms.CharField(max_length=1000, blank=True)
-    description = forms.CharField()
+    # description = forms.CharField()

@@ -25,16 +25,18 @@
         <form method="POST" action="{% url 'index' %}">
             {% csrf_token %}
             <div class="row">
-              <p>here1</p>
+              <p>Enter URL Below</p>
                 <div class="form-group col text-center">
                     {{ form.title }}
                 </div>
             </div>
-            <div class="row">
+
+            <!-- <div class="row">
                 <div class="form-group col text-center">
                     {{ form.description }}
                 </div>
-            </div>
+            </div> -->
+
             <div class="row">
                 <div class="col-5">
                     <div class="btn-group float-right" role="group" aria-label="Basic example">
