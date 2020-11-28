@@ -13,4 +13,4 @@ class TaskForm(forms.Form):
     # id = forms.AutoField(primary_key=True)
     # when = forms.DateTimeField("date created", auto_now_add=True)
     print("in the models.py file", flush=True)
-    url = forms.URLField(label='Your website', widget=forms.URLInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to check out", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
+    url = forms.URLField(label='Your website', widget=forms.URLInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
