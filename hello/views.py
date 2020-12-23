@@ -18,7 +18,10 @@ def index(request):
             print("Form is valid", flush=True)
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
-        return render(request, 'index.html', {'form': form, 'url': url, 'text': article_processing(url)}) # re-renders the form with the url filled in and the url is passed to future html pages
+        article = article_processing(url)
+        article_text = article.text
+        article_title = article.title
+        return render(request, 'index.html', {'form': form, 'title': article_title, 'text': article_text}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
@@ -26,12 +29,11 @@ def index(request):
         return render(request, 'index.html', {'form': form})
 
 def article_processing(input_url):
-    article = Article(input_url)
-    article.download()
-    article.parse()
+    sample_article = Article(input_url)
+    sample_article.download()
+    sample_article.parse()
     #article.nlp()
-    article_text = article.text
-    return article_text
+    return sample_article
 
 # def tasks(request):
 #     if request.method == 'POST':
