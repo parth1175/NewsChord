@@ -3,6 +3,7 @@ import os
 from django.shortcuts import render
 from django.http import HttpResponse
 from newspaper import Article
+from newspaper import Config
 
 from .models import TaskForm
 
@@ -29,6 +30,9 @@ def index(request):
         return render(request, 'index.html', {'form': form})
 
 def article_processing(input_url):
+    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+    config = Config()
+    config.browser_user_agent = user_agent
     sample_article = Article(input_url)
     sample_article.download()
     sample_article.parse()
