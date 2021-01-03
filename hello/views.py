@@ -6,6 +6,8 @@ from newspaper import Article
 from newspaper import Config
 
 from .models import TaskForm
+from googleapi import google
+
 
 # Create your views here.
 def index(request):
