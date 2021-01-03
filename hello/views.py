@@ -8,6 +8,7 @@ from newspaper import Config
 from .models import TaskForm
 from googleapi import google
 
+numPages = 1
 
 # Create your views here.
 def index(request):
@@ -17,19 +18,28 @@ def index(request):
         # this is wehere POST request is accessed
         form = TaskForm(request.POST)
         if form.is_valid():
-            url = form.cleaned_data['url']
+            #url = form.cleaned_data['url']
+            query = form.cleaned_data['query']
             print("Form is valid", flush=True)
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
-        article = article_processing(url)
-        article_text = article.text # to be replaced with summary
-        article_title = article.title
-        return render(request, 'index.html', {'form': form, 'title': article_title, 'text': article_text}) # re-renders the form with the url filled in and the url is passed to future html pages
+        results = GoogleURL('https://www.nytimes.com/', query)
+        # for i in results:
+        #     article[i] = article_processing(results[i].link)
+        #article_text = article.text # to be replaced with summary
+        #article_title = article.title
+        return render(request, 'index.html', {'form': form, "results": results}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
         form = TaskForm()
         return render(request, 'index.html', {'form': form})
+
+
+
+
+
+
 
 def article_processing(input_url):
     # user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
@@ -40,6 +50,29 @@ def article_processing(input_url):
     sample_article.parse()
     #article.nlp()
     return sample_article
+
+def GoogleURL(site, query):
+    GoogleQuery = ("%s %s"%(site, query,)) #in the format: site:https://www.wsj.com/ Trump concedes
+    num_pages = 1
+    search_results = google.search(GoogleQuery, num_pages)
+    return search_results
+
+    #print(search_results[1].link) #URL to article
+    #print(search_results[1].name) #name of article
+    #print(search_results[1].description) #google description of article
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 # def tasks(request):
 #     if request.method == 'POST':
