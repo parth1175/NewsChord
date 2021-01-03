@@ -41,7 +41,7 @@ def index(request):
 
 
 
-def article_processing(input_url):
+def article_processing(input_url): #returns an article object
     # user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
     # config = Config()
     # config.browser_user_agent = user_agent
@@ -51,7 +51,7 @@ def article_processing(input_url):
     #article.nlp()
     return sample_article
 
-def GoogleURL(site, query):
+def GoogleURL(site, query): # returns list of search_result objects
     GoogleQuery = ("%s %s"%(site, query,)) #in the format: site:https://www.wsj.com/ Trump concedes
     num_pages = 1
     search_results = google.search(GoogleQuery, num_pages)

@@ -16,7 +16,7 @@ class TaskForm(forms.Form):
     query = forms.CharField(max_length=200, label='Your website', widget=forms.TextInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
     #url = forms.URLField(label='Your website', widget=forms.URLInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
 
-
+# we don't need all this data for the article
 class Article(models.Model):
     #the follow are fields for the model (columns)
     # id = models.AutoField(primary_key=True)
