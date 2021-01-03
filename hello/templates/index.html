@@ -24,7 +24,7 @@
             <div class="row">
               <p style="font-size: 20px;">Enter URL Below</p>
                 <div class="form-group col text-center">
-                    {{ form.url }}
+                    {{ form.query }}
                 </div>
             </div>
             <div class="row">
@@ -41,9 +41,9 @@
         </div> -->
     {% endif %}
 
-  <h3 style = "text-align:center;"> {{title}}</h3>
+  <h3 style = "text-align:center;"> {{article.title}}</h3>
 
-  <p> {{text}}</p>
+  <p> {{article.text}}</p>
 
   <div style = "padding-top: 10px;" class="alert alert-success text-center" role="alert">
     <strong>Success!</strong> Now you can see the recomendations on this text below.
@@ -92,7 +92,7 @@
         <br>In the face of rumors suggesting that Bill Gates has installed tracking microchips in the shots, or that the inoculations contain luciferase, a glowing chemical from fireflies whose name makes some people think of the devil, the company suggested it would be policing such claims by making reference to the “official vaccine ingredient list.”
         <br>What’s actually on the official ingredient list? This week an elderly UK woman became the first person outside of a trial to get the newly approved vaccine developed by Pfizer and BioNTech, and the US could greenlight the same inoculation as soon as Thursday, December 10. Along with the regulatory actions over the last week have come the most detailed disclosures yet of the new vaccine’s makeup.
       </div>
-  </div> 
+  </div>
 </div>
 
 <div class="card">
@@ -110,9 +110,9 @@
         <br>In the face of rumors suggesting that Bill Gates has installed tracking microchips in the shots, or that the inoculations contain luciferase, a glowing chemical from fireflies whose name makes some people think of the devil, the company suggested it would be policing such claims by making reference to the “official vaccine ingredient list.”
         <br>What’s actually on the official ingredient list? This week an elderly UK woman became the first person outside of a trial to get the newly approved vaccine developed by Pfizer and BioNTech, and the US could greenlight the same inoculation as soon as Thursday, December 10. Along with the regulatory actions over the last week have come the most detailed disclosures yet of the new vaccine’s makeup.
       </div>
-  </div> 
+  </div>
 </div>
 <div class="table">
-<script type="text/javascript" src="{% static 'main.js'%}"></script>  
+<script type="text/javascript" src="{% static 'main.js'%}"></script>
 </div>
 {% endblock %}
