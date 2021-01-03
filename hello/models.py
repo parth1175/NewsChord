@@ -23,6 +23,7 @@ class Article(models.Model):
     Title = models.CharField(max_length=200)
     Summary = models.TextField()
     Url = models.URLField()
+    NewsSource = models.CharField(max_length=200)
     def __str__(self):
        #return "This article is: %s each entry in the database %s, %s" (self.id, self.date, self.Title)
        return "Here you are trying to print an Article entry"
