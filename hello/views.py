@@ -20,7 +20,7 @@ def index(request):
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
         article = article_processing(url)
-        article_text = article.text
+        article_text = article.text # to be replaced with summary
         article_title = article.title
         return render(request, 'index.html', {'form': form, 'title': article_title, 'text': article_text}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
@@ -30,9 +30,9 @@ def index(request):
         return render(request, 'index.html', {'form': form})
 
 def article_processing(input_url):
-    user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
-    config = Config()
-    config.browser_user_agent = user_agent
+    # user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
+    # config = Config()
+    # config.browser_user_agent = user_agent
     sample_article = Article(input_url)
     sample_article.download()
     sample_article.parse()
