@@ -23,7 +23,7 @@ def index(request):
             print("Form is valid", flush=True)
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
-        results = GoogleURL('https://www.nytimes.com/', query)
+        results = GoogleURL('https://www.nytimes.com/', query)[1]
         # for i in results:
         #     article[i] = article_processing(results[i].link)
         #article_text = article.text # to be replaced with summary
