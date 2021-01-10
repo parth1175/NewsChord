@@ -76,7 +76,7 @@
   </div>
 </div>
 
-{% for snippet in results %}
+{% for snippet in articles %}
 <div class="card">
   <div class="row">
       <div class="col-md-2" style="width: 20%;">
@@ -87,8 +87,8 @@
         </div>
       </div>
       <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
-        <h2 style="text-align: center">{{snippet.name}}</h2>
-        <h3>{{snippet.description}}</h3>
+        <h2 style="text-align: center">{{snippet.title}}</h2>
+        <h3>{{snippet.summary}}</h3>
       </div>
   </div>
 </div>

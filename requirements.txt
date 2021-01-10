@@ -4,3 +4,4 @@ django-heroku
 requests
 newspaper3k
 git+https://github.com/abenassi/Google-Search-API
+nltk
