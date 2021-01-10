@@ -40,7 +40,7 @@ def index(request):
 
         results = GoogleURL('https://www.nytimes.com/', query) #returns a list of google serach objects. Uses the googleapi lib
         articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
-        article_chosen = article_choose_proc(articles)
+        #article_chosen = article_choose_proc(articles)
 
         #googles each source from the list of media and chooses the most appropriate article
         for source in sourcesList:
