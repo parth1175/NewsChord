@@ -20,9 +20,7 @@ function createCard(number){
 
 //https://www.youtube.com/watch?v=qLyeIU8iSfI&ab_channel=IanWilson
 //https://medium.com/coding-with-carla/build-a-card-that-flips-on-click-with-html-css-and-vanilla-javascript-part-1-937cd2242c90
-table.appendChild(createCard(3));
-table.appendChild(createCard(4));
-table.appendChild(createCard(5));
+table.appendChild(createCard("Dummy"));
 //create top number div
 
 //create bottom number div with "right class"

@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from newspaper import Article
 
 from .models import TaskForm
-from googleapi import google
+from googleAPI import google
 
 import nltk
 
@@ -40,14 +40,14 @@ def index(request):
         #https://www.nytimes.com/
         results = GoogleURL('https://apnews.com', query) #returns a list of google serach objects. Uses the googleapi lib
         articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
-        #article_chosen = article_choose_proc(articles)
+        print("ARTICLES TYPE", type(articles),"LENGTH", len(articles))
+        articles.append(articles[0])
 
         #googles each source from the list of media and chooses the most appropriate article
         # for source in sourcesList:
-        #     results = GoogleURL(source, query)
-        #     articles_from_source = article_list(results)
-        #     article_chosen = articles_from_source[0]
-        #     articles.append(article_chosen)
+        #     sourceResults = GoogleURL(source, query)
+        #     articles_from_source = article_list(sourceResults)
+        #     articles.append(articles_from_source[0])
 
         #return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
         return render(request, 'index.html', {'form': form, "articles": articles}) # re-renders the form with the url filled in and the url is passed to future html pages
@@ -73,6 +73,7 @@ def article_processing(input_url): #returns an article object
 
 def article_list(googleResults): #returns list of article objects
     articles = []
+    print("googleResults len = ", len(googleResults))
     for i in googleResults:
         articles.append(article_processing(i.link))
     return articles
