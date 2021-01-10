@@ -3,7 +3,6 @@ import os
 from django.shortcuts import render
 from django.http import HttpResponse
 from newspaper import Article
-from newspaper import Config
 
 from .models import TaskForm
 from googleapi import google
@@ -34,46 +33,33 @@ def index(request):
             #url = form.cleaned_data['url']
             query = form.cleaned_data['query']
             print("Form is valid", flush=True)
-            form = TaskForm()
+            form = TaskForm()  # doing this allows you to present an empty form when the line below is run
 
-            # doing this allows you to present an empty form when the line below is run
-        results = GoogleURL('https://www.nytimes.com/', query)
-        articles = article_list(results)
-        # for i in results:
-        #     article[i] = article_processing(results[i].link)
-        #article_text = article.text # to be replaced with summary
-        #article_title = article.title
-        return render(request, 'index.html', {'form': form, "articles": articles}) # re-renders the form with the url filled in and the url is passed to future html pages
-        # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
+        results = GoogleURL('https://www.nytimes.com/', query) # results is a list of google search result objects. Uses googleapi lib
+        articles = article_list(results) # articles is a list of article obejcts from newspaper3k lib
+
+        return render(request, 'index.html', {'form': form, "articles": articles})
     else:
         print("GET request is being processed", flush=True)
         form = TaskForm()
         return render(request, 'index.html', {'form': form})
 
 
-
-
-
-
-
 def article_processing(input_url): #returns an article object
-    # user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
-    # config = Config()
-    # config.browser_user_agent = user_agent
     sample_article = Article(input_url)
     sample_article.download()
     sample_article.parse()
     sample_article.nlp()
     return sample_article
 
-def article_list(googleResults):
+def article_list(googleResults): #returns list of article objects
     articles = []
     for i in googleResults:
         articles.append(article_processing(i.link))
     return articles
 
-def GoogleURL(site, query): # returns list of search_result objects
-    GoogleQuery = ("%s %s"%(site, query,)) #in the format: site:https://www.wsj.com/ Trump concedes
+def GoogleURL(site, query): # returns list of google search result objects
+    GoogleQuery = ("%s %s"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
     num_pages = 1
     search_results = google.search(GoogleQuery, num_pages)
     return search_results
