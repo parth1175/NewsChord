@@ -3,7 +3,6 @@ import os
 from django.shortcuts import render
 from django.http import HttpResponse
 from newspaper import Article
-from newspaper import Config
 
 from .models import TaskForm
 from googleapi import google
@@ -37,10 +36,10 @@ def index(request):
             query = form.cleaned_data['query']
             print("Form is valid", flush=True)
             form = TaskForm()
-
             # doing this allows you to present an empty form when the line below is run
-        results = GoogleURL('https://www.nytimes.com/', query)
-        articles = article_list(results)
+
+        results = GoogleURL('https://www.nytimes.com/', query) #returns a list of google serach objects. Uses the googleapi lib
+        articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
         article_chosen = article_choose_proc(articles)
 
         #googles each source from the list of media and chooses the most appropriate article
@@ -49,10 +48,7 @@ def index(request):
             articles_from_source = article_list(results)
             article_chosen = articles_from_source[0]
             articles.append(article_chosen)
-        # for i in results:
-        #     article[i] = article_processing(results[i].link)
-        #article_text = article.text # to be replaced with summary
-        #article_title = article.title
+
         return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
@@ -68,23 +64,20 @@ def article_choose_proc(article_list):
     return article_list[0]
 
 def article_processing(input_url): #returns an article object
-    # user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
-    # config = Config()
-    # config.browser_user_agent = user_agent
     sample_article = Article(input_url)
     sample_article.download()
     sample_article.parse()
     sample_article.nlp()
     return sample_article
 
-def article_list(googleResults):
+def article_list(googleResults): #returns list of article objects
     articles = []
     for i in googleResults:
         articles.append(article_processing(i.link))
     return articles
 
-def GoogleURL(site, query): # returns list of search_result objects
-    GoogleQuery = ("%s %s"%(site, query,)) #in the format: site:https://www.wsj.com/ Trump concedes
+def GoogleURL(site, query): # returns list of google search result objects
+    GoogleQuery = ("%s %s"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
     num_pages = 1
     search_results = google.search(GoogleQuery, num_pages)[0:4] # Sliced results to diminish amount of pages to process
     return search_results
