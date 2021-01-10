@@ -6,7 +6,8 @@ from newspaper import Article
 from newspaper import Config
 
 from .models import TaskForm
-from googleapi import google
+from googleAPI import google
+
 import nltk
 
 # REQUIRED_CORPORA = [
@@ -22,6 +23,7 @@ import nltk
 #     nltk.download(each)
 
 numPages = 1
+sourcesList = ['https://apnews.com', 'https://www.reuters.com', 'https://www.npr.org', 'https://www.nbcnews.com', 'https://www.usatoday.com']
 
 # Create your views here.
 def index(request):
@@ -39,11 +41,19 @@ def index(request):
             # doing this allows you to present an empty form when the line below is run
         results = GoogleURL('https://www.nytimes.com/', query)
         articles = article_list(results)
+        article_chosen = article_choose_proc(articles)
+
+        #googles each source from the list of media and chooses the most appropriate article
+        for source in sourcesList:
+            results = GoogleURL(source, query)
+            articles_from_source = article_list(results)
+            article_chosen = articles_from_source[0]
+            articles.append(article_chosen)
         # for i in results:
         #     article[i] = article_processing(results[i].link)
         #article_text = article.text # to be replaced with summary
         #article_title = article.title
-        return render(request, 'index.html', {'form': form, "articles": articles}) # re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
@@ -53,8 +63,9 @@ def index(request):
 
 
 
-
-
+#this function chooses the appropriate article from the results list
+def article_choose_proc(article_list):
+    return article_list[0]
 
 def article_processing(input_url): #returns an article object
     # user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.102 Safari/537.36'
@@ -75,7 +86,7 @@ def article_list(googleResults):
 def GoogleURL(site, query): # returns list of search_result objects
     GoogleQuery = ("%s %s"%(site, query,)) #in the format: site:https://www.wsj.com/ Trump concedes
     num_pages = 1
-    search_results = google.search(GoogleQuery, num_pages)
+    search_results = google.search(GoogleQuery, num_pages)[0:4] # Sliced results to diminish amount of pages to process
     return search_results
 
     #print(search_results[1].link) #URL to article
