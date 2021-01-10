@@ -8,16 +8,6 @@ from newspaper import Config
 from .models import TaskForm
 from googleapi import google
 import nltk
-REQUIRED_CORPORA = [
-    'brown',  # Required for FastNPExtractor
-    'punkt',  # Required for WordTokenizer
-    'maxent_treebank_pos_tagger',  # Required for NLTKTagger
-    'movie_reviews',  # Required for NaiveBayesAnalyzer
-    'wordnet',  # Required for lemmatization and Wordnet
-    'stopwords'
-]
-for each in REQUIRED_CORPORA:
-    nltk.download(each)
 
 numPages = 1
 
