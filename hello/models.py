@@ -32,10 +32,10 @@ class Article(models.Model):
 
 class NewsSource(models.Model):
     NewsSource = models.CharField(max_length=200)
-    Paywall = models.BooleanField() # true is there is a paywall
+    Paywall = models.BooleanField(default=False) # true is there is a paywall
     NewsSourceData = models.CharField(max_length=1000)
     def __str__(self):
         #return "%s has a paywall: %s. Some info about it is: %s" (self.NewsSource, self.Paywall, self.NewsSourceData)
-        return "Here you are trying to print an News Source entry"
+        return self.NewsSource
 
 # in the future, have a seperate database table with each news source and info about that news source

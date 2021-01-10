@@ -7,6 +7,19 @@ from newspaper import Config
 
 from .models import TaskForm
 from googleapi import google
+import nltk
+
+# REQUIRED_CORPORA = [
+#     'brown',  # Required for FastNPExtractor
+#     'punkt',  # Required for WordTokenizer
+#     'maxent_treebank_pos_tagger',  # Required for NLTKTagger
+#     'movie_reviews',  # Required for NaiveBayesAnalyzer
+#     'wordnet',  # Required for lemmatization and Wordnet
+#     'stopwords'
+# ]
+#
+# for each in REQUIRED_CORPORA:
+#     nltk.download(each)
 
 numPages = 1
 
@@ -22,13 +35,15 @@ def index(request):
             query = form.cleaned_data['query']
             print("Form is valid", flush=True)
             form = TaskForm()
+
             # doing this allows you to present an empty form when the line below is run
-        results = GoogleURL('https://www.nytimes.com/', query)[1]
+        results = GoogleURL('https://www.nytimes.com/', query)
+        articles = article_list(results)
         # for i in results:
         #     article[i] = article_processing(results[i].link)
         #article_text = article.text # to be replaced with summary
         #article_title = article.title
-        return render(request, 'index.html', {'form': form, "results": results}) # re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, "articles": articles}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
@@ -48,8 +63,14 @@ def article_processing(input_url): #returns an article object
     sample_article = Article(input_url)
     sample_article.download()
     sample_article.parse()
-    #article.nlp()
+    sample_article.nlp()
     return sample_article
+
+def article_list(googleResults):
+    articles = []
+    for i in googleResults:
+        articles.append(article_processing(i.link))
+    return articles
 
 def GoogleURL(site, query): # returns list of search_result objects
     GoogleQuery = ("%s %s"%(site, query,)) #in the format: site:https://www.wsj.com/ Trump concedes
