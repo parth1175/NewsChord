@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from newspaper import Article
 
 from .models import TaskForm
-from googleapi import google
+from googleAPI import google
 
 import nltk
 
@@ -22,7 +22,7 @@ import nltk
 #     nltk.download(each)
 
 numPages = 1
-sourcesList = ['https://apnews.com', 'https://www.reuters.com', 'https://www.npr.org', 'https://www.nbcnews.com', 'https://www.usatoday.com']
+sourcesList = ['https://apnews.com', 'https://www.reuters.com', 'https://www.npr.org'] #, 'https://www.nbcnews.com', 'https://www.usatoday.com']
 
 # Create your views here.
 def index(request):
@@ -37,17 +37,17 @@ def index(request):
             print("Form is valid", flush=True)
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
-
-        results = GoogleURL('https://www.nytimes.com/', query) #returns a list of google serach objects. Uses the googleapi lib
+        #https://www.nytimes.com/
+        results = GoogleURL('https://apnews.com', query) #returns a list of google serach objects. Uses the googleapi lib
         articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
-        article_chosen = article_choose_proc(articles)
+        #article_chosen = article_choose_proc(articles)
 
         #googles each source from the list of media and chooses the most appropriate article
-        for source in sourcesList:
-            results = GoogleURL(source, query)
-            articles_from_source = article_list(results)
-            article_chosen = articles_from_source[0]
-            articles.append(article_chosen)
+        # for source in sourcesList:
+        #     results = GoogleURL(source, query)
+        #     articles_from_source = article_list(results)
+        #     article_chosen = articles_from_source[0]
+        #     articles.append(article_chosen)
 
         return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
