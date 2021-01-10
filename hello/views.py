@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from newspaper import Article
 
 from .models import TaskForm
-from googleAPI import google
+from googleapi import google
 
 import nltk
 
@@ -49,7 +49,8 @@ def index(request):
         #     article_chosen = articles_from_source[0]
         #     articles.append(article_chosen)
 
-        return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
+        #return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, "articles": articles}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
@@ -60,8 +61,8 @@ def index(request):
 
 
 #this function chooses the appropriate article from the results list
-def article_choose_proc(article_list):
-    return article_list[0]
+# def article_choose_proc(article_list):
+#     return article_list[0]
 
 def article_processing(input_url): #returns an article object
     sample_article = Article(input_url)
