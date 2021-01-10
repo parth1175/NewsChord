@@ -5,7 +5,8 @@ from django.http import HttpResponse
 from newspaper import Article
 
 from .models import TaskForm
-from googleapi import google
+from googleAPI import google
+
 import nltk
 
 # REQUIRED_CORPORA = [
@@ -21,6 +22,7 @@ import nltk
 #     nltk.download(each)
 
 numPages = 1
+sourcesList = ['https://apnews.com', 'https://www.reuters.com', 'https://www.npr.org', 'https://www.nbcnews.com', 'https://www.usatoday.com']
 
 # Create your views here.
 def index(request):
@@ -33,17 +35,36 @@ def index(request):
             #url = form.cleaned_data['url']
             query = form.cleaned_data['query']
             print("Form is valid", flush=True)
-            form = TaskForm()  # doing this allows you to present an empty form when the line below is run
+            form = TaskForm()
 
-        results = GoogleURL('https://www.nytimes.com/', query) # results is a list of google search result objects. Uses googleapi lib
-        articles = article_list(results) # articles is a list of article obejcts from newspaper3k lib
+            # doing this allows you to present an empty form when the line below is run
+        results = GoogleURL('https://www.nytimes.com/', query)
+        articles = article_list(results)
+        article_chosen = article_choose_proc(articles)
 
-        return render(request, 'index.html', {'form': form, "articles": articles})
+        #googles each source from the list of media and chooses the most appropriate article
+        for source in sourcesList:
+            results = GoogleURL(source, query)
+            articles_from_source = article_list(results)
+            article_chosen = articles_from_source[0]
+            articles.append(article_chosen)
+        # for i in results:
+        #     article[i] = article_processing(results[i].link)
+        #article_text = article.text # to be replaced with summary
+        #article_title = article.title
+        return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
+        # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
         form = TaskForm()
         return render(request, 'index.html', {'form': form})
 
+
+
+
+#this function chooses the appropriate article from the results list
+def article_choose_proc(article_list):
+    return article_list[0]
 
 def article_processing(input_url): #returns an article object
     sample_article = Article(input_url)
@@ -61,7 +82,7 @@ def article_list(googleResults): #returns list of article objects
 def GoogleURL(site, query): # returns list of google search result objects
     GoogleQuery = ("%s %s"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
     num_pages = 1
-    search_results = google.search(GoogleQuery, num_pages)
+    search_results = google.search(GoogleQuery, num_pages)[0:4] # Sliced results to diminish amount of pages to process
     return search_results
 
     #print(search_results[1].link) #URL to article

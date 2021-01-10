@@ -21,11 +21,11 @@ class Article(models.Model):
     #the follow are fields for the model (columns)
     # id = models.AutoField(primary_key=True)
     date = models.DateTimeField("Article publication date")
-    Paywall = models.BooleanField() # true is there is a paywall
-    Title = models.CharField(max_length=200)
-    Summary = models.TextField()
-    Url = models.URLField()
-    NewsSource = models.CharField(max_length=200)
+    paywall = models.BooleanField() # true is there is a paywall
+    title = models.CharField(max_length=200)
+    summary = models.TextField()
+    url = models.URLField()
+    newsSource = models.CharField(max_length=200)
     def __str__(self):
        #return "This article is: %s each entry in the database %s, %s" (self.id, self.date, self.Title)
        return "Here you are trying to print an Article entry"
