@@ -22,7 +22,7 @@ import nltk
 #     nltk.download(each)
 
 numPages = 1
-sourcesList = ['https://apnews.com', 'https://www.reuters.com', 'https://www.npr.org'] #, 'https://www.nbcnews.com', 'https://www.usatoday.com']
+sourcesList = ['https://apnews.com', 'https://www.reuters.com', 'https://www.npr.org', 'https://www.nbcnews.com', 'https://www.usatoday.com']
 
 # Create your views here.
 def index(request):
@@ -42,15 +42,15 @@ def index(request):
         articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
         print("ARTICLES TYPE", type(articles),"LENGTH", len(articles))
         articles.append(articles[0])
-
+        sourcearticles = []
         #googles each source from the list of media and chooses the most appropriate article
-        # for source in sourcesList:
-        #     sourceResults = GoogleURL(source, query)
-        #     articles_from_source = article_list(sourceResults)
-        #     articles.append(articles_from_source[0])
+        for source in sourcesList:
+            sourceResults = GoogleURL(source, query)
+            articles_from_source = article_list(sourceResults)
+            sourcearticles.append(articles_from_source[0])
 
         #return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
-        return render(request, 'index.html', {'form': form, "articles": articles}) # re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, "articles": sourcearticles}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
