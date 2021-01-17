@@ -31,11 +31,13 @@ class Article(models.Model):
        return "Here you are trying to print an Article entry"
 
 class NewsSource(models.Model):
-    NewsSource = models.CharField(max_length=200)
-    Paywall = models.BooleanField(default=False) # true is there is a paywall
-    NewsSourceData = models.CharField(max_length=1000)
+    newsSource = models.CharField(max_length=200)
+    paywall = models.BooleanField(default=False) # true is there is a paywall
+    description = models.CharField(max_length=1000)
+    homepage = models.URLField(max_length=100, default="www.google.com")
+    # image will be rendered directly in the html for now
     def __str__(self):
         #return "%s has a paywall: %s. Some info about it is: %s" (self.NewsSource, self.Paywall, self.NewsSourceData)
-        return self.NewsSource
+        return self.newsSource
 
 # in the future, have a seperate database table with each news source and info about that news source
