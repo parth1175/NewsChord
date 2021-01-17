@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from newspaper import Article
 
 from .models import TaskForm
+from hello.models import NewsSource
 from googleapi import google
 
 import nltk
@@ -37,7 +38,7 @@ def index(request):
             print("Form is valid", flush=True)
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
-
+        newsSourcesData = NewsSource.objects.all()
         results = GoogleURL('https://www.nytimes.com/', query) #returns a list of google serach objects. Uses the googleapi lib
         articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
         #article_chosen = article_choose_proc(articles)
@@ -50,7 +51,7 @@ def index(request):
         #     articles.append(article_chosen)
 
         #return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
-        return render(request, 'index.html', {'form': form, "articles": articles}) # re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, "articles": articles, "newsSource": newsSourcesData}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
