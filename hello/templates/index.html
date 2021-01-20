@@ -73,41 +73,26 @@
   </div>
 </div>
 
-{% for snippet in articles %}
+{% for snippet in articleCompounds %}
 <div class="card">
   <div class="row">
       <div class="col-md-2" style="width: 20%;">
         <div class="container">
           <img src="{% static 'mit.png'%}" alt="mit" style="width:15%">
-          <h4 style="width:15%"><b>{{snippet.newsSource}}</b></h4>
-          <p style="width:15%">Science & Technology</p>
+          <h4 style="width:15%"><b>Name of the source</b></h4>
+          <p style="width:15%">Description of a source</p>
+          <!-- How to put variable inside the link? -->
+          <a href="" class="card-link">Read full text</a>
         </div>
       </div>
       <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
-        <h2 style="text-align: center">{{snippet.title}}</h2>
+        <h2 style="text-align: center">{{snippet.article.title}}</h2>
         <h3>{{snippet.summary}}</h3>
+        
       </div>
   </div>
 </div>
 {% endfor %}
-
-<!-- <div class="card">
-  <div class="row">
-      <div class="col-md-2" style="width: 20%;">
-        <div class="container">
-          <img src="{% static 'mit.png'%}" alt="mit" style="width:15%">
-          <h4 style="width:15%"><b>MIT Technology Review</b></h4>
-          <p style="width:15%">Science & Technology</p>
-        </div>
-      </div>
-      <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
-        <h3 style="text-align: center">What are the ingredients of Pfizer’s covid-19 vaccine?</h3>
-            Facebook said on December 3 that it would remove posts with false claims or conspiracy theories about what’s in the covid-19 vaccines that everyone’s counting on.
-        <br>In the face of rumors suggesting that Bill Gates has installed tracking microchips in the shots, or that the inoculations contain luciferase, a glowing chemical from fireflies whose name makes some people think of the devil, the company suggested it would be policing such claims by making reference to the “official vaccine ingredient list.”
-        <br>What’s actually on the official ingredient list? This week an elderly UK woman became the first person outside of a trial to get the newly approved vaccine developed by Pfizer and BioNTech, and the US could greenlight the same inoculation as soon as Thursday, December 10. Along with the regulatory actions over the last week have come the most detailed disclosures yet of the new vaccine’s makeup.
-      </div>
-  </div>
-</div> -->
 
 <div class="table">
 <script type="text/javascript" src="{% static 'main.js'%}"></script>

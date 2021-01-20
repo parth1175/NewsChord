@@ -5,3 +5,4 @@ staticfiles
 db.sqlite3
 getting-started/*
 .vscode/settings.json
+getting-started/settings.py
