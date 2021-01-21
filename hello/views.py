@@ -49,9 +49,9 @@ def index(request):
         #     articles_from_source = article_list(results)
         #     article_chosen = articles_from_source[0]
         #     articles.append(article_chosen)
-
+        num = range(len(articles))
         #return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
-        return render(request, 'index.html', {'form': form, "articles": articles, "newsSource": newsSourcesData}) # re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, "articles": articles, "newsSource": newsSourcesData, "num":num}) # re-renders the form with the url filled in and the url is passed to future html pages
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)

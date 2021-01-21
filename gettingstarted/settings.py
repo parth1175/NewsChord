@@ -86,7 +86,7 @@ WSGI_APPLICATION = "gettingstarted.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'parthp',
+        'NAME': 'template1',
         'USER': '',
         'PASSWORD': '',
         'HOST': 'localhost',
