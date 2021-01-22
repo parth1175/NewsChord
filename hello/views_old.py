@@ -6,7 +6,7 @@ from newspaper import Article
 
 from .models import TaskForm
 from hello.models import NewsSource
-from googleapi import google
+from googleAPI import google
 
 import nltk
 #libraries for text processing
@@ -26,6 +26,7 @@ import heapq
 #     nltk.download(each)
 
 numPages = 1
+sourcesList = ['https://apnews.com', 'https://www.reuters.com', 'https://www.npr.org', 'https://www.nbcnews.com', 'https://www.usatoday.com']
 
 # Create your views here.
 def index(request):
@@ -33,8 +34,6 @@ def index(request):
         def __init__(self, article, summary):
             self.article = article
             self.summary = summary
-            # name of news source
-            # description of news source
 
     print(request.method, flush=True)
     if request.method == 'POST':
@@ -47,20 +46,10 @@ def index(request):
             print("Form is valid", flush=True)
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
-
-
+        #newsSourcesData = NewsSource.objects.all() #It was passed into the index.html
         setOfArticleCompounds = []
         articles = []
-        results = []
-
-        newsSourcesData = NewsSource.objects.all() #It was passed into the index.html
-        counter = 0
-        for i in newsSourcesData[1:4]:
-            single_request = GoogleURL(i.homepage, query)
-            results.append(single_request[0]) #returns a list of google serach objects. Uses the googleapi lib
-            #counter +=1
-
-        # results = GoogleURL('https://apnews.com', query) #returns a list of google serach objects. Uses the googleapi lib
+        results = GoogleURL('https://apnews.com', query) #returns a list of google serach objects. Uses the googleapi lib
         linksList = get_links(results) # getting the list of articles links
         articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
         article_summaries = []
@@ -69,12 +58,24 @@ def index(request):
             article_summaries.append(summary)
             a = ArticleCompound(article, summary)
             setOfArticleCompounds.append(a)
-
+        
         print("ARTICLES TYPE", type(articles),"LENGTH", len(articles))
+        #articles.append(articles[0])
+        # linksList.append(linksList[0])
+        #sourcearticles = []
+
+        #googles each source from the list of media and chooses the most appropriate article
+        # for source in sourcesList:
+        #     sourceResults = GoogleURL(source, query)
+        #     articles_from_source = article_list(sourceResults)
+        #     linkToArticle = get_links(sourceResults)#getting link to article
+        #     articles.append(articles_from_source[0])
+        #     linksList.append(linkToArticle[0])
+        #     article_summaries.append(article_summary(articles_from_source[0].text))
 
         #return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
         return render(request, 'index.html', {'form': form, "articles": articles, "summaries": article_summaries, "articleCompounds": setOfArticleCompounds})#, "links": linksList}) # re-renders the form with the url filled in and the url is passed to future html pages
-        #{{summaries(articles.index(snippet))}}
+        #{{summaries(articles.index(snippet))}}       
         # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
@@ -94,14 +95,15 @@ def article_processing(input_url): #returns an article object
     return sample_article
 
 def article_summary(articleText):
+    num_of_best=3
     sentences = re.split(r' *[\.\?!][\'")\]]* *', articleText)
     clean_text = articleText.lower()
     word_tokenize = clean_text.split()
-    stop_words = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her',
-    'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is',
-    'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as',
-    'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up',
-    'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each',
+    stop_words = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', 'her', 
+    'hers', 'herself', 'it', 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', 'these', 'those', 'am', 'is', 
+    'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 
+    'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up', 
+    'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 
     'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', 'should', 'now']
     # new_stop_words = stop_words.replace('“','\'')
     # new_stop_words = new_stop_words.replace('”', '\'')
@@ -123,8 +125,8 @@ def article_summary(articleText):
                         sent2score[sentence] += word2count[word]
     for key in word2count.keys():
         word2count[key] = word2count[key] / max(word2count.values())
-    best_three_sentences = heapq.nlargest(3, sent2score, key=sent2score.get)
-    return best_three_sentences
+    best_three_sentences = heapq.nlargest(num_of_best, sent2score, key=sent2score.get)
+    return best_three_sentences[0:num_of_best]
 
 def get_links(googleResults):
     linksList = []
@@ -140,9 +142,9 @@ def article_list(googleResults): #returns list of article objects
     return articles
 
 def GoogleURL(site, query): # returns list of google search result objects
-    GoogleQuery = ("%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
+    GoogleQuery = ("%s %s"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
     num_pages = 1
-    search_results = google.search(GoogleQuery, num_pages) # Sliced results to diminish amount of pages to process
+    search_results = google.search(GoogleQuery, num_pages)[0:4] # Sliced results to diminish amount of pages to process
     return search_results
 
     #print(search_results[1].link) #URL to article
