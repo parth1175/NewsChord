@@ -8,7 +8,7 @@
     <a href="/" class="lang-logo">
       <img src="{% static 'lang-logo.png'%}">
     </a>
-    <h1>Enbias</h1>
+    <h1>Newschord</h1>
     <p>Get news from different angles</p>
     <a type="button" style="margin-top: -10px;" class="btn btn-lg btn-default" href="/"><span class="glyphicon glyphicon-flash"></span>Contact us</a>
     <!-- <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/python-getting-started"><span class="glyphicon glyphicon-download"></span> Demo article</a> -->
@@ -78,11 +78,12 @@
   <div class="row">
       <div class="col-md-2" style="width: 20%;">
         <div class="container">
-          <img src="{% static 'mit.png'%}" alt="mit" style="width:15%">
-          <h4 style="width:15%"><b>Name of the source</b></h4>
-          <p style="width:15%">Description of a source</p>
+          <img src="{% static snippet.image_ind %}" alt="mit" style="width:15%">
+          <h4 style="width:15%"><b>{{snippet.name}}</b></h4>
+          <p style="width:15%">Leaning: {{snippet.leaning}}</p>
+          <p style="width:15%">Credibility: fine</p>
           <!-- How to put variable inside the link? -->
-          <a href="" class="card-link">Read full text</a>
+          <a href="{{snippet.link}}" style = "font-size:1.5em" class="card-link">Read full text</a>
         </div>
       </div>
       <div class="col-md-10" style="width: 80%; padding-inline: 10px;">

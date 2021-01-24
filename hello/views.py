@@ -30,9 +30,13 @@ numPages = 1
 # Create your views here.
 def index(request):
     class ArticleCompound:
-        def __init__(self, article, summary):
+        def __init__(self, article, summary, link, image_ind, name, leaning):
             self.article = article
             self.summary = summary
+            self.link = link
+            self.image_ind = f"{image_ind+1}.jpg"
+            self.name = name
+            self.leaning = leaning
             # name of news source
             # description of news source
 
@@ -48,27 +52,40 @@ def index(request):
             form = TaskForm()
             # doing this allows you to present an empty form when the line below is run
 
-
         setOfArticleCompounds = []
         articles = []
         results = []
-
+        #create list of media source indexes to upload pictures and names
+        image_indexes = []
+        #single_request = null
+        counter=0
+        n0=1
+        #what is the file format?
         newsSourcesData = NewsSource.objects.all() #It was passed into the index.html
-        counter = 0
-        for i in newsSourcesData[1:4]:
+        for i in newsSourcesData[0:4]:
             single_request = GoogleURL(i.homepage, query)
+            print(f"Request has been performed for {i.homepage}", flush=True)
+            if (len(single_request) == 0):
+                single_request = GoogleURL(i.homepage, query)
+                print(f"Second request was performed for {i.homepage}", flush=True)
             results.append(single_request[0]) #returns a list of google serach objects. Uses the googleapi lib
-            #counter +=1
+            image_indexes.append(counter)
+            counter +=1
+        #print(newsSourcesData.get(pk=1), flush=True)
 
         # results = GoogleURL('https://apnews.com', query) #returns a list of google serach objects. Uses the googleapi lib
         linksList = get_links(results) # getting the list of articles links
         articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
         article_summaries = []
+        index_of_article = 0
         for article in articles:
-            summary = article_summary(article.text)
+            summary = ''.join(sent+"." for sent in article_summary(article.text))
             article_summaries.append(summary)
-            a = ArticleCompound(article, summary)
+            mediaOutlet = newsSourcesData.get(pk=index_of_article+1)
+            #ArticleCompound adding 
+            a = ArticleCompound(article, summary, linksList[index_of_article], image_indexes[index_of_article], mediaOutlet.newsSource, mediaOutlet.description)
             setOfArticleCompounds.append(a)
+            index_of_article += 1
 
         print("ARTICLES TYPE", type(articles),"LENGTH", len(articles))
 
@@ -140,7 +157,7 @@ def article_list(googleResults): #returns list of article objects
     return articles
 
 def GoogleURL(site, query): # returns list of google search result objects
-    GoogleQuery = ("%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
+    GoogleQuery = ("site:%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
     num_pages = 1
     search_results = google.search(GoogleQuery, num_pages) # Sliced results to diminish amount of pages to process
     return search_results
