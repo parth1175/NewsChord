@@ -55,8 +55,10 @@ def index(request):
 
         newsSourcesData = NewsSource.objects.all() #It was passed into the index.html
         counter = 0
+
         for i in newsSourcesData[1:4]:
-            single_request = GoogleURL(i.homepage, query)
+            homepage = i.homepage
+            single_request = GoogleURL(homepage, query)
             results.append(single_request[0]) #returns a list of google serach objects. Uses the googleapi lib
             #counter +=1
 
@@ -142,7 +144,7 @@ def article_list(googleResults): #returns list of article objects
 def GoogleURL(site, query): # returns list of google search result objects
     GoogleQuery = ("%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
     num_pages = 1
-    search_results = google.search(GoogleQuery, num_pages) # Sliced results to diminish amount of pages to process
+    search_results = google.search(GoogleQuery, num_pages)
     return search_results
 
     #print(search_results[1].link) #URL to article
