@@ -3,5 +3,5 @@ gunicorn
 django-heroku
 requests
 newspaper3k
-../../../desktop/temp/Google-Search-API
+git+https://github.com/abenassi/Google-Search-API
 nltk
