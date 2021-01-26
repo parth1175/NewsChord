@@ -30,13 +30,14 @@ numPages = 1
 # Create your views here.
 def index(request):
     class ArticleCompound:
-        def __init__(self, article, summary, link, image_ind, name, leaning):
+        def __init__(self, article, summary, link, image_ind, name, leaning, reliability):
             self.article = article
             self.summary = summary
             self.link = link
             self.image_ind = f"{image_ind+1}.jpg"
             self.name = name
             self.leaning = leaning
+            self.reliability = reliability
             # name of news source
             # description of news source
 
@@ -83,7 +84,7 @@ def index(request):
             article_summaries.append(summary)
             mediaOutlet = newsSourcesData.get(pk=index_of_article+1)
             #ArticleCompound adding
-            a = ArticleCompound(article, summary, linksList[index_of_article], image_indexes[index_of_article], mediaOutlet.newsSource, mediaOutlet.description)
+            a = ArticleCompound(article, summary, linksList[index_of_article], image_indexes[index_of_article], mediaOutlet.newsSource, mediaOutlet.description, mediaOutlet.cred)
             setOfArticleCompounds.append(a)
             index_of_article += 1
 
