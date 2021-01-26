@@ -35,6 +35,7 @@ class NewsSource(models.Model):
     paywall = models.BooleanField(default=False) # true is there is a paywall
     description = models.CharField(max_length=1000)
     homepage = models.URLField(max_length=100, default="www.google.com")
+    cred = models.CharField(max_length=200, default="n/a")
     # image will be rendered directly in the html for now
     def __str__(self):
         #return "%s has a paywall: %s. Some info about it is: %s" (self.NewsSource, self.Paywall, self.NewsSourceData)
