@@ -25,7 +25,6 @@ import heapq
 # for each in REQUIRED_CORPORA:
 #     nltk.download(each)
 
-numPages = 1
 
 # Create your views here.
 def index(request):
@@ -34,12 +33,10 @@ def index(request):
             self.article = article
             self.summary = summary
             self.link = link
-            self.image_ind = f"{image_ind+1}.jpg"
+            self.image_ind = f"{image_ind}.jpg"
             self.name = name
             self.leaning = leaning
             self.reliability = reliability
-            # name of news source
-            # description of news source
 
     print(request.method, flush=True)
     if request.method == 'POST':
@@ -47,64 +44,98 @@ def index(request):
         # this is wehere POST request is accessed
         form = TaskForm(request.POST)
         if form.is_valid():
-            #url = form.cleaned_data['url']
             query = form.cleaned_data['query']
             print("Form is valid", flush=True)
-            form = TaskForm()
-            # doing this allows you to present an empty form when the line below is run
+            form = TaskForm() # doing this allows you to present an empty form with the "render" statement
 
-        setOfArticleCompounds = []
-        articles = []
+
+
+        """
+        This code chunk performs the google search for each news source
+        and adds the results to the results[] list
+        """
         results = []
-        #create list of media source indexes to upload pictures and names
-        image_indexes = []
-        #single_request = null
-        counter=0
-        n0=1
-        #what is the file format?
-        newsSourcesData = NewsSource.objects.all() #It was passed into the index.html
-        for i in newsSourcesData[0:4]:
+        AllNewsSources = NewsSource.objects.all() #It was passed into the index.html
+        lowend = 1 #starting of the newsSource gathering
+        highend = 4 #end of newsSource gathering
+        newsSourcesData = []
+        for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
+            newsSourcesData.append(AllNewsSources.get(pk=i))
+        responseSuccessful = False
+        resultsYeilded = False  # Global variables changed in GoogleURL() func
+        for i in newsSourcesData:
             single_request = GoogleURL(i.homepage, query)
             print(f"Request has been performed for {i.homepage}", flush=True)
-            if (len(single_request) == 0):
+            if (not responseSuccessful) and (not resultsYeilded):
+                #try again. Google didn't respond
                 single_request = GoogleURL(i.homepage, query)
                 print(f"Second request was performed for {i.homepage}", flush=True)
+                ################### something should be done to handle round 2 error ##############
+            elif responseSuccessful and (not resultsYeilded):
+                # google didn't find anything
+                single_request[0] = "empty"
             results.append(single_request[0]) #returns a list of google serach objects. Uses the googleapi lib
-            image_indexes.append(counter)
-            counter +=1
-        #print(newsSourcesData.get(pk=1), flush=True)
 
-        # results = GoogleURL('https://apnews.com', query) #returns a list of google serach objects. Uses the googleapi lib
-        linksList = get_links(results) # getting the list of articles links
-        articles = article_list(results) # returns a list of article objects. Uses newspaper3k lib
-        article_summaries = []
-        index_of_article = 0
-        for article in articles:
+
+        """
+        This code chunk creates a list for the:
+        imageIndexes, article objects, links, leanings, reliabilties, and names
+        for each element in the results[] list
+        """
+        counter=0
+        imageIndexes = []    # list of media source indexes to upload pictures and names
+        articlesList = []    # list of article objects
+        linksList = []       # list of links for each article
+        leaningList = []     # list of the "leaning" of each news Source
+        reliabilityList = [] # list of the "reliabilty" of each news source
+        sourceNameList = []  # list of the name of each news source
+        for i in results:
+            if i == "empty":
+                print(f"The variable counter in the if is {counter}", flush=True)
+                # do nothing, just skip
+                print(f"The variable i in the if is {i}", flush=True)
+                counter +=1
+
+            else:
+                # cannot pull from the newsSourcesData list because in django you cannot filter (.get()) once a slice has been taken. So using AllNewsSources instead
+                mediaOutlet = AllNewsSources.get(pk=lowend+counter) #the database object for the news source
+                leaningList.append(mediaOutlet.description)
+                reliabilityList.append(mediaOutlet.cred)
+                sourceNameList.append(mediaOutlet.newsSource)
+                imageIndexes.append(counter+1)
+                articlesList.append(article_processing(i.link))
+                linksList.append(i.link)
+                counter +=1
+
+
+        """
+        This code chunk obtains the summaries for each article in articlesList (previous chunk above)
+        and then finally adds all relevant information to an ArticleCompound object that is sent to
+        the index.html file
+        """
+        setOfArticleCompounds = []
+        articleSummaries = []
+        index_of_article = 0 # used to index through the lists created above
+        for article in articlesList:
             summary = ''.join(sent+"." for sent in article_summary(article.text))
-            article_summaries.append(summary)
-            mediaOutlet = newsSourcesData.get(pk=index_of_article+1)
-            #ArticleCompound adding
-            a = ArticleCompound(article, summary, linksList[index_of_article], image_indexes[index_of_article], mediaOutlet.newsSource, mediaOutlet.description, mediaOutlet.cred)
+            articleSummaries.append(summary)
+            # ArticleCompound adding below
+            a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article])
             setOfArticleCompounds.append(a)
             index_of_article += 1
 
-        print("ARTICLES TYPE", type(articles),"LENGTH", len(articles))
+        return render(request, 'index.html', {'form': form, "articleCompounds": setOfArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
 
-        #return render(request, 'index.html', {'form': form, "articles": articles, 'sourcesList': sourcesList}) # re-renders the form with the url filled in and the url is passed to future html pages
-        return render(request, 'index.html', {'form': form, "articles": articles, "summaries": article_summaries, "articleCompounds": setOfArticleCompounds})#, "links": linksList}) # re-renders the form with the url filled in and the url is passed to future html pages
-        #{{summaries(articles.index(snippet))}}
-        # you could pass that 'url' variable to a template or html file as in index.html or store it in the database
     else:
         print("GET request is being processed", flush=True)
         form = TaskForm()
         return render(request, 'index.html', {'form': form})
 
 
-#this function chooses the appropriate article from the results list
-# def article_choose_proc(article_list):
-#     return article_list[0]
 
-def article_processing(input_url): #returns an article object
+
+def article_processing(input_url):
+    #Takes an article URL input and returns an article(newspaper3k class) object
     sample_article = Article(input_url)
     sample_article.download()
     sample_article.parse()
@@ -112,6 +143,7 @@ def article_processing(input_url): #returns an article object
     return sample_article
 
 def article_summary(articleText):
+    #Take textual input and computes the summary of that text
     sentences = re.split(r' *[\.\?!][\'")\]]* *', articleText)
     clean_text = articleText.lower()
     word_tokenize = clean_text.split()
@@ -145,23 +177,40 @@ def article_summary(articleText):
     return best_three_sentences
 
 def get_links(googleResults):
+    #Takes google search objects (Google Search API class) as input and returns a list of links to those articles
     linksList = []
     for i in googleResults:
         linksList.append(i.link)
     return linksList
 
-def article_list(googleResults): #returns list of article objects
+def article_list(googleResults):
+    #Takes google search objects (Google Search API class) as input and returns list of article objects (Newspaper3k class)
     articles = []
     print("googleResults len = ", len(googleResults))
     for i in googleResults:
         articles.append(article_processing(i.link))
     return articles
 
-def GoogleURL(site, query): # returns list of google search result objects
-    GoogleQuery = ("site:%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes'
+
+def GoogleURL(site, query):
+    #Takes a site homepage URL and query as input and returns google search objects (Google Search API class) for the results
+    GoogleQuery = ("site:%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes' after:2021-01-01
     num_pages = 1
     search_results = google.search(GoogleQuery, num_pages)
+    if not search_results:
+        # empty list = google server did not respond
+        responseSuccessful = False
+        resultsYeilded = False
+    elif search_results[0]=="empty":
+        # a list containing "empty" = google responded, but no results yeilded
+        responseSuccessful = True
+        resultsYeilded = False
+    else:
+        #  full list of google search objects
+        responseSuccessful = True
+        resultsYeilded = True
     return search_results
+
 
     #print(search_results[1].link) #URL to article
     #print(search_results[1].name) #name of article
@@ -201,3 +250,13 @@ def db(request):
     greetings = Greeting.objects.all()
 
     return render(request, "db.html", {"greetings": greetings})
+
+# class ArticleCompound:
+#     def __init__(self, article, summary, link, image_ind, name, leaning, reliability):
+#         self.article = article
+#         self.summary = summary
+#         self.link = link
+#         self.image_ind = f"{image_ind}.jpg"
+#         self.name = name
+#         self.leaning = leaning
+#         self.reliability = reliability
