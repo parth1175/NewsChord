@@ -42,31 +42,32 @@
         </div> -->
     {% endif %}
 
-{% for snippet in articleCompounds %}
-<div class="card">
-  <div class="row">
-      <div class="col-md-2" style="width: 20%;">
-        <div class="container">
-          <img src="{% static snippet.image_ind %}" alt="mit" style="width:15%">
-          <h4 style="width:15%"><b>{{snippet.name}}</b></h4>
-          <p style="width:15%">Leaning: {{snippet.leaning}}</p>
-          <p style="width:15%">Credibility: fine</p>
-          <!-- How to put variable inside the link? -->
-          <a href="{{snippet.link}}" style = "font-size:1.5em" class="card-link">Read full text</a>
-        </div>
+    {% for snippet in articleCompounds %}
+    <div class="card">
+      <div class="row">
+          <div class="col-md-2" style="width: 20%;">
+            <div class="container">
+              <img src="{% static snippet.image_ind %}" alt="mit" style="width:15%">
+              <h4 style="width:15%"><b>{{snippet.name}}</b></h4>
+              <p style="width:15%">Leaning: {{snippet.leaning}}</p>
+              <p style="width:15%">Reliability: {{snippet.reliability}}</p>
+              <!-- How to put variable inside the link? -->
+              <a href="{{snippet.link}}" style = "font-size:1.5em" class="card-link">Read full text</a>
+            </div>
+          </div>
+          <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
+            <h2 style="text-align: center">{{snippet.article.title}}</h2>
+            <h3>{{snippet.summary}}</h3>
+    
+          </div>
       </div>
-      <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
-        <h2 style="text-align: center">{{snippet.article.title}}</h2>
-        <h3>{{snippet.summary}}</h3>
-        
-      </div>
-  </div>
-</div>
-{% endfor %}
-
-<div class="table">
-<script type="text/javascript" src="{% static 'main.js'%}"></script>
-</div>
+    </div>
+    {% endfor %}
+    
+    <div class="table">
+    <script type="text/javascript" src="{% static 'main.js'%}"></script>
+    </div>
+    {% endblock %}
 
 <div style = "padding-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
    Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36</strong> / <strong>parthp@gmail.com</strong> 
@@ -101,3 +102,5 @@
     Thank you for checking out! If you have any comments, please, write to "our e-mail">
   </div>
 </div> -->
+
+

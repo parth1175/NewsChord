@@ -12,7 +12,6 @@ from django import forms
 class TaskForm(forms.Form):
     # id = forms.AutoField(primary_key=True)
     # when = forms.DateTimeField("date created", auto_now_add=True)
-    print("in the models.py file", flush=True)
     query = forms.CharField(max_length=200, label='Your website', widget=forms.TextInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
     #url = forms.URLField(label='Your website', widget=forms.URLInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
 
@@ -35,6 +34,7 @@ class NewsSource(models.Model):
     paywall = models.BooleanField(default=False) # true is there is a paywall
     description = models.CharField(max_length=1000)
     homepage = models.URLField(max_length=100, default="www.google.com")
+    cred = models.CharField(max_length=200, default="n/a")
     # image will be rendered directly in the html for now
     def __str__(self):
         #return "%s has a paywall: %s. Some info about it is: %s" (self.NewsSource, self.Paywall, self.NewsSourceData)
