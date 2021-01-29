@@ -6,7 +6,7 @@ from newspaper import Article
 
 from .models import TaskForm
 from hello.models import NewsSource
-from googleapi import google
+from googleAPI import google
 
 import nltk
 #libraries for text processing
