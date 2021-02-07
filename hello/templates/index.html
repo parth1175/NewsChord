@@ -2,16 +2,26 @@
 {% load static %}
 
 {% block content %}
+<style type="text/css">
+.card {
+  /* Add shadows to create the "card" effect */
+        box-shadow: 0 4px 8px 0;
+        /* background-color: url('{{color_card}}'); */
+        transition: 0.3s;
+        padding: 8px;
+        margin-top: 12px;
+        /* background-color: rgba(0, 0, 255, 0.381); */
+    }
+</style>
 
 <div class="jumbotron text-center" style="height: 375px">
   <div class="container" style="margin-top: -2%;">
     <a href="/" class="lang-logo"> 
-      
-      <img src="{% static 'Newscord_noback.png'%}">
+      <img src="{% static 'Newschord_logo_violet.png'%}">
     </a>
     <h1>Newschord</h1>
     <p>Get news from different angles</p>
-    <a type="button" style="margin-top: -10px;" class="btn btn-lg btn-default" href="/"><span class="glyphicon glyphicon-flash"></span>Contact us</a>
+    <!-- <a type="button" style="margin-top: -10px;" class="btn btn-lg btn-default" href="/"><span class="glyphicon glyphicon-flash"></span>Contact us</a> -->
     <!-- <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/python-getting-started"><span class="glyphicon glyphicon-download"></span> Demo article</a> -->
   </div>
 </div>
@@ -32,7 +42,7 @@
                 <div class="col-4">
                     <div class="btn-group float-right" role="group" aria-label="Basic example">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 20px; background-color:rgb(104, 0, 148); border-color: rgb(104, 0, 148)">Create deck</button>
+                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 20px; background-color:#32195B; border-color: #F8C100">Create deck</button>
                     </div>
                 </div>
             </div>
@@ -42,28 +52,39 @@
         </div> -->
     {% endif %}
 
+
     {% for snippet in articleCompounds %}
-    <div class="card">
+    <div class="card" style="box-shadow: 0 4px 8px 0 {{snippet.color}}">
       <div class="row">
-          <div class="col-md-2" style="width: 20%;">
+          <div class="col-md-3" style="width: 25%">
             <div class="container">
               <img src="{% static snippet.image_ind %}" alt="mit" style="width:15%">
+              <!-- snippet.image_ind  style="width:15%"-->
               <h4 style="width:15%"><b>{{snippet.name}}</b></h4>
               <p style="width:15%">Leaning: {{snippet.leaning}}</p>
               <p style="width:15%">Reliability: {{snippet.reliability}}</p>
               <!-- How to put variable inside the link? -->
-              <a href="{{snippet.link}}" style = "font-size:1.5em" class="card-link">Read full text</a>
+              <a href="{{snippet.link}}" style = "font-size:1.2em" class="card-link">Read full text</a>
             </div>
           </div>
-          <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
+          <div class="col-md-9" style="width: 75%; padding-inline: 10px;">
             <h2 style="text-align: center">{{snippet.article.title}}</h2>
             <h3>{{snippet.summary}}</h3>
-    
           </div>
       </div>
     </div>
     {% endfor %}
     
+    <!-- <div class="card" style="background-color:#9f9696">
+    Hi left
+    </div>
+    <div class="card" style="background-color:{{color_card}}; box-shadow: 0 4px 8px 0 url('{{color_card}}')">
+      Hi right
+    </div>
+    <div class="card" style="box-shadow: 0 4px 8px 0 {{color_card}}">
+      Hi center {{color_card}}
+    </div> -->
+      
     <div class="table">
     <script type="text/javascript" src="{% static 'main.js'%}"></script>
     </div>

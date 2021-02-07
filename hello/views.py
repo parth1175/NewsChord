@@ -6,7 +6,9 @@ from newspaper import Article
 
 from .models import TaskForm
 from hello.models import NewsSource
-from googleAPI import google
+from googleapi import google
+# import googlesearch
+
 
 import nltk
 #libraries for text processing
@@ -29,7 +31,7 @@ import heapq
 # Create your views here.
 def index(request):
     class ArticleCompound:
-        def __init__(self, article, summary, link, image_ind, name, leaning, reliability):
+        def __init__(self, article, summary, link, image_ind, name, leaning, reliability, color):
             self.article = article
             self.summary = summary
             self.link = link
@@ -37,6 +39,7 @@ def index(request):
             self.name = name
             self.leaning = leaning
             self.reliability = reliability
+            self.color = color
 
     print(request.method, flush=True)
     if request.method == 'POST':
@@ -56,8 +59,8 @@ def index(request):
         """
         results = []
         AllNewsSources = NewsSource.objects.all() #It was passed into the index.html
-        lowend = 2 #starting of the newsSource gathering
-        highend = 4 #end of newsSource gathering
+        lowend = 1 #starting of the newsSource gathering
+        highend = 2 #end of newsSource gathering
         newsSourcesData = []
         for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
             newsSourcesData.append(AllNewsSources.get(pk=i))
@@ -65,16 +68,21 @@ def index(request):
         resultsYeilded = False  # Global variables changed in GoogleURL() func
         for i in newsSourcesData:
             single_request = GoogleURL(i.homepage, query)
-            print(f"Request has been performed for {i.homepage}", flush=True)
+            print(f"1st request has been performed for {i.homepage}", flush=True)
             if (not responseSuccessful) and (not resultsYeilded):
                 #try again. Google didn't respond
-                single_request = GoogleURL(i.homepage, query)
-                print(f"Second request was performed for {i.homepage}", flush=True)
+                # single_request = GoogleURL(i.homepage, query)
+                print("It's fine", flush=True)
                 ################### something should be done to handle round 2 error ##############
             elif responseSuccessful and (not resultsYeilded):
                 # google didn't find anything
                 single_request[0] = "empty"
-            results.append(single_request[0]) #returns a list of google serach objects. Uses the googleapi lib
+            # if (responseSuccessful):
+            #     print(f"Success from {i.homepage}", flush=True)
+            results.append(single_request[0])
+            # else: 
+            #     print(f"Error performing Google request {i.homepage}", flush=True)
+            #     #returns a list of google serach objects. Uses the googleapi lib
 
 
         """
@@ -89,17 +97,24 @@ def index(request):
         leaningList = []     # list of the "leaning" of each news Source
         reliabilityList = [] # list of the "reliabilty" of each news source
         sourceNameList = []  # list of the name of each news source
+        colorList = []
         for i in results:
             if i == "empty":
                 print(f"The variable counter in the if is {counter}", flush=True)
                 # do nothing, just skip
                 print(f"The variable i in the if is {i}", flush=True)
                 counter +=1
-
             else:
                 # cannot pull from the newsSourcesData list because in django you cannot filter (.get()) once a slice has been taken. So using AllNewsSources instead
                 mediaOutlet = AllNewsSources.get(pk=lowend+counter) #the database object for the news source
                 leaningList.append(mediaOutlet.description)
+                if "center" in mediaOutlet.description:
+                    colorList.append("green")#0015ff87
+                elif "left" in mediaOutlet.description:
+                    colorList.append("blue")#ff000087
+                elif "right" in mediaOutlet.description:
+                    colorList.append("red")#00ff1587
+                else: colorList.append("grey")#b5b5b5f1
                 reliabilityList.append(mediaOutlet.cred)
                 sourceNameList.append(mediaOutlet.newsSource)
                 imageIndexes.append(counter+1)
@@ -120,7 +135,7 @@ def index(request):
             summary = ''.join(sent+"." for sent in article_summary(article.text))
             articleSummaries.append(summary)
             # ArticleCompound adding below
-            a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article])
+            a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
             setOfArticleCompounds.append(a)
             index_of_article += 1
 
@@ -201,14 +216,17 @@ def GoogleURL(site, query):
         # empty list = google server did not respond
         responseSuccessful = False
         resultsYeilded = False
+        print("if not search_results implemented", flush=True)
     elif search_results[0]=="empty":
         # a list containing "empty" = google responded, but no results yeilded
         responseSuccessful = True
         resultsYeilded = False
+        print ("search_results = empty, ", flush=True)
     else:
         #  full list of google search objects
         responseSuccessful = True
         resultsYeilded = True
+        print("responseSuccessful=True, resultsYielded = True ", flush=True)
     return search_results
 
 
