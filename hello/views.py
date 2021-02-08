@@ -60,7 +60,7 @@ def index(request):
         results = []
         AllNewsSources = NewsSource.objects.all() #It was passed into the index.html
         lowend = 1 #starting of the newsSource gathering
-        highend = 8 #end of newsSource gathering
+        highend = 4 #end of newsSource gathering
         newsSourcesData = []
         for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
             newsSourcesData.append(AllNewsSources.get(pk=i))
@@ -110,9 +110,9 @@ def index(request):
                 leaningList.append(mediaOutlet.description)
                 if "center" in mediaOutlet.description:
                     colorList.append("green")#0015ff87
-                elif "left" in mediaOutlet.description:
+                elif ("left" in mediaOutlet.description) or ("Left" in mediaOutlet.description):
                     colorList.append("blue")#ff000087
-                elif "right" in mediaOutlet.description:
+                elif ("right" in mediaOutlet.description) or ("Right" in mediaOutlet.description):
                     colorList.append("red")#00ff1587
                 else: colorList.append("grey")#b5b5b5f1
                 reliabilityList.append(mediaOutlet.cred)
