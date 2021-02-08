@@ -60,7 +60,7 @@ def index(request):
         results = []
         AllNewsSources = NewsSource.objects.all() #It was passed into the index.html
         lowend = 1 #starting of the newsSource gathering
-        highend = 7 #end of newsSource gathering
+        highend = 8 #end of newsSource gathering
         newsSourcesData = []
         for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
             newsSourcesData.append(AllNewsSources.get(pk=i))
