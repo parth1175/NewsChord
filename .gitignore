@@ -3,8 +3,5 @@ venv
 staticfiles
 .env
 db.sqlite3
-gettingstarted/*
+getting-started/*
 .vscode/settings.json
-gettingstarted/settings.py
-gettingstarted/settings.py
-gettingstarted/settings.py
