@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from newspaper import Article
 
-from .models import TaskForm
+from .models import TaskForm, DropdownForm
 from hello.models import NewsSource
 from googleapi import google
 # import googlesearch
@@ -46,11 +46,10 @@ def index(request):
         print("request method is a POST", flush=True)
         # this is wehere POST request is accessed
         form = TaskForm(request.POST)
-        #DropdownMenu = DropdownForm(request.POST)
-        #if form.is_valid() and DropdownMenu.is_valid():
-        if form.is_valid():
+        DropdownMenu = DropdownForm(request.POST)
+        if form.is_valid() or DropdownMenu.is_valid(): ####################### The "or" will need to be changed to "and"
             query = form.cleaned_data['query']
-            #menuSelect = DropdownMenu.cleaned_data['bias']
+            menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
             print("Form is valid", flush=True)
             form = TaskForm() # doing this allows you to present an empty form with the "render" statement
 
@@ -64,8 +63,11 @@ def index(request):
         results = []
         AllNewsSources = NewsSource.objects.all() #It was passed into the index.html
         lowend = 1 #starting of the newsSource gathering
-        highend = 8 #end of newsSource gathering
+        #highend = 8 #end of newsSource gathering
+        highend = len(AllNewsSources)
         newsSourcesData = []
+
+
         for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
             newsSourcesData.append(AllNewsSources.get(pk=i))
         responseSuccessful = False
@@ -111,19 +113,60 @@ def index(request):
             else:
                 # cannot pull from the newsSourcesData list because in django you cannot filter (.get()) once a slice has been taken. So using AllNewsSources instead
                 mediaOutlet = AllNewsSources.get(pk=lowend+counter) #the database object for the news source
-                leaningList.append(mediaOutlet.description)
-                if "center" in mediaOutlet.description:
-                    colorList.append("green")#0015ff87
-                elif ("left" in mediaOutlet.description) or ("Left" in mediaOutlet.description):
-                    colorList.append("blue")#ff000087
-                elif ("right" in mediaOutlet.description) or ("Right" in mediaOutlet.description):
-                    colorList.append("red")#00ff1587
-                else: colorList.append("grey")#b5b5b5f1
-                reliabilityList.append(mediaOutlet.cred)
-                sourceNameList.append(mediaOutlet.newsSource)
-                imageIndexes.append(counter+1)
-                articlesList.append(article_processing(i.link))
-                linksList.append(i.link)
+                if menuSelect == "all":
+                    print("It is all >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
+                    leaningList.append(mediaOutlet.description)
+                    if "center" in mediaOutlet.description:
+                        colorList.append("green")#0015ff87
+                    elif ("left" in mediaOutlet.description) or ("Left" in mediaOutlet.description):
+                        colorList.append("blue")#ff000087
+                    elif ("right" in mediaOutlet.description) or ("Right" in mediaOutlet.description):
+                        colorList.append("red")#00ff1587
+                    else: colorList.append("grey")#b5b5b5f1
+                    reliabilityList.append(mediaOutlet.cred)
+                    sourceNameList.append(mediaOutlet.newsSource)
+                    imageIndexes.append(counter+1)
+                    articlesList.append(article_processing(i.link))
+                    linksList.append(i.link)
+                    # add all of them
+
+                elif(menuSelect == "left"):
+                    # only add the ones that equal left
+                    print("It is left >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
+                    if("left" in ((mediaOutlet.description).lower())):
+                        print("adding to the lists", flush=True)
+                        leaningList.append(mediaOutlet.description)
+                        colorList.append("blue")#ff000087
+                        reliabilityList.append(mediaOutlet.cred)
+                        sourceNameList.append(mediaOutlet.newsSource)
+                        imageIndexes.append(counter+1)
+                        articlesList.append(article_processing(i.link))
+                        linksList.append(i.link)
+                    #else do nothing. discard
+                elif(menuSelect == "right"):
+                    # only add the ones that equal right
+                    print("It is right >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
+                    if("right" in ((mediaOutlet.description).lower())):
+                        leaningList.append(mediaOutlet.description)
+                        colorList.append("red")#ff000087
+                        reliabilityList.append(mediaOutlet.cred)
+                        sourceNameList.append(mediaOutlet.newsSource)
+                        imageIndexes.append(counter+1)
+                        articlesList.append(article_processing(i.link))
+                        linksList.append(i.link)
+                    #else do nothing. discard
+                elif(menuSelect == "center"):
+                    # only add the ones that equal center
+                    print("It is center >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
+                    if("center" in ((mediaOutlet.description).lower())):
+                        leaningList.append(mediaOutlet.description)
+                        colorList.append("green")#ff000087
+                        reliabilityList.append(mediaOutlet.cred)
+                        sourceNameList.append(mediaOutlet.newsSource)
+                        imageIndexes.append(counter+1)
+                        articlesList.append(article_processing(i.link))
+                        linksList.append(i.link)
+                    #else do nothing. discard
                 counter +=1
 
 
@@ -143,12 +186,13 @@ def index(request):
             setOfArticleCompounds.append(a)
             index_of_article += 1
 
-        return render(request, 'index.html', {'form': form, "articleCompounds": setOfArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form,'DropdownMenu':DropdownMenu, "articleCompounds": setOfArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
 
     else:
         print("GET request is being processed", flush=True)
         form = TaskForm()
-        return render(request, 'index.html', {'form': form})
+        DropdownMenu = DropdownForm()
+        return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu})
 
 
 
