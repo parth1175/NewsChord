@@ -43,10 +43,13 @@ def index(request):
         print("request method is a POST", flush=True)
         # this is wehere POST request is accessed
         form = TaskForm(request.POST)
-        if form.is_valid():
+        DropdownMenu = DropdownForm(request.POST)
+        if form.is_valid() and DropdownMenu.is_valid():
             query = form.cleaned_data['query']
+            menuSelect = DropdownMenu.cleaned_data['bias']
             print("Form is valid", flush=True)
             form = TaskForm() # doing this allows you to present an empty form with the "render" statement
+
 
 
 
