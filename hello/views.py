@@ -46,10 +46,14 @@ def index(request):
         print("request method is a POST", flush=True)
         # this is wehere POST request is accessed
         form = TaskForm(request.POST)
+        #DropdownMenu = DropdownForm(request.POST)
+        #if form.is_valid() and DropdownMenu.is_valid():
         if form.is_valid():
             query = form.cleaned_data['query']
+            #menuSelect = DropdownMenu.cleaned_data['bias']
             print("Form is valid", flush=True)
             form = TaskForm() # doing this allows you to present an empty form with the "render" statement
+
 
 
 
@@ -80,7 +84,7 @@ def index(request):
             # if (responseSuccessful):
             #     print(f"Success from {i.homepage}", flush=True)
             results.append(single_request[0])
-            # else: 
+            # else:
             #     print(f"Error performing Google request {i.homepage}", flush=True)
             #     #returns a list of google serach objects. Uses the googleapi lib
 
