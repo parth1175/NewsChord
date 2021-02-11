@@ -9,11 +9,20 @@ from django import forms
 #     title = models.CharField(max_length=200)
 #     description = models.CharField(max_length=1000, blank=True)
 
+typesOfBiases = (
+("all","All"),
+("left","Liberal"),
+("right","Conservative"),
+("center","Balanced (center)"))
+
 class TaskForm(forms.Form):
     # id = forms.AutoField(primary_key=True)
     # when = forms.DateTimeField("date created", auto_now_add=True)
     query = forms.CharField(max_length=200, label='Your website', widget=forms.TextInput(attrs={'size': 60, 'placeholder':"Enter the request you want to get news about", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
     #url = forms.URLField(label='Your website', widget=forms.URLInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
+
+class DropdownForm(forms.Form):
+    bias = forms.ChoiceField(choices = typesOfBiases)
 
 # we don't need all this data for the article
 class Article(models.Model):

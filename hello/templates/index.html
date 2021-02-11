@@ -5,7 +5,7 @@
 
 <div class="jumbotron text-center" style="height: 375px">
   <div class="container" style="margin-top: -2%;">
-    <a href="/" class="lang-logo"> 
+    <a href="/" class="lang-logo">
       <img src="{% static 'Newschord_logo_violet.png'%}">
     </a>
     <h1>Newschord</h1>
@@ -27,6 +27,9 @@
                     {{ form.query }}
                 </div>
             </div>
+            <div class="row" style="padding-bottom:8px">
+              {{ DropdownMenu.bias }}
+            </div>
             <div class="row">
                 <div class="col-5">
                     <div class="btn-group float-right" role="group" aria-label="Basic example">
@@ -40,6 +43,10 @@
           One of three columns
         </div> -->
     {% endif %}
+
+
+
+
 
 
 {% for snippet in articleCompounds %}
@@ -61,13 +68,13 @@
   </div>
 </div>
 {% endfor %}
-     
+
 <div class="table">
 <script type="text/javascript" src="{% static 'main.js'%}"></script>
 </div>
 
 <div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
-   Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36</strong> / <strong>parthp@gmail.com</strong> 
+   Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36</strong> / <strong>parthp@gmail.com</strong>
 </div>
 {% endblock %}
 
@@ -99,5 +106,3 @@
     Thank you for checking out! If you have any comments, please, write to "our e-mail">
   </div>
 </div> -->
-
-
