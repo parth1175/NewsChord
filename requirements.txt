@@ -3,5 +3,5 @@ gunicorn
 django-heroku
 requests
 newspaper3k
-git+https://github.com/parth1175/ModifiedGoogleSearchAPI
+git+file:///SF files/Study After + projects/[P] Newschord/UserAgent_search/ModifiedGoogleSearchAPI
 nltk
