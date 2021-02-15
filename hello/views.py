@@ -52,6 +52,7 @@ def index(request):
             menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
             print("Form is valid", flush=True)
             form = TaskForm() # doing this allows you to present an empty form with the "render" statement
+            #https://docs.djangoproject.com/en/3.1/ref/forms/api/
 
 
 
@@ -186,7 +187,7 @@ def index(request):
             setOfArticleCompounds.append(a)
             index_of_article += 1
 
-        return render(request, 'index.html', {'form': form,'DropdownMenu':DropdownMenu, "articleCompounds": setOfArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, 'query':query, 'DropdownMenu':DropdownMenu, "articleCompounds": setOfArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
 
     else:
         print("GET request is being processed", flush=True)
