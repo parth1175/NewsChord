@@ -64,6 +64,9 @@
       <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
         <h2 style="text-align: center">{{snippet.article.title}}</h2>
         <h3>{{snippet.summary}}</h3>
+          <div class="item-detail">
+              <a href="{% url 'source' snippet.name %}">More articles</a>
+          </div>
       </div>
   </div>
 </div>

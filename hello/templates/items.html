@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Newschord - read from all angles</title>
+  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+  <style type="text/css">
+    .card-body{
+        position:absolute;
+        align-self: left;
+        align-content: left;
+        text-align: left;
+    }
+    .jumbotron {
+        background: #2c9eaf;
+        color: white;
+        padding-bottom: 100px
+    }
+    .jumbotron .btn-primary {
+        background: #32195B;
+        border-color: #F8C100
+    }
+    .jumbotron .btn-primary:hover {
+        background: #34b2c6
+    }
+    .jumbotron p {
+        color: #ffffff;
+        max-width: 75%;
+        margin: 1em auto 2em
+    }
+    .navbar+.jumbotron {
+        margin-top: -20px
+    }
+    .jumbotron .lang-logo {
+        display: block;
+        background: #ffffff;
+        border-radius: 50%;
+        overflow: hidden;
+        width: 175px;
+        height: 175px;
+        margin: auto;
+        border: 2px solid white
+    }
+    .jumbotron .lang-logo img {
+        max-width: 100%;
+    }
+
+    .card {
+    /* Add shadows to create the "card" effect */
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        padding: 8px;
+        margin-top: 12px;
+        position: relative;
+        /* background-color: rgba(0, 0, 255, 0.381); */
+    }
+
+/* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+/* Add some padding inside the card container */
+    .container {
+        padding: 2px 16px;
+    }
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-default navbar-static-top navbar-inverse">
+  <div class="container">
+    <ul class="nav navbar-nav">
+      <li class="active">
+        <a href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+{% block content %}
+    <div class="item-detail" style="padding-left:30px; padding-top:10px;">
+        <h1> News Source name </h1>
+        <p>{{ newsSource }}</p>
+    </div>
+{% endblock %}
+
+</body>
+</html>
