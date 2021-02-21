@@ -27,6 +27,12 @@ import heapq
 # for each in REQUIRED_CORPORA:
 #     nltk.download(each)
 
+def render_items(request, newsSource):
+    # item = get_object_or_404(YOUR_MODEL, YOUR_ITEM_FIELD_NAME=item_name)
+    return render(request, 'items.html', {'newsSource': newsSource })
+
+def AboutUs_page(request):
+    return render(request, 'AboutUs.html')
 
 # Create your views here.
 def index(request):
