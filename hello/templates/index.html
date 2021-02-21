@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% include 'message.html' %}
 {% load static %}
 
 {% block content %}
@@ -10,31 +11,31 @@
     </a>
     <h1>Newschord</h1>
     <p>Get news from different angles</p>
-    <!-- <a type="button" style="margin-top: -10px;" class="btn btn-lg btn-default" href="/"><span class="glyphicon glyphicon-flash"></span>Contact us</a> -->
-    <!-- <a type="button" class="btn btn-lg btn-primary" href="https://github.com/heroku/python-getting-started"><span class="glyphicon glyphicon-download"></span> Demo article</a> -->
-  </div>
+    </div>
 </div>
 
 
 <div class="container">
     {% if form %}
     <div class="col text-center">
-        <form action="{% url 'index' %}" method="POST">
+        <form action="{% url 'index' %}" method="POST" value = "{{query}}">
             {% csrf_token %}
             <div class="row">
               <p style="font-size: 28px;">Enter your request below</p>
-                <div class="form-group col text-center">
-                    {{ form.query }}
+                <div class="form-group col text-center" style="initial-value: rave;"> 
+                  {{ form.query }}
                 </div>
             </div>
-            <div class="row" style="padding-bottom:8px">
+            <div class="row" style="padding-bottom:8px;">
               {{ DropdownMenu.bias }}
             </div>
             <div class="row">
                 <div class="col-5">
                     <div class="btn-group float-right" role="group" aria-label="Basic example">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 20px; background-color:#32195B; border-color: #F8C100">Create deck</button>
+                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 20px; background-color:#32195B; border-color: #F8C100" data-toggle="modal" data-target="#exampleModal">
+                          Create deck
+                        </button>
                     </div>
                 </div>
             </div>
@@ -43,10 +44,6 @@
           One of three columns
         </div> -->
     {% endif %}
-
-
-
-
 
 
 {% for snippet in articleCompounds %}
@@ -76,36 +73,34 @@
 <script type="text/javascript" src="{% static 'main.js'%}"></script>
 </div>
 
+<!-- Button trigger modal
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+  Launch demo modal
+</button> -->
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Search is launched</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Your search through different media is launched. Please, do not refresh the page, you will get articles' list in <b>10-20 seconds</b>. Thank you and have a concise reading!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button>
+        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div>
+  </div>
+</div>
+
 <div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
    Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36</strong> / <strong>parthp@gmail.com</strong>
 </div>
 {% endblock %}
 
-
-  <!-- <hr> -->
-  <!-- <div class="row" style="padding-top: 10px; padding-bottom: 10px;">
-    <div class="col-md-4">
-      <h3><span class="glyphicon glyphicon-info-sign"></span> Complexity</h3>
-      <ul>
-        <li>Level of language (by education)</li>
-        <li>Namedropping</li>
-      </ul>
-    </div>
-    <div class="col-md-4">
-      <h3><span class="glyphicon glyphicon-link"></span> Bias</h3>
-      <ul>
-        <li>Source</li>
-        <li>Personality</li>
-      </ul>
-    </div>
-    <div class = "col-md-4">
-      <h3><span class="glyphicon glyphicon-star"></span> Type</h3>
-      <ul>
-      How much this article worth your time:
-      </ul>
-    </div>
-  </div>
-   <div class="alert alert-info text-center" role="alert">
-    Thank you for checking out! If you have any comments, please, write to "our e-mail">
-  </div>
-</div> -->
