@@ -51,7 +51,8 @@ def index(request):
             query = form.cleaned_data['query']
             menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
             print("Form is valid", flush=True)
-            form = TaskForm() # doing this allows you to present an empty form with the "render" statement
+            data = {'query': query}
+            form = TaskForm(data) # doing this allows you to present an empty form with the "render" statement
             #https://docs.djangoproject.com/en/3.1/ref/forms/api/
 
 
@@ -191,7 +192,8 @@ def index(request):
 
     else:
         print("GET request is being processed", flush=True)
-        form = TaskForm()
+        data = {'query': ""}
+        form = TaskForm(data)
         DropdownMenu = DropdownForm()
         return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu})
 

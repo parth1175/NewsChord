@@ -11,19 +11,20 @@ from django import forms
 
 typesOfBiases = (
 ("all","All"),
-("left","Liberal"),
-("right","Conservative"),
+("left","Democratic"),
+("right","Republican"),
 ("center","Balanced (center)"))
 
 class TaskForm(forms.Form):
     # id = forms.AutoField(primary_key=True)
     # when = forms.DateTimeField("date created", auto_now_add=True)
-    query = forms.CharField(max_length=200, label='Your website', widget=forms.TextInput(attrs={'value': "", 'size': 60, 'placeholder':"Enter the request you want to get news about", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
+    query = forms.CharField(max_length=200, label='Your website', initial = "Oh hi Mark", widget=forms.TextInput(attrs={'size': 60, 'placeholder':"Enter the request you want to get news about", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
+    #label = forms.CharField(initial = "inside_initial")
     #url = forms.URLField(label='Your website', widget=forms.URLInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
     
 
 class DropdownForm(forms.Form):
-    bias = forms.ChoiceField(choices = typesOfBiases)
+    bias = forms.ChoiceField(choices = typesOfBiases) #widget=forms.CheckboxSelect(attrs={'size': 5, 'style':"font-size: 20px; padding: 6px 12px; border-radius: 4px;"}))
 
 # we don't need all this data for the article
 class Article(models.Model):
