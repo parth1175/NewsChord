@@ -1,3 +1,12 @@
+############################
+
+The purpose of this github repo is to house our files, serve as an intermediate before the final project is pushed to heroku, and to be used as a way to share files with one another before officially launching a feature to heroku.
+
+Rules: This github repo will ONLY house working versions of the code. Although it is an intermediate, We don't want to populate it with broken code. 
+
+
+###########################
+
 # Python: Getting Started
 
 A barebones Django app, which can easily be deployed to Heroku.
