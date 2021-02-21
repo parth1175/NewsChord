@@ -30,6 +30,11 @@ import heapq
 def render_items(request, newsSource):
     # item = get_object_or_404(YOUR_MODEL, YOUR_ITEM_FIELD_NAME=item_name)
     return render(request, 'items.html', {'newsSource': newsSource })
+    # we want to render:
+        # Article names
+        # date published
+        # summary of article
+        # link to article
 
 def AboutUs_page(request):
     return render(request, 'AboutUs.html')
