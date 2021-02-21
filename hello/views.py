@@ -27,9 +27,28 @@ import heapq
 # for each in REQUIRED_CORPORA:
 #     nltk.download(each)
 
-def render_items(request, newsSource):
-    # item = get_object_or_404(YOUR_MODEL, YOUR_ITEM_FIELD_NAME=item_name)
-    return render(request, 'items.html', {'newsSource': newsSource })
+enteredQuery = '' # global variable for search query
+
+def render_items(request, newsSourceName):
+    smallerArticleCompoundList = [];
+    class SmallerArticleCompound:
+        def __init__(self, article, summary, link):
+            self.article = article #entire article object
+            self.summary = summary
+            self.link = link
+
+    # search db for the hompage of the newsSource
+    AllNewsSources = NewsSource.objects.all()
+    homepage = AllNewsSources.get(newsSource=newsSourceName).homepage
+    # make a google request to view all the search results
+    results = GoogleURL(homepage, enteredQuery)
+    numberOfResults = len(results)
+    # create SmallerArticleCompound objects for each result
+    for i in range(numberOfResults):
+        smallerArticleCompoundList.append(SmallerArticleCompound(article_processing(results[i].link),"Pass summary here", results[i].link))
+
+    return render(request, 'items.html', {'newsSource': newsSourceName, 'articleCompounds':smallerArticleCompoundList})
+
     # we want to render:
         # Article names
         # date published
@@ -60,6 +79,8 @@ def index(request):
         DropdownMenu = DropdownForm(request.POST)
         if form.is_valid() or DropdownMenu.is_valid(): ####################### The "or" will need to be changed to "and"
             query = form.cleaned_data['query']
+            global enteredQuery # add store the query in the global variable
+            enteredQuery = query
             menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
             print("Form is valid", flush=True)
             form = TaskForm() # doing this allows you to present an empty form with the "render" statement
@@ -73,7 +94,7 @@ def index(request):
         and adds the results to the results[] list
         """
         results = []
-        AllNewsSources = NewsSource.objects.all() #It was passed into the index.html
+        AllNewsSources = NewsSource.objects.all()
         lowend = 1 #starting of the newsSource gathering
         #highend = 8 #end of newsSource gathering
         highend = len(AllNewsSources)

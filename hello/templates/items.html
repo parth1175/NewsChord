@@ -77,11 +77,35 @@
     </ul>
   </div>
 </nav>
+<style>
+  .box{
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+</style>
 
 {% block content %}
     <div class="item-detail" style="padding-left:30px; padding-top:10px;">
-        <h1> News Source name </h1>
-        <p>{{ newsSource }}</p>
+        <h1> {{ newsSource }} </h1>
+
+        {% for snippet in articleCompounds %}
+        <table style="width:100%">
+          <div class = "box">
+          <tr>
+            <td>{{snippet.article.title}}</td>
+            <td>{{snippet.article.publish_date}}</td>
+            <td>{{snippet.link}}</td>
+          </tr>
+          <tr>
+            <td>{{snippet.summary}}</td>
+          </tr>
+          </div>
+          <tr>
+          	<td><span>&#8203;</span></td>
+          </tr>
+        </table>
+        {% endfor %}
+
     </div>
 {% endblock %}
 
