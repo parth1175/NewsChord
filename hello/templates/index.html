@@ -4,13 +4,13 @@
 
 {% block content %}
 
-<div class="jumbotron text-center" style="height: 375px">
+<div class="jumbotron text-center" style="height: 330px">
   <div class="container" style="margin-top: -2%;">
     <a href="/" class="lang-logo">
-      <img src="{% static 'Newschord_logo_violet.png'%}">
+      <img src="{% static 'Newschord_logo_violet.jpg'%}">
     </a>
-    <h1>Newschord</h1>
-    <p>Get news from different angles</p>
+    <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1>
+    <p style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Tune into your news</p>
     </div>
 </div>
 
@@ -21,19 +21,19 @@
         <form action="{% url 'index' %}" method="POST" value = "{{query}}">
             {% csrf_token %}
             <div class="row">
-              <p style="font-size: 28px;">Enter your request below</p>
+              <p style="font-size: 28px; margin-bottom: 16px;">Enter your request below</p>
                 <div class="form-group col text-center" style="initial-value: rave;"> 
                   {{ form.query }}
                 </div>
             </div>
-            <div class="row" style="padding-bottom:8px;">
-              {{ DropdownMenu.bias }}
+            <div class="row" style="padding-bottom:20px;">
+              Leaning: {{ DropdownMenu.bias }}
             </div>
             <div class="row">
                 <div class="col-5">
                     <div class="btn-group float-right" role="group" aria-label="Basic example">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 20px; background-color:#32195B; border-color: #F8C100" data-toggle="modal" data-target="#exampleModal">
+                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; border-color: #F8C100; margin-bottom: 16px;" data-toggle="modal" data-target="#exampleModal">
                           Create deck
                         </button>
                     </div>
