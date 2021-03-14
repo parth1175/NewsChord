@@ -15,17 +15,9 @@ import nltk
 import re
 import heapq
 
-# REQUIRED_CORPORA = [
-#     'brown',  # Required for FastNPExtractor
-#     'punkt',  # Required for WordTokenizer
-#     'maxent_treebank_pos_tagger',  # Required for NLTKTagger
-#     'movie_reviews',  # Required for NaiveBayesAnalyzer
-#     'wordnet',  # Required for lemmatization and Wordnet
-#     'stopwords'
-# ]
-#
-# for each in REQUIRED_CORPORA:
-#     nltk.download(each)
+subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
+search_term = "Microsoft"
+search_url = "https://api.bing.microsoft.com/v7.0/news/search"
 
 def render_items(request, newsSource):
     # item = get_object_or_404(YOUR_MODEL, YOUR_ITEM_FIELD_NAME=item_name)
@@ -69,10 +61,12 @@ def index(request):
         and adds the results to the results[] list
         """
         results = []
+        results_all = []
         AllNewsSources = NewsSource.objects.all() #It was passed into the index.html
         lowend = 1 #starting of the newsSource gathering
         #highend = 8 #end of newsSource gathering
         highend = len(AllNewsSources)
+        bing_number_merge = 3 # there are 100 results max per request, 25-30 articles /month/newsSource
         newsSourcesData = []
 
 
@@ -80,24 +74,35 @@ def index(request):
             newsSourcesData.append(AllNewsSources.get(pk=i))
         responseSuccessful = False
         resultsYeilded = False  # Global variables changed in GoogleURL() func
-        for i in newsSourcesData:
-            single_request = GoogleURL(i.homepage, query)
-            print(f"1st request has been performed for {i.homepage}", flush=True)
-            if (not responseSuccessful) and (not resultsYeilded):
-                #try again. Google didn't respond
-                # single_request = GoogleURL(i.homepage, query)
-                print("It's fine", flush=True)
-                ################### something should be done to handle round 2 error ##############
-            elif responseSuccessful and (not resultsYeilded):
-                # google didn't find anything
-                single_request[0] = "empty"
-            # if (responseSuccessful):
-            #     print(f"Success from {i.homepage}", flush=True)
-            results.append(single_request[0])
-            # else:
-            #     print(f"Error performing Google request {i.homepage}", flush=True)
-            #     #returns a list of google serach objects. Uses the googleapi lib
+        length_sources = len(newsSourcesData)
+        counter = 0
+        while (counter < length_sources):
+            print(f"Index merge {counter}, grouped by{bing_number_merge}", flush=True)
+            size_merge = min(bing_number_merge, length_sources-counter)
+            request_merged = bing_formrequest(query, size_merge, newsSourcesData, counter)
+            single_request_result = bing_newssearch(subscription_key_micro, request_merged, "Month", 100)#100 is MAX count for results list of single request
+            for k in range(size_merge):
+                results.append(bing_articlechoose(newsSourcesData[counter + k].homepage, single_request_result))#chosen article from result list and added
+            counter = counter + bing_number_merge
 
+        #GOOGLE SEARCH
+        # for i in newsSourcesData:
+        #     single_request = GoogleURL(i.homepage, query)
+        #     print(f"1st request has been performed for {i.homepage}", flush=True)
+        #     if (not responseSuccessful) and (not resultsYeilded):
+        #         #try again. Google didn't respond
+        #         # single_request = GoogleURL(i.homepage, query)
+        #         print("It's fine", flush=True)
+        #         ################### something should be done to handle round 2 error ##############
+        #     elif responseSuccessful and (not resultsYeilded):
+        #         # google didn't find anything
+        #         single_request[0] = "empty"
+        #     # if (responseSuccessful):
+        #     #     print(f"Success from {i.homepage}", flush=True)
+        #     results.append(single_request[0])
+        #     # else:
+        #     #     print(f"Error performing Google request {i.homepage}", flush=True)
+        #     #     #returns a list of google serach objects. Uses the googleapi lib
 
         """
         This code chunk creates a list for the:
@@ -134,10 +139,10 @@ def index(request):
                     reliabilityList.append(mediaOutlet.cred)
                     sourceNameList.append(mediaOutlet.newsSource)
                     imageIndexes.append(counter+1)
-                    articlesList.append(article_processing(i.link))
-                    linksList.append(i.link)
+                    #results is already article 
+                    articlesList.append(article_processing(i["url"]))
+                    linksList.append(i["url"])
                     # add all of them
-
                 elif(menuSelect == "left"):
                     # only add the ones that equal left
                     print("It is left >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
@@ -148,8 +153,8 @@ def index(request):
                         reliabilityList.append(mediaOutlet.cred)
                         sourceNameList.append(mediaOutlet.newsSource)
                         imageIndexes.append(counter+1)
-                        articlesList.append(article_processing(i.link))
-                        linksList.append(i.link)
+                        articlesList.append(article_processing(i["url"]))
+                        linksList.append(i["url"])
                     #else do nothing. discard
                 elif(menuSelect == "right"):
                     # only add the ones that equal right
@@ -160,8 +165,8 @@ def index(request):
                         reliabilityList.append(mediaOutlet.cred)
                         sourceNameList.append(mediaOutlet.newsSource)
                         imageIndexes.append(counter+1)
-                        articlesList.append(article_processing(i.link))
-                        linksList.append(i.link)
+                        articlesList.append(article_processing(i["url"]))
+                        linksList.append(i["url"])
                     #else do nothing. discard
                 elif(menuSelect == "center"):
                     # only add the ones that equal center
@@ -172,8 +177,8 @@ def index(request):
                         reliabilityList.append(mediaOutlet.cred)
                         sourceNameList.append(mediaOutlet.newsSource)
                         imageIndexes.append(counter+1)
-                        articlesList.append(article_processing(i.link))
-                        linksList.append(i.link)
+                        articlesList.append(article_processing(i["url"]))
+                        linksList.append(i["url"])
                     #else do nothing. discard
                 counter +=1
 
@@ -203,7 +208,34 @@ def index(request):
         DropdownMenu = DropdownForm()
         return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu})
 
+def bing_formrequest(request, number_merge, sourceList, start_index):
+    request = request + "("
+    first = True
+    for i in sourceList[start_index:start_index+number_merge]:
+        if (first == True):
+            first = False
+            request = request + "site:" + i.homepage
+        else:
+            request = request + " OR site:" + i.homepage
+    print("Prepared request is " + request, flush=True)
+    return request
 
+def bing_newssearch(subscriprion_key, search_term, freshness, count):
+    url = "https://api.bing.microsoft.com/v7.0/news/search"
+    headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
+    params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
+    response = requests.get(search_url, headers=headers, params=params)
+    response.raise_for_status()
+    search_results = response.json()
+    return search_results
+
+def bing_articlechoose(source_name, search_results):
+    #chosen_article = []
+    i = 0
+    while (not (source_name in search_results["value"][i]["url"]) and (i < len(search_results))):
+        i += 1
+    chosen_article = search_results["value"][i]
+    return chosen_article
 
 
 def article_processing(input_url):
@@ -335,3 +367,15 @@ def db(request):
 #         self.name = name
 #         self.leaning = leaning
 #         self.reliability = reliability
+
+# REQUIRED_CORPORA = [
+#     'brown',  # Required for FastNPExtractor
+#     'punkt',  # Required for WordTokenizer
+#     'maxent_treebank_pos_tagger',  # Required for NLTKTagger
+#     'movie_reviews',  # Required for NaiveBayesAnalyzer
+#     'wordnet',  # Required for lemmatization and Wordnet
+#     'stopwords'
+# ]
+#
+# for each in REQUIRED_CORPORA:
+#     nltk.download(each)
