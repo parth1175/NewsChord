@@ -22,7 +22,7 @@ search_url = "https://api.bing.microsoft.com/v7.0/news/search"
 enteredQuery = '' # global variable for search query
 
 def render_items(request, newsSourceName):
-    smallerArticleCompoundList = [];
+    smallerArticleCompoundList = []
     class SmallerArticleCompound:
         def __init__(self, article, summary, link):
             self.article = article #entire article object
