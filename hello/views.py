@@ -55,7 +55,6 @@ def index(request):
 
 
 
-
         """
         This code chunk performs the google search for each news source
         and adds the results to the results[] list
@@ -71,38 +70,29 @@ def index(request):
 
 
         for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
-            newsSourcesData.append(AllNewsSources.get(pk=i))
+            if (i != 9):# FOR THE GUARDIAN SKIP
+                newsSourcesData.append(AllNewsSources.get(pk=i))
         responseSuccessful = False
         resultsYeilded = False  # Global variables changed in GoogleURL() func
         length_sources = len(newsSourcesData)
         counter = 0
         while (counter < length_sources):
-            print(f"Index merge {counter}, grouped by{bing_number_merge}", flush=True)
+            print(f"Merged from {counter}, grouped by {bing_number_merge}", flush=True)
             size_merge = min(bing_number_merge, length_sources-counter)
             request_merged = bing_formrequest(query, size_merge, newsSourcesData, counter)
-            single_request_result = bing_newssearch(subscription_key_micro, request_merged, "Month", 100)#100 is MAX count for results list of single request
+            single_news_result = bing_newssearch(subscription_key_micro, request_merged, "Month", 100)#100 is MAX count for results list of single request
+            articles = [article for article in single_news_result['value']]
+            print(f"There are {len(articles)} from {newsSourcesData[counter].homepage} ... {newsSourcesData[counter+size_merge-1].homepage}", flush=True)
             for k in range(size_merge):
-                results.append(bing_articlechoose(newsSourcesData[counter + k].homepage, single_request_result))#chosen article from result list and added
+                article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles)
+                if (article_chosen["has_results"] == False):#Perform extra search if there is no available data on the article
+                    source_request = query + " site:" + newsSourcesData[counter + k].homepage
+                    single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
+                    web_results = [article for article in single_web_result['webPages']['value']]
+                    article_chosen["art"] = web_results[0]
+                    print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
+                results.append(article_chosen["art"])#chosen article from result list and added
             counter = counter + bing_number_merge
-
-        #GOOGLE SEARCH
-        # for i in newsSourcesData:
-        #     single_request = GoogleURL(i.homepage, query)
-        #     print(f"1st request has been performed for {i.homepage}", flush=True)
-        #     if (not responseSuccessful) and (not resultsYeilded):
-        #         #try again. Google didn't respond
-        #         # single_request = GoogleURL(i.homepage, query)
-        #         print("It's fine", flush=True)
-        #         ################### something should be done to handle round 2 error ##############
-        #     elif responseSuccessful and (not resultsYeilded):
-        #         # google didn't find anything
-        #         single_request[0] = "empty"
-        #     # if (responseSuccessful):
-        #     #     print(f"Success from {i.homepage}", flush=True)
-        #     results.append(single_request[0])
-        #     # else:
-        #     #     print(f"Error performing Google request {i.homepage}", flush=True)
-        #     #     #returns a list of google serach objects. Uses the googleapi lib
 
         """
         This code chunk creates a list for the:
@@ -118,6 +108,8 @@ def index(request):
         sourceNameList = []  # list of the name of each news source
         colorList = []
         for i in results:
+            if (counter==8):#FOR THE GUARDIAN SKIP
+                counter+=1
             if i == "empty":
                 print(f"The variable counter in the if is {counter}", flush=True)
                 # do nothing, just skip
@@ -209,7 +201,7 @@ def index(request):
         return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu})
 
 def bing_formrequest(request, number_merge, sourceList, start_index):
-    request = request + "("
+    request = request + " ("
     first = True
     for i in sourceList[start_index:start_index+number_merge]:
         if (first == True):
@@ -217,25 +209,82 @@ def bing_formrequest(request, number_merge, sourceList, start_index):
             request = request + "site:" + i.homepage
         else:
             request = request + " OR site:" + i.homepage
+    request = request + ")"
     print("Prepared request is " + request, flush=True)
     return request
 
 def bing_newssearch(subscriprion_key, search_term, freshness, count):
-    url = "https://api.bing.microsoft.com/v7.0/news/search"
+    method_url = "https://api.bing.microsoft.com/v7.0/news/search"
     headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
-    response = requests.get(search_url, headers=headers, params=params)
+    response = requests.get(method_url, headers=headers, params=params)
     response.raise_for_status()
     search_results = response.json()
     return search_results
 
-def bing_articlechoose(source_name, search_results):
+def bing_websearch(subscriprion_key, search_term, freshness, count):
+    method_url = "https://api.bing.microsoft.com/v7.0/search"
+    headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
+    params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
+    response = requests.get(method_url, headers=headers, params=params)
+    response.raise_for_status()
+    search_results = response.json()
+    return search_results
+
+def get_other_search(source_name):
+
+
+def get_other_articles(source_name, articles, mediaOutlet, source_index):
+    i = 0
+    imageIndexes = []    # list of media source indexes to upload pictures and names
+    articlesList = []    # list of article objects
+    linksList = []       # list of links for each article
+    leaningList = []     # list of the "leaning" of each news Source
+    reliabilityList = [] # list of the "reliabilty" of each news source
+    sourceNameList = []  # list of the name of each news source
+    colorList = []
+    has_results = True
+    while ((i < len(articles)) and (i < 10)):
+       if (source_name in articles[i]["url"]):
+            leaningList.append(mediaOutlet.description)
+            if "center" in mediaOutlet.description:
+                colorList.append("green")#0015ff87
+            elif ("left" in mediaOutlet.description) or ("Left" in mediaOutlet.description):
+                colorList.append("blue")#ff000087
+            elif ("right" in mediaOutlet.description) or ("Right" in mediaOutlet.description):
+                colorList.append("red")#00ff1587
+            else: colorList.append("grey")#b5b5b5f1
+            reliabilityList.append(mediaOutlet.cred)
+            sourceNameList.append(mediaOutlet.newsSource)
+            imageIndexes.append(source_index+1)
+            articlesList.append(article_processing(articles[i]["url"]))
+            linksList.append(articles[i]["url"])
+    setOfArticleCompounds = []
+    articleSummaries = []
+    index_of_article = 0 # used to index through the lists created above
+    for article in articlesList:
+        summary = ''.join(sent+"." for sent in article_summary(article.text))
+        articleSummaries.append(summary)
+        # ArticleCompound adding below
+        a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
+        setOfArticleCompounds.append(a)
+        index_of_article += 1
+    return setOfArticleCompounds
+     
+
+def bing_articlechoose(source_name, articles):
     #chosen_article = []
     i = 0
-    while (not (source_name in search_results["value"][i]["url"]) and (i < len(search_results))):
+    has_results = True
+    while ((i < len(articles)) and (not(source_name in articles[i]["url"]))):
         i += 1
-    chosen_article = search_results["value"][i]
-    return chosen_article
+        #print(i, flush = True)
+    if (i == len(articles)):
+        has_results = False
+        i -= 1
+    chosen_article = articles[i]
+    print(f"{has_results} {source_name}", flush = True)
+    return {"art": chosen_article, "has_results": has_results}
 
 
 def article_processing(input_url):
@@ -295,7 +344,7 @@ def article_list(googleResults):
         articles.append(article_processing(i.link))
     return articles
 
-
+#GOOGLE SEARCH LEGACY
 def GoogleURL(site, query):
     #Takes a site homepage URL and query as input and returns google search objects (Google Search API class) for the results
     GoogleQuery = ("site:%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes' after:2021-01-01
@@ -318,13 +367,28 @@ def GoogleURL(site, query):
         print("responseSuccessful=True, resultsYielded = True ", flush=True)
     return search_results
 
-
     #print(search_results[1].link) #URL to article
     #print(search_results[1].name) #name of article
     #print(search_results[1].description) #google description of article
 
-
-
+#GOOGLE SEARCH LEGACY
+        # for i in newsSourcesData:
+        #     single_request = GoogleURL(i.homepage, query)
+        #     print(f"1st request has been performed for {i.homepage}", flush=True)
+        #     if (not responseSuccessful) and (not resultsYeilded):
+        #         #try again. Google didn't respond
+        #         # single_request = GoogleURL(i.homepage, query)
+        #         print("It's fine", flush=True)
+        #         ################### something should be done to handle round 2 error ##############
+        #     elif responseSuccessful and (not resultsYeilded):
+        #         # google didn't find anything
+        #         single_request[0] = "empty"
+        #     # if (responseSuccessful):
+        #     #     print(f"Success from {i.homepage}", flush=True)
+        #     results.append(single_request[0])
+        #     # else:
+        #     #     print(f"Error performing Google request {i.homepage}", flush=True)
+        #     #     #returns a list of google serach objects. Uses the googleapi lib
 
 # def tasks(request):
 #     if request.method == 'POST':
@@ -358,15 +422,6 @@ def db(request):
 
     return render(request, "db.html", {"greetings": greetings})
 
-# class ArticleCompound:
-#     def __init__(self, article, summary, link, image_ind, name, leaning, reliability):
-#         self.article = article
-#         self.summary = summary
-#         self.link = link
-#         self.image_ind = f"{image_ind}.jpg"
-#         self.name = name
-#         self.leaning = leaning
-#         self.reliability = reliability
 
 # REQUIRED_CORPORA = [
 #     'brown',  # Required for FastNPExtractor
