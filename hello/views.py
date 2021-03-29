@@ -113,10 +113,13 @@ def index(request):
                 if (article_chosen["has_results"] == False):#Perform extra search if there is no available data on the article
                     source_request = query + " site:" + newsSourcesData[counter + k].homepage
                     single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
-                    web_results = [article for article in single_web_result['webPages']['value']]
-                    article_chosen["art"] = web_results[0]
                     print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
-                results.append(article_chosen["art"])#chosen article from result list and added
+                    if ('webPages' in single_web_result):
+                        web_results = [article for article in single_web_result['webPages']['value']]
+                        article_chosen["art"] = web_results[0]
+                    else:
+                        article_chosen["art"] = "empty"
+                results.append(article_chosen["art"])#chosen article from result list and added if it is relevant, else nothing
             counter = counter + bing_number_merge
 
         """
@@ -142,6 +145,7 @@ def index(request):
                 counter +=1
             else:
                 # cannot pull from the newsSourcesData list because in django you cannot filter (.get()) once a slice has been taken. So using AllNewsSources instead
+                # Extra database request?
                 mediaOutlet = AllNewsSources.get(pk=lowend+counter) #the database object for the news source
                 if menuSelect == "all":
                     print("It is all >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
@@ -255,9 +259,6 @@ def bing_websearch(subscriprion_key, search_term, freshness, count):
     response.raise_for_status()
     search_results = response.json()
     return search_results
-
-def get_other_search(source_name):
-
 
 def get_other_articles(source_name, articles, mediaOutlet, source_index):
     i = 0
