@@ -55,14 +55,14 @@
           <h4 style="width:15%"><b>{{snippet.name}}</b></h4>
           <p style="width:15%">Leaning: {{snippet.leaning}}</p>
           <p style="width:15%">Reliability: {{snippet.reliability}}</p>
-          <a href="{{snippet.link}}" style = "font-size:1.5em" class="card-link">Read full text</a>
+          <a href="{% url 'source' snippet.name %}" style = "font-size:1.2em" class="card-link">More articles</a>
         </div>
       </div>
       <div class="col-md-10" style="width: 80%; padding-inline: 10px;">
         <h2 style="text-align: center">{{snippet.article.title}}</h2>
         <h3>{{snippet.summary}}</h3>
           <div class="item-detail">
-              <a href="{% url 'source' snippet.name %}">More articles</a>
+              <a href="{{snippet.link}}" style = "font-size:1.5em">More articles</a>
           </div>
       </div>
   </div>

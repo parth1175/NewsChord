@@ -109,7 +109,10 @@ def index(request):
             articles = [article for article in single_news_result['value']]
             print(f"There are {len(articles)} from {newsSourcesData[counter].homepage} ... {newsSourcesData[counter+size_merge-1].homepage}", flush=True)
             for k in range(size_merge):
-                article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles)
+                if (len(articles) != 0):
+                    article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles)
+                else:
+                    article_chosen = {"art": "empty", "has_results": False}
                 if (article_chosen["has_results"] == False):#Perform extra search if there is no available data on the article
                     source_request = query + " site:" + newsSourcesData[counter + k].homepage
                     single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
