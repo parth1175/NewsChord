@@ -1,5 +1,8 @@
 import requests
 import os
+import datetime
+import math
+#import numpy as np
 from django.shortcuts import render
 from django.http import HttpResponse
 from newspaper import Article
@@ -110,7 +113,7 @@ def index(request):
             print(f"There are {len(articles)} from {newsSourcesData[counter].homepage} ... {newsSourcesData[counter+size_merge-1].homepage}", flush=True)
             for k in range(size_merge):
                 if (len(articles) != 0):
-                    article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles)
+                    article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles, query)
                 else:
                     article_chosen = {"art": "empty", "has_results": False}
                 if (article_chosen["has_results"] == False):#Perform extra search if there is no available data on the article
@@ -139,13 +142,13 @@ def index(request):
         sourceNameList = []  # list of the name of each news source
         colorList = []
         for i in results:
-            if (counter==8):#FOR THE GUARDIAN SKIP
-                counter+=1
+            if (counter == 8):#FOR THE GUARDIAN SKIP
+                counter += 1
             if i == "empty":
                 print(f"The variable counter in the if is {counter}", flush=True)
                 # do nothing, just skip
                 print(f"The variable i in the if is {i}", flush=True)
-                counter +=1
+                counter += 1
             else:
                 # cannot pull from the newsSourcesData list because in django you cannot filter (.get()) once a slice has been taken. So using AllNewsSources instead
                 # Extra database request?
@@ -298,23 +301,47 @@ def get_other_articles(source_name, articles, mediaOutlet, source_index):
         a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
         setOfArticleCompounds.append(a)
         index_of_article += 1
-    return setOfArticleCompounds
-     
+    return setOfArticleCompounds     
 
-def bing_articlechoose(source_name, articles):
+def bing_articlechoose(source_name, articles, query):
     #chosen_article = []
+    print(f"Choosing article from {source_name} ")
     i = 0
+    source_articles_number = 0
+    best_match_coeff = 0
+    best_match_index = -1
+    now = datetime.datetime.now()
     has_results = True
-    while ((i < len(articles)) and (not(source_name in articles[i]["url"]))):
+    while (i < len(articles)):
+        if (source_name in articles[i]["url"]):
+            source_articles_number += 1
+            match_coeff = time_urgency_coeff(articles[i]["datePublished"], now) * (100 - source_articles_number)/100
+            print(f"Match coefficient {source_articles_number}: {match_coeff}", flush=True)
+            if (best_match_coeff < match_coeff):
+                best_match_coeff = match_coeff
+                best_match_index = i
         i += 1
-        #print(i, flush = True)
-    if (i == len(articles)):
+    if (best_match_index == -1):
         has_results = False
-        i -= 1
-    chosen_article = articles[i]
-    print(f"{has_results} {source_name}", flush = True)
+        best_match_index = i - 1
+    chosen_article = articles[best_match_index]
+    # if (query in chosen_article["description"]):
+    #     print(f"Query {query} is in description")
+    # else:
+    #     print("Query is not")
+    #convert_time(chosen_article["datePublished"], now)
+    print(f"{has_results} article at {source_name}", flush = True)
     return {"art": chosen_article, "has_results": has_results}
 
+def time_urgency_coeff(a, now):
+    date = datetime.datetime(int(a[0:4]), int(a[5:7]), int(a[8:10]))
+    # datetime object containing current date and time
+    days_old = (now - date).days
+    #print("days old =", days_old) 
+    urgency_coeff = 1 - 1/(1 + math.exp(-(days_old-15)/10))
+    #print("urgency coefficient =", urgency_coeff)
+    return urgency_coeff
+    # print(date.strftime("%x"), flush = True)
 
 def article_processing(input_url):
     #Takes an article URL input and returns an article(newspaper3k class) object
@@ -376,7 +403,7 @@ def article_list(googleResults):
 #GOOGLE SEARCH LEGACY
 def GoogleURL(site, query):
     #Takes a site homepage URL and query as input and returns google search objects (Google Search API class) for the results
-    GoogleQuery = ("site:%s %s after:2021-01-01"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes' after:2021-01-01
+    GoogleQuery = ("site:%s %s after:2021-01-03"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes' after:2021-01-01
     num_pages = 1
     search_results = google.search(GoogleQuery, num_pages)
     if not search_results:
