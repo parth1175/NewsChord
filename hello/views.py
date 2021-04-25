@@ -262,8 +262,12 @@ def bing_websearch(subscriprion_key, search_term, freshness, count):
     headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
     response = requests.get(method_url, headers=headers, params=params)
-    response.raise_for_status()
-    search_results = response.json()
+    #print(f"WEB Response {}")
+    if (response.raise_for_status() == "None"): 
+        search_results = response.json()
+        print(f"Response status is {response.raise_for_status()}")
+    else: 
+        search_results = "empty"
     return search_results
 
 def get_other_articles(source_name, articles, mediaOutlet, source_index):
