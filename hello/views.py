@@ -56,8 +56,9 @@ def AboutUs_page(request):
 # Create your views here.
 def index(request):
     class ArticleCompound:
-        def __init__(self, article, summary, link, image_ind, name, leaning, reliability, color):
+        def __init__(self, article, title, summary, link, image_ind, name, leaning, reliability, color):
             self.article = article
+            self.title = title
             self.summary = summary
             self.link = link
             self.image_ind = f"{image_ind}.jpg"
@@ -114,6 +115,7 @@ def index(request):
             for k in range(size_merge):
                 if (len(articles) != 0):
                     article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles, query)
+                    #print(article_chosen["art"]['description'], flush = True)
                 else:
                     article_chosen = {"art": "empty", "has_results": False}
                 if (article_chosen["has_results"] == False):#Perform extra search if there is no available data on the article
@@ -123,9 +125,14 @@ def index(request):
                     if ('webPages' in single_web_result):
                         web_results = [article for article in single_web_result['webPages']['value']]
                         article_chosen["art"] = web_results[0]
+                        print("Additional search helped")
                     else:
                         article_chosen["art"] = "empty"
+                        print("Empty article", flush=True)
                 results.append(article_chosen["art"])#chosen article from result list and added if it is relevant, else nothing
+                #print(article_chosen["art"], flush = True)
+                # if (article_chosen["art"] == "empty"):
+                #     print("Really empty article", flush=True)
             counter = counter + bing_number_merge
 
         """
@@ -145,7 +152,7 @@ def index(request):
             if (counter == 8):#FOR THE GUARDIAN SKIP
                 counter += 1
             if i == "empty":
-                print(f"The variable counter in the if is {counter}", flush=True)
+                print(f"Counter in the if is {counter}", flush=True)
                 # do nothing, just skip
                 print(f"The variable i in the if is {i}", flush=True)
                 counter += 1
@@ -154,20 +161,23 @@ def index(request):
                 # Extra database request?
                 mediaOutlet = AllNewsSources.get(pk=lowend+counter) #the database object for the news source
                 if menuSelect == "all":
-                    print("It is all >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
-                    leaningList.append(mediaOutlet.description)
-                    if "center" in mediaOutlet.description:
+                    print("It is all leanings >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
+                    leaning = adjust_leaning_wording(mediaOutlet.description)
+                    leaningList.append(leaning)
+                    if "Center" in leaning:
                         colorList.append("green")#0015ff87
-                    elif ("left" in mediaOutlet.description) or ("Left" in mediaOutlet.description):
+                    elif ("left" in leaning) or ("Left" in leaning):
                         colorList.append("blue")#ff000087
-                    elif ("right" in mediaOutlet.description) or ("Right" in mediaOutlet.description):
+                    elif ("right" in leaning) or ("Right" in leaning):
                         colorList.append("red")#00ff1587
                     else: colorList.append("grey")#b5b5b5f1
                     reliabilityList.append(mediaOutlet.cred)
                     sourceNameList.append(mediaOutlet.newsSource)
                     imageIndexes.append(counter+1)
                     #results is already article 
-                    articlesList.append(article_processing(i["url"]))
+                    print("Before fetching NewsSource", flush=True)
+                    articlesList.append(i)  #article_processing(i["url"])) #IMPORTANT CHANGE: no manual article porcessing to increase performance
+                    print("After fetching", flush=True)
                     linksList.append(i["url"])
                     # add all of them
                 elif(menuSelect == "left"):
@@ -209,20 +219,29 @@ def index(request):
                     #else do nothing. discard
                 counter +=1
 
-
         """
         This code chunk obtains the summaries for each article in articlesList (previous chunk above)
         and then finally adds all relevant information to an ArticleCompound object that is sent to
         the index.html file
         """
         setOfArticleCompounds = []
-        articleSummaries = []
         index_of_article = 0 # used to index through the lists created above
         for article in articlesList:
-            summary = ''.join(sent+"." for sent in article_summary(article.text))
-            articleSummaries.append(summary)
+            title = ""
+            summary = ""
+            if menuSelect == "all":
+                title = article['name'] #article.title #IMPORTANT CHANGE: format of article object changes as well Article -> dict
+                if ("description" in article):
+                    summary = article['description'] #''.join(sent+"." for sent in article_summary(article.text)) #IMPORTANT CHANGE: no manual article porcessing for this option
+                else:
+                    summary = "Open the full article to know more" 
+                title = clear_of_symbols(title)
+                summary = clear_of_symbols(summary)
+            else:
+                summary = ''.join(sent+"." for sent in article_summary(article.text))
+                title = article.title
             # ArticleCompound adding below
-            a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
+            a = ArticleCompound(article, title, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
             setOfArticleCompounds.append(a)
             index_of_article += 1
 
@@ -262,12 +281,17 @@ def bing_websearch(subscriprion_key, search_term, freshness, count):
     headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
     response = requests.get(method_url, headers=headers, params=params)
-    #print(f"WEB Response {}")
-    if (response.raise_for_status() == "None"): 
-        search_results = response.json()
-        print(f"Response status is {response.raise_for_status()}")
-    else: 
+    #UPDATED
+    search_results = response.json()
+    rank_response = response.json()["rankingResponse"]
+    #print(f"Response status is {response.raise_for_status()}", flush=True)
+    if  (len(rank_response) != 0): 
+        print("Response rank is not {}", flush=True)
+        print(rank_response , flush=True)
+    else:
         search_results = "empty"
+    #else: 
+    #    search_results = "empty"
     return search_results
 
 def get_other_articles(source_name, articles, mediaOutlet, source_index):
@@ -403,6 +427,29 @@ def article_list(googleResults):
     for i in googleResults:
         articles.append(article_processing(i.link))
     return articles
+
+def clear_of_symbols(string):
+    new_string = string.replace("<b>", "")
+    new_string = new_string.replace("</b>", "")
+    new_string = new_string.replace("&#39;", "'")
+    new_string = new_string.replace("&quot;", "'")
+    return new_string
+
+def adjust_leaning_wording(string):
+    leaning = ""
+    if "center" in string:
+        leaning = "Center"
+    elif "Slightly Left" in string:
+        leaning = "Slightly Left"
+    elif "right-leaning" in string:
+        leaning = "Slightly Right"
+    elif "Right-leaning" in string:
+        leaning = "Right"
+    elif "Left-leaning" in string:
+        leaning = "Left"
+    else:
+        leaning = string
+    return leaning
 
 #GOOGLE SEARCH LEGACY
 def GoogleURL(site, query):

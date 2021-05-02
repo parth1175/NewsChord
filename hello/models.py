@@ -10,10 +10,10 @@ from django import forms
 #     description = models.CharField(max_length=1000, blank=True)
 
 typesOfBiases = (
-("all","All"),
+("all","All leanings (quick search)"),
 ("left","Democratic"),
 ("right","Republican"),
-("center","Balanced (center)"))
+("center","Center"))
 
 class TaskForm(forms.Form):
     # id = forms.AutoField(primary_key=True)

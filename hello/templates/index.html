@@ -27,13 +27,13 @@
                 </div>
             </div>
             <div class="row" style="padding-bottom:22px; font-size: 18px;">
-              Preferred leaning: {{ DropdownMenu.bias }}
+              Leaning mode: {{ DropdownMenu.bias }}
             </div>
             <div class="row">
                 <div class="col-5">
                     <div class="btn-group float-right" role="group" aria-label="Basic example">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; border-color: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
+                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
                           Create news deck
                         </button>
                     </div>
@@ -59,7 +59,7 @@
         </div>
       </div>
       <div class="col-md-10" style="width: 77%; padding-inline: 12px;">
-        <h2 style="text-align: center">{{snippet.article.title}}</h2>
+        <h2 style="text-align: center">{{snippet.title}}</h2>
         <h3>{{snippet.summary}}</h3>
         <div class="item-detail">
             <a href="{{snippet.link}}" style = "font-size:1.5em">Read full text</a>
@@ -89,7 +89,7 @@
         </button>
       </div>
       <div class="modal-body">
-        Your search through different media is launched. Please, do not refresh the page, you will get articles' list in <b>10-20 seconds</b>. Thank you and have a concise reading!
+        Your search through different media is launched. Please, do not refresh the page, you will get articles' list in <b>5-15 seconds</b> depending on your internet connection. Thank you and have a concise reading!
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button>
