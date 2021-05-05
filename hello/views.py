@@ -91,12 +91,10 @@ def index(request):
         """
         results = []
         AllNewsSources = NewsSource.objects.all()
-        lowend = 1 #starting of the newsSource gathering
+        lowend,highend = 1,len(AllNewsSources) #start and end of the newsSource gathering
         #highend = 8 #end of newsSource gathering
-        highend = len(AllNewsSources)
         bing_number_merge = 3 # there are 100 results max per request, 25-30 articles /month/newsSource
         newsSourcesData = []
-
 
         for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
             if (i != 9):# FOR THE GUARDIAN SKIP
@@ -104,6 +102,7 @@ def index(request):
         responseSuccessful = False
         resultsYeilded = False  # Global variables changed in GoogleURL() func
         length_sources = len(newsSourcesData)
+
         counter = 0
         while (counter < length_sources):
             print(f"Merged from {counter}, grouped by {bing_number_merge}", flush=True)
@@ -174,7 +173,7 @@ def index(request):
                     reliabilityList.append(mediaOutlet.cred)
                     sourceNameList.append(mediaOutlet.newsSource)
                     imageIndexes.append(counter+1)
-                    #results is already article 
+                    #results is already article
                     print("Before fetching NewsSource", flush=True)
                     articlesList.append(i)  #article_processing(i["url"])) #IMPORTANT CHANGE: no manual article porcessing to increase performance
                     print("After fetching", flush=True)
@@ -234,7 +233,7 @@ def index(request):
                 if ("description" in article):
                     summary = article['description'] #''.join(sent+"." for sent in article_summary(article.text)) #IMPORTANT CHANGE: no manual article porcessing for this option
                 else:
-                    summary = "Open the full article to know more" 
+                    summary = "Open the full article to know more"
                 title = clear_of_symbols(title)
                 summary = clear_of_symbols(summary)
             else:
@@ -285,12 +284,12 @@ def bing_websearch(subscriprion_key, search_term, freshness, count):
     search_results = response.json()
     rank_response = response.json()["rankingResponse"]
     #print(f"Response status is {response.raise_for_status()}", flush=True)
-    if  (len(rank_response) != 0): 
+    if  (len(rank_response) != 0):
         print("Response rank is not {}", flush=True)
         print(rank_response , flush=True)
     else:
         search_results = "empty"
-    #else: 
+    #else:
     #    search_results = "empty"
     return search_results
 
@@ -329,7 +328,7 @@ def get_other_articles(source_name, articles, mediaOutlet, source_index):
         a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
         setOfArticleCompounds.append(a)
         index_of_article += 1
-    return setOfArticleCompounds     
+    return setOfArticleCompounds
 
 def bing_articlechoose(source_name, articles, query):
     #chosen_article = []
@@ -365,7 +364,7 @@ def time_urgency_coeff(a, now):
     date = datetime.datetime(int(a[0:4]), int(a[5:7]), int(a[8:10]))
     # datetime object containing current date and time
     days_old = (now - date).days
-    #print("days old =", days_old) 
+    #print("days old =", days_old)
     urgency_coeff = 1 - 1/(1 + math.exp(-(days_old-15)/10))
     #print("urgency coefficient =", urgency_coeff)
     return urgency_coeff
