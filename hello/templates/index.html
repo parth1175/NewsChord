@@ -1,4 +1,4 @@
-<!-- {% extends "base.html" %} -->
+{% extends "base.html" %}
 {% include 'message.html' %}
 {% load static %}
 <html>
@@ -26,7 +26,8 @@
         <a href="/" class="lang-logo">
           <img src="{% static 'Newschord_logo_violet.jpg'%}" width="130">
         </a>
-        <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1>
+        <h1 style="margin-bottom: 16px; margin-top: 16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1>
+        <!-- <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1> -->
         <p style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Tune into your news</p>
       </div>
     </div>
@@ -40,23 +41,25 @@
         <form action="{% url 'index' %}" method="POST" value = "{{query}}">
             {% csrf_token %}
             <div class="row">
-              <!-- <p style="font-size: 28px; margin-bottom: 16px;">Enter your request below</p> -->
                 <div class="form-group col text-center" style="initial-value: rave;">
                   {{ form.query }}
                 </div>
             </div>
             <div class="row" style="padding-bottom:22px; font-size: 18px;">
-              Leaning mode: {{ DropdownMenu.bias }}
+              <div class="form-group col text-center" >
+                Leaning mode: {{ DropdownMenu.bias }}
+              </div>
             </div>
             <div class="row">
-                <div class="col-5">
-                    <div class="btn-group float-right" role="group" aria-label="Basic example">
+                <!-- <div class="form-group col-5 text-center"> -->
+                    <!-- <div class="btn-group float-right" role="group" aria-label="Basic example"> -->
+                    <div class="form-group col text-center">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                         <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
                           Create news deck
                         </button>
                     </div>
-                </div>
+                <!-- </div> -->
             </div>
         </form>
       </div>
