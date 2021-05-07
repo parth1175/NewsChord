@@ -83,14 +83,25 @@ WSGI_APPLICATION = "gettingstarted.wsgi.application"
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'sources',
+#         'USER': 'postgres',
+#         'PASSWORD': 'postgres4database',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'sources',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres4database',
+        'NAME': 'template2',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': 'localhost',
-        'PORT': '5432',
+        'PORT': '',
     }
 }
 
