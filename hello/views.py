@@ -86,8 +86,8 @@ def index(request):
 
 
         """
-        This code chunk performs the google search for each news source
-        and adds the results to the results[] list
+        This code chunk creates newsSourcesData, which is a copy of
+        the NewsSources entries in the database
         """
         results = []
         AllNewsSources = NewsSource.objects.all()
@@ -103,6 +103,9 @@ def index(request):
         resultsYeilded = False  # Global variables changed in GoogleURL() func
         length_sources = len(newsSourcesData)
 
+        """
+        add comments here....
+        """
         counter = 0
         while (counter < length_sources):
             print(f"Merged from {counter}, grouped by {bing_number_merge}", flush=True)
@@ -527,16 +530,3 @@ def db(request):
     greetings = Greeting.objects.all()
 
     return render(request, "db.html", {"greetings": greetings})
-
-
-# REQUIRED_CORPORA = [
-#     'brown',  # Required for FastNPExtractor
-#     'punkt',  # Required for WordTokenizer
-#     'maxent_treebank_pos_tagger',  # Required for NLTKTagger
-#     'movie_reviews',  # Required for NaiveBayesAnalyzer
-#     'wordnet',  # Required for lemmatization and Wordnet
-#     'stopwords'
-# ]
-#
-# for each in REQUIRED_CORPORA:
-#     nltk.download(each)

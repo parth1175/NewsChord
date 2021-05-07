@@ -40,6 +40,7 @@ height: 50px;
  border-radius: 0px 50px 50px 0px !important;
 }
 .border-red{border: 1px solid red;}
+.border-blue{border: 1px solid blue;}
 .border-green{border: 1px solid green;}
 .top-right-color-box{
 padding-bottom: 30px;
@@ -70,10 +71,10 @@ margin-left: 83%;
 }
 
 .pl-20{
-padding-left:25px;	
+padding-left:25px;
 }
 .pl-35{
-padding-left:35px;	
+padding-left:35px;
 }
 .card-body-pt {
     padding-top: 0px  !important;
