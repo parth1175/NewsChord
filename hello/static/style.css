@@ -1,0 +1,208 @@
+/* CSS Document */
+.explore_icon{
+    padding: 17px 25px;
+    color: #ffffff;
+    background-color: #311D58 !important;
+    font-size: 15px;
+    border-radius: 5px;
+}
+.header{padding-bottom: 30px;margin-bottom: 50px;
+border-radius: 0px 0px 80px 80px;
+background-color: #fff;}
+.container_menu{max-width: 1400px;
+padding-right: 9%;}
+
+.lead{    font-size: 30px !important;
+    font-weight: bold;
+    font-family: "Arial";
+}
+.lead_text{ font-size: 19px !important;}
+
+.body{background-color: #F1F1F1 !important;}
+.main_content{padding-bottom: 50px;
+background-color: #F1F1F1 !important;}
+.main_content_area{
+	padding-bottom: 50px;
+	background-color: #F1F1F1 !important;
+}
+.border {
+    border: 1px solid #605D6D !important;
+	border-radius: 50px;
+}
+.header_container .form-control {
+    border-radius: 50px 0px 0px 50px !important;
+        border-top-right-radius: 50px;
+        border-bottom-right-radius: 50px;
+text-align: center;
+height: 50px;
+}
+.header_container .btn{
+ border-radius: 0px 50px 50px 0px !important;
+}
+.border-red{border: 1px solid red;}
+.border-blue{border: 1px solid blue;}
+.border-green{border: 1px solid green;}
+.top-right-color-box{
+padding-bottom: 30px;
+border-radius: 0px 0px 0px 20px;
+margin-left: 83%;
+}
+.box-green{
+	background-color: green !important;
+}
+.box-fadegreen{
+	background-color: #03FD1B !important;
+}
+
+.box-blue{
+	background-color: #0700FB !important;
+}
+.box-red{
+	background-color: red !important;
+}
+.box-fadered{
+	background-color: #FF7372 !important;
+}
+.box-gray{
+	background-color: #9F9DFF !important;
+}
+.box-maroon{
+	background-color: #7C0000 !important;
+}
+
+.pl-20{
+padding-left:25px;
+}
+.pl-35{
+padding-left:35px;
+}
+.card-body-pt {
+    padding-top: 0px  !important;
+}
+.card h2 {
+	line-height: 17px;
+	padding-top: 15px;
+}
+.news-date{
+   font-size: 13px;
+}
+.news-title{
+	font-size: 24px  !important;
+}
+.model-news-title{
+	font-size: 13px  !important;
+	font-weight:bold;
+}
+.news-info{
+	font-size: 14px;
+	padding-top: 20px;
+}
+.new-full-article{
+	color:#333333;
+	text-decoration:underline;
+	font-size: 11px;
+	font-weight:bold;
+}
+.read-more-btn {
+    padding: 6px 25px;
+    color: #ffffff;
+    background-color: #311D58 !important;
+    font-size: 12px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+.read-full-btn{padding: 6px 15px;
+    color: #ffffff;
+    background-color: #311D58 !important;
+    font-size: 12px;
+    border-radius: 5px;
+    font-weight: bold;}
+.all-pages h2{ font-size: 25px  !important;text-aling:center;text-decoration:underline;line-height: 25px; padding-bottom:30px; }
+.all-pages p{ font-size: 14px  !important; }
+.all-pages .bb-1{padding: 0px 0px 20px 0px;}
+.popup-icon{font-size: 50px;}
+.modal-body .news-date{
+   font-size: 11px;
+font-weight: bold;
+}
+.modal-body .news-title{
+	font-size: 21px !important;
+color: #DCD7DF;
+}
+.modal-body p{
+	font-size: 12px;
+}
+.modal-body .p-title h2{font-size: 25px;
+padding-top: 10px;}
+
+.row {
+    margin-right: 0px !important;
+    margin-left: 0px !important;
+}
+.corner-rounded-circle {
+    padding-bottom: 30px;
+    border-radius: 0px 0px 0px 20px;
+    margin-left: 83%;
+}
+.w-90{width: 85%;
+margin-left: 10%;}
+@media only screen and (max-width: 600px){
+.corner-rounded-circle {
+    padding-bottom: 30px;
+    border-radius: 0px 0px 0px 20px;
+    margin-left: 80%;
+}
+.top-right-color-box{
+padding-bottom: 30px;
+border-radius: 0px 0px 0px 20px;
+margin-left: 80%;
+}
+.main_content{
+	display:none;
+}
+}
+
+@media only screen and (min-width: 600px)  and (max-width: 768px) {
+ .main_content_area .col-md-4 {
+    -ms-flex: 0 0 33.333333%;
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+.corner-rounded-circle {
+    padding-bottom: 30px;
+    border-radius: 0px 0px 0px 20px;
+    margin-left: 87.5%;
+}
+.top-right-color-box{
+padding-bottom: 30px;
+border-radius: 0px 0px 0px 20px;
+margin-left: 87.5%;
+}
+.main_content{
+	display:none;
+}
+}
+@media only screen and (min-width: 769px)  and (max-width: 1024px) {
+ .main_content_area .col-md-4 {
+    flex: 0 0 100% !important;
+    max-width: 100% !important;
+}
+.corner-rounded-circle {
+    padding-bottom: 30px;
+    border-radius: 0px 0px 0px 20px;
+    margin-left: 93.5%;
+}
+.top-right-color-box{
+padding-bottom: 30px;
+border-radius: 0px 0px 0px 20px;
+margin-left: 93.5%;
+}
+.main_content{
+	display:none;
+}
+}
+
+.main_content .mb-2{
+	height: 50px;
+	padding-top: 13px;
+}

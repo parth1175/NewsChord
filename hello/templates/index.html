@@ -1,18 +1,38 @@
 {% extends "base.html" %}
 {% include 'message.html' %}
 {% load static %}
-
+<html>
 {% block content %}
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="" name="description">
+<meta content="" name="keywords">
 
-<div class="jumbotron text-center" style="height: 330px">
-  <div class="container" style="margin-top: -2%;">
-    <a href="/" class="lang-logo">
-      <img src="{% static 'Newschord_logo_violet.jpg'%}">
-    </a>
-    <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1>
-    <p style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Tune into your news</p>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- Vendor CSS Files -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+
+<link href="../static/style.css" rel="stylesheet">
+
+
+
+
+<div class = "header">
+
+  <div class = "container header_container">
+    <div class = "row">
+      <div class="col-lg-12 text-center">
+        <a href="/" class="lang-logo">
+          <img src="{% static 'Newschord_logo_violet.jpg'%}" width="130">
+        </a>
+        <h1 style="margin-bottom: 16px; margin-top: 16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1>
+        <!-- <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1> -->
+        <h4 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Tune into your news</h4>
+      </div>
     </div>
-</div>
+  </div>
+
 
 
 <div class="container">
@@ -21,31 +41,93 @@
         <form action="{% url 'index' %}" method="POST" value = "{{query}}">
             {% csrf_token %}
             <div class="row">
-              <!-- <p style="font-size: 28px; margin-bottom: 16px;">Enter your request below</p> -->
-                <div class="form-group col text-center" style="initial-value: rave;"> 
+                <div class="form-group col text-center" style="initial-value: rave;">
                   {{ form.query }}
                 </div>
             </div>
             <div class="row" style="padding-bottom:22px; font-size: 18px;">
-              Leaning mode: {{ DropdownMenu.bias }}
+              <div class="form-group col text-center" >
+                Leaning mode: {{ DropdownMenu.bias }}
+              </div>
             </div>
             <div class="row">
-                <div class="col-5">
-                    <div class="btn-group float-right" role="group" aria-label="Basic example">
+                <!-- <div class="form-group col-5 text-center"> -->
+                    <!-- <div class="btn-group float-right" role="group" aria-label="Basic example"> -->
+                    <div class="form-group col text-center">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                         <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
                           Create news deck
                         </button>
                     </div>
-                </div>
+                <!-- </div> -->
             </div>
         </form>
+      </div>
         <!-- <div class="col-sm">
           One of three columns
         </div> -->
     {% endif %}
+  </div>
+</div>
 
 
+<div class="container main_content">
+  <div class="row text-center">
+    <div class="col-xs-4 col-lg-4  col-md-4">
+      <div class="card card-body mb-2 border-blue">
+        <h4 style="text-align: center;">Liberal</h4>
+      </div>
+    </div>
+    <div class="col-xs-4 col-lg-4  col-md-4">
+      <div class="card card-body mb-2 border-green">
+        <h4 style="text-align: center;">Center</h4>
+      </div>
+    </div>
+    <div class="col-xs-4 col-lg-4  col-md-4">
+      <div class="card card-body mb-2 border-red">
+        <h4 style="text-align: center;">Conservative</h4>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<div class="container main_content_area">
+<div class="row">
+
+  {% for snippet in articleCompounds %}
+  <div class="col-xs-4 col-lg-4  col-md-4">
+    <div class="card mb-2"> <span class="top-right-color-box box-blue"></span>
+      <div class="card-body card-body-pt mb-2">
+        <div class="row">
+          <div class="col-xs-4"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> </div>
+          <div class="col-xs-8 pl-35">
+            <h2 class="news-title">{{snippet.name}}</h2>
+            <span class="news-date">06-10-21</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p class="news-info">{{snippet.title}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-6 col-sm-6"> <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> </div>
+          <div class="col-xs-6  col-sm-6 text-center"> <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+
+
+<!-- <div class = "container">
 {% for snippet in articleCompounds %}
 <div class="card" style="box-shadow: 0 4px 8px 0 {{snippet.color}}">
   <div class="row">
@@ -68,10 +150,16 @@
   </div>
 </div>
 {% endfor %}
+</div> -->
 
-<div class="table">
-<script type="text/javascript" src="{% static 'main.js'%}"></script>
+
 </div>
+</div>
+
+<!-- <div class="table">
+<script type="text/javascript" src="{% static 'main.js'%}"></script>
+</div> -->
+
 
 <!-- Button trigger modal
 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
@@ -79,7 +167,7 @@
 </button> -->
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -97,10 +185,77 @@
       </div>
     </div>
   </div>
+</div> -->
+
+
+<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-3 text-center"> <img src="assets/images/1copy.jpg" width="70" class="rounded-circle" alt="1copy.jpg"><br>
+            <h2 class="model-news-title">AP NEWS</h2>
+          </div>
+          <div class="col-sm-9">
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur </p>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
+              <div class="col-md-8 pl-35">
+                <h2 class="news-title">Learning</h2>
+                <span class="news-date">Balanced (center) bias</span> </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
+              <div class="col-md-8 pl-35">
+                <h2 class="news-title">Reliablity</h2>
+                <span class="news-date">High</span> </div>
+            </div>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <div class="row">
+          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 p-title">
+            <h2>Sed ut perspiciatis unde omnis iste natus error sit voluptatem</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p>accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur</p>
+            <p>accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernaturaccusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernaturaccusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur</p>
+            <p>accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All result from AP News</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="#" >Read FUll</a> </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+    </div>
+  </div>
 </div>
+
 
 <div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
    Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
 </div>
+</body>
 {% endblock %}
-
+</html>
