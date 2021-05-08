@@ -348,9 +348,9 @@ def bing_articlechoose(source_name, articles, query):
                 best_match_coeff = match_coeff
                 best_match_index = i
         i += 1
-    if (best_match_index == -1):
+    if (source_articles_number < 4):
         has_results = False
-        best_match_index = i - 1
+        best_match_index = abs(best_match_index)
     chosen_article = articles[best_match_index]
     # if (query in chosen_article["description"]):
     #     print(f"Query {query} is in description")
