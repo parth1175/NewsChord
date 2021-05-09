@@ -75,7 +75,7 @@
   <div class="row text-center">
     <div class="col-xs-4 col-lg-4  col-md-4">
       <div class="card card-body mb-2 border-blue">
-        <h4 style="text-align: center;">Liberal</h4>
+        <h4 style="text-align: center;">Left</h4>
       </div>
     </div>
     <div class="col-xs-4 col-lg-4  col-md-4">
@@ -85,7 +85,7 @@
     </div>
     <div class="col-xs-4 col-lg-4  col-md-4">
       <div class="card card-body mb-2 border-red">
-        <h4 style="text-align: center;">Conservative</h4>
+        <h4 style="text-align: center;">Right</h4>
       </div>
     </div>
   </div>
@@ -93,39 +93,112 @@
 
 
 
-
-
-
-
-
 <div class="container main_content_area">
+<div class="col">
 <div class="row">
-
-  {% for snippet in articleCompounds %}
-  <div class="col-xs-4 col-lg-4  col-md-4">
-    <div class="card mb-2"> <span class="top-right-color-box box-blue"></span>
-      <div class="card-body card-body-pt mb-2">
-        <div class="row">
-          <div class="col-xs-4"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> </div>
-          <div class="col-xs-8 pl-35">
-            <h2 class="news-title">{{snippet.name}}</h2>
-            <span class="news-date">06-10-21</span>
+  <!-- Left column creation -->
+  <div class="col-xs-4">
+    {% for snippet in leftArticleCompounds %}
+    <div class="row">
+      <div class="card mb-2"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+        <div class="card-body card-body-pt mb-2">
+          <div class="row">
+            <div class="col-xs-4"> 
+              <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
+            </div>
+            <div class="col-xs-8 pl-35">
+              <h2 class="news-title">{{snippet.name}}</h2>
+              <span class="news-date">{{snippet.date}}</span>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <p class="news-info">{{snippet.title}}</p>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="news-info">{{snippet.title}}</p>
+            </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-xs-6 col-sm-6"> <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> </div>
-          <div class="col-xs-6  col-sm-6 text-center"> <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> </div>
+          <div class="row">
+            <div class="col-xs-6 col-sm-6"> 
+              <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+            </div>
+            <div class="col-xs-6  col-sm-6 text-center"> 
+              <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
+            </div>
+          </div>
         </div>
       </div>
     </div>
+    {% endfor %}
   </div>
-  {% endfor %}
-
+  <!-- /close Left column creation   -->
+  <!-- Center column creation -->
+  <div class="col-xs-4">
+    {% for snippet in centerArticleCompounds %}
+    <div class="row">
+      <div class="card mb-2"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+        <div class="card-body card-body-pt mb-2">
+          <div class="row">
+            <div class="col-xs-4"> 
+              <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
+            </div>
+            <div class="col-xs-8 pl-35">
+              <h2 class="news-title">{{snippet.name}}</h2>
+              <span class="news-date">{{snippet.date}}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="news-info">{{snippet.title}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6 col-sm-6"> 
+              <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+            </div>
+            <div class="col-xs-6  col-sm-6 text-center"> 
+              <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <!-- /close Center column creation   -->
+  <!-- Right column creation -->
+  <div class="col-xs-4">
+    {% for snippet in rightArticleCompounds %}
+    <div class="row">
+      <div class="card mb-2"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+        <div class="card-body card-body-pt mb-2">
+          <div class="row">
+            <div class="col-xs-4"> 
+              <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
+            </div>
+            <div class="col-xs-8 pl-35">
+              <h2 class="news-title">{{snippet.name}}</h2>
+              <span class="news-date">{{snippet.date}}</span>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <p class="news-info">{{snippet.title}}</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6 col-sm-6"> 
+              <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+            </div>
+            <div class="col-xs-6  col-sm-6 text-center"> 
+              <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <!-- /close Right column creation   -->
+</div>
 
 <!-- <div class = "container">
 {% for snippet in articleCompounds %}
@@ -180,8 +253,8 @@
         Your search through different media is launched. Please, do not refresh the page, you will get articles' list in <b>5-15 seconds</b> depending on your internet connection. Thank you and have a concise reading!
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button>
-        <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button> 
+        <button type="button" class="btn btn-primary">Save changes</button> 
       </div>
     </div>
   </div>
@@ -210,7 +283,7 @@
             <div class="row">
               <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
               <div class="col-md-8 pl-35">
-                <h2 class="news-title">Learning</h2>
+                <h2 class="news-title">Leaning</h2>
                 <span class="news-date">Balanced (center) bias</span> </div>
             </div>
           </div>

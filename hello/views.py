@@ -56,9 +56,10 @@ def AboutUs_page(request):
 # Create your views here.
 def index(request):
     class ArticleCompound:
-        def __init__(self, article, title, summary, link, image_ind, name, leaning, reliability, color):
+        def __init__(self, article, title, date, summary, link, image_ind, name, leaning, reliability, color):
             self.article = article
             self.title = title
+            self.date = date
             self.summary = summary
             self.link = link
             self.image_ind = f"{image_ind}.jpg"
@@ -226,13 +227,22 @@ def index(request):
         and then finally adds all relevant information to an ArticleCompound object that is sent to
         the index.html file
         """
+        setOfRightArticleCompounds = []
+        setOfLeftArticleCompounds = []
+        setOfCenterArticleCompounds = []
         setOfArticleCompounds = []
         index_of_article = 0 # used to index through the lists created above
         for article in articlesList:
             title = ""
             summary = ""
+            date = ""
             if menuSelect == "all":
                 title = article['name'] #article.title #IMPORTANT CHANGE: format of article object changes as well Article -> dict
+                if "datePublished" in article:
+                    date = article['datePublished']
+                    date = datetime.date(int(date[0:4]), int(date[5:7]), int(date[8:10]))
+                else:
+                    date = "Unknown publication date"    
                 if ("description" in article):
                     summary = article['description'] #''.join(sent+"." for sent in article_summary(article.text)) #IMPORTANT CHANGE: no manual article porcessing for this option
                 else:
@@ -242,12 +252,21 @@ def index(request):
             else:
                 summary = ''.join(sent+"." for sent in article_summary(article.text))
                 title = article.title
+                date = article.date
+                print(f"Date {date}", flush = True)
             # ArticleCompound adding below
-            a = ArticleCompound(article, title, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
+            a = ArticleCompound(article, title, date, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
+            if a.color == "blue":
+                setOfLeftArticleCompounds.append(a)
+            elif (a.color == "green"):
+                setOfCenterArticleCompounds.append(a)
+            elif (a.color == "red"):
+                setOfRightArticleCompounds.append(a)
             setOfArticleCompounds.append(a)
             index_of_article += 1
 
-        return render(request, 'index.html', {'form': form, 'query':query, 'DropdownMenu':DropdownMenu, "articleCompounds": setOfArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
+        return render(request, 'index.html', {'form': form, 'query':query, 'DropdownMenu':DropdownMenu, "articleCompounds": setOfArticleCompounds,
+        "leftArticleCompounds": setOfLeftArticleCompounds, "centerArticleCompounds": setOfCenterArticleCompounds, "rightArticleCompounds": setOfRightArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
 
     else:
         print("GET request is being processed", flush=True)
@@ -354,6 +373,7 @@ def bing_articlechoose(source_name, articles, query):
     if (source_articles_number < 4):
         has_results = False
         best_match_index = abs(best_match_index)
+        print("Too few articles to choose", flush=True)
     chosen_article = articles[best_match_index]
     # if (query in chosen_article["description"]):
     #     print(f"Query {query} is in description")
