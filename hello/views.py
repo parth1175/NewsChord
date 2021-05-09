@@ -186,9 +186,10 @@ def index(request):
                 elif(menuSelect == "left"):
                     # only add the ones that equal left
                     print("It is left >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
-                    if("left" in ((mediaOutlet.description).lower())):
+                    leaning = adjust_leaning_wording(mediaOutlet.description)
+                    if("left" in leaning) or ("Left" in leaning):
                         print("adding to the lists", flush=True)
-                        leaningList.append(mediaOutlet.description)
+                        leaningList.append(leaning)
                         colorList.append("blue")#ff000087
                         reliabilityList.append(mediaOutlet.cred)
                         sourceNameList.append(mediaOutlet.newsSource)
@@ -196,11 +197,12 @@ def index(request):
                         articlesList.append(article_processing(i["url"]))
                         linksList.append(i["url"])
                     #else do nothing. discard
-                elif(menuSelect == "right"):
+                elif (menuSelect == "right") :
                     # only add the ones that equal right
                     print("It is right >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
-                    if("right" in ((mediaOutlet.description).lower())):
-                        leaningList.append(mediaOutlet.description)
+                    leaning = adjust_leaning_wording(mediaOutlet.description)
+                    if("right" in leaning) or ("Right" in leaning):
+                        leaningList.append(leaning)
                         colorList.append("red")#ff000087
                         reliabilityList.append(mediaOutlet.cred)
                         sourceNameList.append(mediaOutlet.newsSource)
@@ -210,9 +212,10 @@ def index(request):
                     #else do nothing. discard
                 elif(menuSelect == "center"):
                     # only add the ones that equal center
+                    leaning = adjust_leaning_wording(mediaOutlet.description)
                     print("It is center >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",flush=True)
-                    if("center" in ((mediaOutlet.description).lower())):
-                        leaningList.append(mediaOutlet.description)
+                    if("Center" in leaning):
+                        leaningList.append(leaning)
                         colorList.append("green")#ff000087
                         reliabilityList.append(mediaOutlet.cred)
                         sourceNameList.append(mediaOutlet.newsSource)
@@ -252,7 +255,7 @@ def index(request):
             else:
                 summary = ''.join(sent+"." for sent in article_summary(article.text))
                 title = article.title
-                date = article.date
+                date = article.publish_date
                 print(f"Date {date}", flush = True)
             # ArticleCompound adding below
             a = ArticleCompound(article, title, date, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
@@ -370,7 +373,7 @@ def bing_articlechoose(source_name, articles, query):
                 best_match_coeff = match_coeff
                 best_match_index = i
         i += 1
-    if (source_articles_number < 4):
+    if (source_articles_number < 3):
         has_results = False
         best_match_index = abs(best_match_index)
         print("Too few articles to choose", flush=True)

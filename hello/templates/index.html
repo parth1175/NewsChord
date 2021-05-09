@@ -14,7 +14,7 @@
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 
 <link href="../static/style.css" rel="stylesheet">
-
+<!--Online bootstrap testing https://www.codeply.com/go/6c6qWGrIpF/bootstrap-4-test-page -->
 
 
 
@@ -78,7 +78,7 @@
         <h4 style="text-align: center;">Left</h4>
       </div>
     </div>
-    <div class="col-xs-4 col-lg-4  col-md-4">
+    <div class="col-xs-4 col-lg-4 col-md-4">
       <div class="card card-body mb-2 border-green">
         <h4 style="text-align: center;">Center</h4>
       </div>
@@ -94,19 +94,20 @@
 
 
 <div class="container main_content_area">
-<div class="col">
+<!-- <div class="col"> -->
 <div class="row">
   <!-- Left column creation -->
-  <div class="col-xs-4">
+  <div class="col-xs-4 col-lg-4 col-md-4">
     {% for snippet in leftArticleCompounds %}
-    <div class="row">
-      <div class="card mb-2"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+    <div class="row no-gutters">
+      <div class="col-xs-12 col-md-12">
+      <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
         <div class="card-body card-body-pt mb-2">
           <div class="row">
             <div class="col-xs-4"> 
               <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
             </div>
-            <div class="col-xs-8 pl-35">
+            <div class="col-xs-8 pl-4">
               <h2 class="news-title">{{snippet.name}}</h2>
               <span class="news-date">{{snippet.date}}</span>
             </div>
@@ -117,30 +118,33 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-6 col-sm-6"> 
+            <div class="col-6"> 
               <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
             </div>
-            <div class="col-xs-6  col-sm-6 text-center"> 
+            <div class="col-6 text-center"> 
               <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
     {% endfor %}
   </div>
   <!-- /close Left column creation   -->
   <!-- Center column creation -->
-  <div class="col-xs-4">
+  <div class="col-xs-4 col-lg-4 col-md-4">
     {% for snippet in centerArticleCompounds %}
-    <div class="row">
-      <div class="card mb-2"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+    <div class="row no-gutters">
+      <div class="col-xs-12 col-md-12">
+      <div class="card mb-4"> 
+        <span class="top-right-color-box box-{{snippet.color}}"></span>
         <div class="card-body card-body-pt mb-2">
           <div class="row">
             <div class="col-xs-4"> 
               <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
             </div>
-            <div class="col-xs-8 pl-35">
+            <div class="col-xs-8 pl-4">
               <h2 class="news-title">{{snippet.name}}</h2>
               <span class="news-date">{{snippet.date}}</span>
             </div>
@@ -159,22 +163,24 @@
             </div>
           </div>
         </div>
+      </div>  
       </div>
     </div>
     {% endfor %}
   </div>
   <!-- /close Center column creation   -->
   <!-- Right column creation -->
-  <div class="col-xs-4">
+  <div class="col-xs-4 col-lg-4 col-md-4">
     {% for snippet in rightArticleCompounds %}
-    <div class="row">
-      <div class="card mb-2"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+    <div class="row no-gutters">
+      <div class="col-xs-12 col-md-12">
+      <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
         <div class="card-body card-body-pt mb-2">
           <div class="row">
             <div class="col-xs-4"> 
               <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
             </div>
-            <div class="col-xs-8 pl-35">
+            <div class="col-xs-8 pl-4">
               <h2 class="news-title">{{snippet.name}}</h2>
               <span class="news-date">{{snippet.date}}</span>
             </div>
@@ -185,21 +191,22 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-xs-6 col-sm-6"> 
+            <div class="col-6"> 
               <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
             </div>
-            <div class="col-xs-6  col-sm-6 text-center"> 
+            <div class="col-6 text-center"> 
               <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
     {% endfor %}
   </div>
   <!-- /close Right column creation   -->
 </div>
-
+<!-- </div> -->
 <!-- <div class = "container">
 {% for snippet in articleCompounds %}
 <div class="card" style="box-shadow: 0 4px 8px 0 {{snippet.color}}">
@@ -225,8 +232,6 @@
 {% endfor %}
 </div> -->
 
-
-</div>
 </div>
 
 <!-- <div class="table">
