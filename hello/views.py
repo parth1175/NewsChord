@@ -12,7 +12,6 @@ from hello.models import NewsSource
 from googleapi import google
 # import googlesearch
 
-
 import nltk
 #libraries for text processing
 import re
@@ -23,7 +22,7 @@ search_term = "Microsoft"
 search_url = "https://api.bing.microsoft.com/v7.0/news/search"
 
 enteredQuery = '' # global variable for search query
-
+#function is not used
 def render_items(request, newsSourceName):
     smallerArticleCompoundList = []
     class SmallerArticleCompound:
@@ -154,8 +153,20 @@ def index(request):
         for i in results:
             if (counter == 8):#FOR THE GUARDIAN SKIP
                 counter += 1
-            if i == "empty":
+            if i == "empty": #TODO: Process the empty one anyway and show user there are no results from this source
                 print(f"Counter in the if is {counter}", flush=True)
+                # leaning = adjust_leaning_wording(mediaOutlet.description)
+                # leaningList.append(leaning)
+                # if "Center" in leaning:
+                #     colorList.append("green")#0015ff87
+                # elif ("left" in leaning) or ("Left" in leaning):
+                #     colorList.append("blue")#ff000087
+                # elif ("right" in leaning) or ("Right" in leaning):
+                #     colorList.append("red")#00ff1587
+                # else: colorList.append("grey")#b5b5b5f1
+                # reliabilityList.append(mediaOutlet.cred)
+                # sourceNameList.append(mediaOutlet.newsSource)
+                # imageIndexes.append(counter+1)
                 # do nothing, just skip
                 print(f"The variable i in the if is {i}", flush=True)
                 counter += 1
@@ -177,9 +188,9 @@ def index(request):
                     reliabilityList.append(mediaOutlet.cred)
                     sourceNameList.append(mediaOutlet.newsSource)
                     imageIndexes.append(counter+1)
-                    #results is already article
+                    #results is already article list of article objects
                     print("Before fetching NewsSource", flush=True)
-                    articlesList.append(i)  #article_processing(i["url"])) #IMPORTANT CHANGE: no manual article porcessing to increase performance
+                    articlesList.append(i)  #article_processing(i["url"])) # IMPORTANT CHANGE: no manual article porcessing to increase performance
                     print("After fetching", flush=True)
                     linksList.append(i["url"])
                     # add all of them

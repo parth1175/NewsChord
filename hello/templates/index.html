@@ -15,29 +15,27 @@
 
 <link href="../static/style.css" rel="stylesheet">
 <!--Online bootstrap testing https://www.codeply.com/go/6c6qWGrIpF/bootstrap-4-test-page -->
+<!-- About bootstrap grid https://getbootstrap.com/docs/4.1/layout/grid/ -->
 
 
-
+<!-- <body class="body"> -->
 <div class = "header">
-
   <div class = "container header_container">
     <div class = "row">
       <div class="col-lg-12 text-center">
         <a href="/" class="lang-logo">
-          <img src="{% static 'Newschord_logo_violet.jpg'%}" width="130">
+          <img src="{% static 'Newschord_logo_violet.jpg'%}" width="200">
         </a>
-        <h1 style="margin-bottom: 16px; margin-top: 16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1>
+        <h1 style="margin-bottom: 8px; margin-top: 0px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: xx-large;">Newschord</h1>
         <!-- <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1> -->
-        <h4 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Tune into your news</h4>
+        <h4 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: large;">Tune into your news</h4>
       </div>
     </div>
   </div>
 
-
-
-<div class="container">
+  <div class="container" style="margin-top: 32px;">
     {% if form %}
-    <div class="col text-center">
+      <div class="col text-center">
         <form action="{% url 'index' %}" method="POST" value = "{{query}}">
             {% csrf_token %}
             <div class="row">
@@ -45,7 +43,7 @@
                   {{ form.query }}
                 </div>
             </div>
-            <div class="row" style="padding-bottom:22px; font-size: 18px;">
+            <div class="row" style="font-size: 18px;">
               <div class="form-group col text-center" >
                 Leaning mode: {{ DropdownMenu.bias }}
               </div>
@@ -55,7 +53,7 @@
                     <!-- <div class="btn-group float-right" role="group" aria-label="Basic example"> -->
                     <div class="form-group col text-center">
                         <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
-                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
+                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; margin-top: 32px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
                           Create news deck
                         </button>
                     </div>
@@ -92,146 +90,118 @@
 </div>
 
 
-
 <div class="container main_content_area">
-<!-- <div class="col"> -->
-<div class="row">
-  <!-- Left column creation -->
-  <div class="col-xs-4 col-lg-4 col-md-4">
-    {% for snippet in leftArticleCompounds %}
-    <div class="row no-gutters">
-      <div class="col-xs-12 col-md-12">
-      <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
-        <div class="card-body card-body-pt mb-2">
-          <div class="row">
-            <div class="col-xs-4"> 
-              <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
-            </div>
-            <div class="col-xs-8 pl-4">
-              <h2 class="news-title">{{snippet.name}}</h2>
-              <span class="news-date">{{snippet.date}}</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <p class="news-info">{{snippet.title}}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6"> 
-              <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
-            </div>
-            <div class="col-6 text-center"> 
-              <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-  <!-- /close Left column creation   -->
-  <!-- Center column creation -->
-  <div class="col-xs-4 col-lg-4 col-md-4">
-    {% for snippet in centerArticleCompounds %}
-    <div class="row no-gutters">
-      <div class="col-xs-12 col-md-12">
-      <div class="card mb-4"> 
-        <span class="top-right-color-box box-{{snippet.color}}"></span>
-        <div class="card-body card-body-pt mb-2">
-          <div class="row">
-            <div class="col-xs-4"> 
-              <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
-            </div>
-            <div class="col-xs-8 pl-4">
-              <h2 class="news-title">{{snippet.name}}</h2>
-              <span class="news-date">{{snippet.date}}</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <p class="news-info">{{snippet.title}}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-6 col-sm-6"> 
-              <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
-            </div>
-            <div class="col-xs-6  col-sm-6 text-center"> 
-              <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
-            </div>
-          </div>
-        </div>
-      </div>  
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-  <!-- /close Center column creation   -->
-  <!-- Right column creation -->
-  <div class="col-xs-4 col-lg-4 col-md-4">
-    {% for snippet in rightArticleCompounds %}
-    <div class="row no-gutters">
-      <div class="col-xs-12 col-md-12">
-      <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
-        <div class="card-body card-body-pt mb-2">
-          <div class="row">
-            <div class="col-xs-4"> 
-              <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="2copy.jpg"> 
-            </div>
-            <div class="col-xs-8 pl-4">
-              <h2 class="news-title">{{snippet.name}}</h2>
-              <span class="news-date">{{snippet.date}}</span>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <p class="news-info">{{snippet.title}}</p>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-6"> 
-              <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
-            </div>
-            <div class="col-6 text-center"> 
-              <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#exampleModalLong">Read More</a> 
-            </div>
-          </div>
-        </div>
-      </div>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
-  <!-- /close Right column creation   -->
-</div>
-<!-- </div> -->
-<!-- <div class = "container">
-{% for snippet in articleCompounds %}
-<div class="card" style="box-shadow: 0 4px 8px 0 {{snippet.color}}">
   <div class="row">
-      <div class="col-md-2" style="width: 20%;">
-        <div class="container" style="text-align: left;">
-          <img src="{% static snippet.image_ind %}" alt="mit" style="width:15%">
-          <h4 style="width:15%"><b>{{snippet.name}}</b></h4>
-          <p style="width:15%">Leaning: {{snippet.leaning}}</p>
-          <p style="width:15%">Reliability: {{snippet.reliability}}</p>
-          <a href="{% url 'source' snippet.name %}" style = "font-size:1.2em" class="card-link">More articles on this</a>
+    <!-- Left column creation -->
+    <div class="col-xs-4 col-lg-4 col-md-4">
+      {% for snippet in leftArticleCompounds %}
+      <div class="row no-gutters">
+        <div class="col-xs-12 col-md-12">
+        <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+          <div class="card-body card-body-pt mb-2">
+            <div class="row">
+              <div class="col-xs-3"> 
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              </div>
+              <div class="col-xs-9 pl-4">
+                <h5 class="news-title" style = "font-size: small">{{snippet.name}}</h5>
+                <span class="news-date">{{snippet.date}}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="news-info" style = "font-size: medium">{{snippet.title}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6"> 
+                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              </div>
+              <div class="col-6 text-center"> 
+                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Left{{forloop.counter}}">Read More</a> 
+              </div>
+            </div>
+          </div>
+        </div>
         </div>
       </div>
-      <div class="col-md-10" style="width: 77%; padding-inline: 12px;">
-        <h2 style="text-align: center">{{snippet.title}}</h2>
-        <h3>{{snippet.summary}}</h3>
-        <div class="item-detail">
-            <a href="{{snippet.link}}" style = "font-size:1.5em">Read full text</a>
+      {% endfor %}
+    </div>
+    <!-- /close Left column creation   -->
+    <!-- Center column creation -->
+    <div class="col-xs-4 col-lg-4 col-md-4">
+      {% for snippet in centerArticleCompounds %}
+      <div class="row no-gutters">
+        <div class="col-xs-12 col-md-12">
+        <div class="card mb-4"> 
+          <span class="top-right-color-box box-{{snippet.color}}"></span>
+          <div class="card-body card-body-pt mb-2">
+            <div class="row">
+              <div class="col-xs-3"> 
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              </div>
+              <div class="col-xs-9 pl-4">
+                <h2 class="news-title">{{snippet.name}}</h2>
+                <span class="news-date">{{snippet.date}}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="news-info" style = "font-size: medium">{{snippet.title}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6 col-sm-6"> 
+                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              </div>
+              <div class="col-xs-6  col-sm-6 text-center"> 
+                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Center{{forloop.counter}}">Read More</a> 
+              </div>
+            </div>
+          </div>
+        </div>  
         </div>
       </div>
+      {% endfor %}
+    </div>
+    <!-- /close Center column creation   -->
+    <!-- Right column creation -->
+    <div class="col-xs-4 col-lg-4 col-md-4">
+      {% for snippet in rightArticleCompounds %}
+      <div class="row no-gutters">
+        <div class="col-xs-12 col-md-12">
+        <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+          <div class="card-body card-body-pt mb-2">
+            <div class="row">
+              <div class="col-xs-3"> 
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              </div>
+              <div class="col-xs-9 pl-4">
+                <h2 class="news-title">{{snippet.name}}</h2>
+                <span class="news-date">{{snippet.date}}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <p class="news-info" style = "font-size: medium">{{snippet.title}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6"> 
+                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              </div>
+              <div class="col-6 text-center"> 
+                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Right{{forloop.counter}}">Read More</a> 
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <!-- /close Right column creation   -->
   </div>
-</div>
-{% endfor %}
-</div> -->
-
 </div>
 
 <!-- <div class="table">
@@ -264,9 +234,9 @@
     </div>
   </div>
 </div> -->
-
-
-<div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<!-- card of the left source  -->
+{% for snippet in leftArticleCompounds %}
+<div class="modal fade" id="Left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -275,11 +245,11 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-3 text-center"> <img src="assets/images/1copy.jpg" width="70" class="rounded-circle" alt="1copy.jpg"><br>
-            <h2 class="model-news-title">AP NEWS</h2>
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <h2 class="model-news-title">{{snippet.name}}</h2>
           </div>
           <div class="col-sm-9">
-            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur </p>
+            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
           </div>
         </div>
         <hr class="bb-1"/>
@@ -287,39 +257,37 @@
           <div class="col-md-6">
             <div class="row">
               <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
-              <div class="col-md-8 pl-35">
-                <h2 class="news-title">Leaning</h2>
-                <span class="news-date">Balanced (center) bias</span> </div>
+              <div class="col-md-9 pl-35" style="display: inline;">
+                <h2 class="news-char-value">{{snippet.leaning}}</h2>
+                <span class="news-characteristics">Leaning</span> </div>
             </div>
           </div>
           <div class="col-md-6">
             <div class="row">
               <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
-              <div class="col-md-8 pl-35">
-                <h2 class="news-title">Reliablity</h2>
-                <span class="news-date">High</span> </div>
+              <div class="col-md-9 pl-35">
+                <h2 class="news-char-value">High</h2>
+                <span class="news-characteristics">Reliability</span> </div>
             </div>
           </div>
         </div>
         <hr class="bb-1"/>
-        <div class="row">
+        <!-- <div class="row">
           <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div>
+        </div> -->
         <div class="row">
           <div class="col-md-12 p-title">
-            <h2>Sed ut perspiciatis unde omnis iste natus error sit voluptatem</h2>
+            <h2>{{snippet.title}}</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <p>accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur</p>
-            <p>accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernaturaccusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernaturaccusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur</p>
-            <p>accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur</p>
+            <p style="font-size: medium;">{{snippet.summary}}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All result from AP News</a> </div>
-          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="#" >Read FUll</a> </div>
+          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
         </div>
       </div>
       <!-- <div class="modal-footer">
@@ -329,11 +297,140 @@
     </div>
   </div>
 </div>
+{% endfor %}
+<!-- card of the centered source  -->
+{% for snippet in centerArticleCompounds %}
+<div class="modal fade" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <h2 class="model-news-title">{{snippet.name}}</h2>
+          </div>
+          <div class="col-sm-9">
+            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
+              <div class="col-md-8 pl-35">
+                <h2 class="news-char-value">{{snippet.leaning}}</h2>
+                <span class="news-characteristics">Leaning</span> </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
+              <div class="col-md-8 pl-35">
+                <h2 class="news-char-value">High</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <!-- <div class="row">
+          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 p-title">
+            <h2>{{snippet.title}}</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" >
+            <p style="font-size: medium;">{{snippet.summary}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}" >Read full</a> </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+{% endfor %}
+<!-- card of the right source  -->
+{% for snippet in rightArticleCompounds %}
+<div class="modal fade" id="Right{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <h2 class="model-news-title">{{snippet.name}}</h2>
+          </div>
+          <div class="col-sm-9">
+            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
+              <div class="col-md-9 pl-35">
+                <h2 class="news-char-value">{{snippet.leaning}}</h2>
+                <span class="news-characteristics">Leaning</span> </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
+              <div class="col-md-9 pl-35">
+                <h2 class="news-char-value">High</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <!-- <div class="row">
+          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 p-title">
+            <h2>{{snippet.title}}</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p style="font-size: medium">{{snippet.summary}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}" >Read full</a> </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+{% endfor %}
 
 
 <div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
    Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
 </div>
-</body>
+<!-- </body> -->
 {% endblock %}
 </html>
