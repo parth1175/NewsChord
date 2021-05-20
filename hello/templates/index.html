@@ -17,6 +17,11 @@
 <!--Online bootstrap testing https://www.codeply.com/go/6c6qWGrIpF/bootstrap-4-test-page -->
 <!-- About bootstrap grid https://getbootstrap.com/docs/4.1/layout/grid/ -->
 
+<style>
+  body{
+    background-color: #F1F1F1 !important;
+  }
+</style>
 
 <!-- <body class="body"> -->
 <div class = "header">
@@ -100,8 +105,8 @@
         <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
-              <div class="col-xs-3"> 
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              <div class="col-xs-3">
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
               <div class="col-xs-9 pl-4">
                 <h5 class="news-title" style = "font-size: small">{{snippet.name}}</h5>
@@ -114,11 +119,11 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-6"> 
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              <div class="col-6">
+                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
               </div>
-              <div class="col-6 text-center"> 
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Left{{forloop.counter}}">Read More</a> 
+              <div class="col-6 text-center">
+                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Left{{forloop.counter}}">Read More</a>
               </div>
             </div>
           </div>
@@ -133,12 +138,12 @@
       {% for snippet in centerArticleCompounds %}
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
-        <div class="card mb-4"> 
+        <div class="card mb-4">
           <span class="top-right-color-box box-{{snippet.color}}"></span>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
-              <div class="col-xs-3"> 
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              <div class="col-xs-3">
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
               <div class="col-xs-9 pl-4">
                 <h2 class="news-title">{{snippet.name}}</h2>
@@ -151,15 +156,15 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-xs-6 col-sm-6"> 
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              <div class="col-xs-6 col-sm-6">
+                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
               </div>
-              <div class="col-xs-6  col-sm-6 text-center"> 
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Center{{forloop.counter}}">Read More</a> 
+              <div class="col-xs-6  col-sm-6 text-center">
+                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Center{{forloop.counter}}">Read More</a>
               </div>
             </div>
           </div>
-        </div>  
+        </div>
         </div>
       </div>
       {% endfor %}
@@ -173,8 +178,8 @@
         <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
-              <div class="col-xs-3"> 
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              <div class="col-xs-3">
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
               <div class="col-xs-9 pl-4">
                 <h2 class="news-title">{{snippet.name}}</h2>
@@ -187,11 +192,11 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-6"> 
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              <div class="col-6">
+                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
               </div>
-              <div class="col-6 text-center"> 
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Right{{forloop.counter}}">Read More</a> 
+              <div class="col-6 text-center">
+                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Right{{forloop.counter}}">Read More</a>
               </div>
             </div>
           </div>
@@ -228,8 +233,8 @@
         Your search through different media is launched. Please, do not refresh the page, you will get articles' list in <b>5-15 seconds</b> depending on your internet connection. Thank you and have a concise reading!
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button> 
-        <button type="button" class="btn btn-primary">Save changes</button> 
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
       </div>
     </div>
   </div>
