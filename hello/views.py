@@ -52,6 +52,11 @@ def render_items(request, newsSourceName):
 def AboutUs_page(request):
     return render(request, 'AboutUs.html')
 
+def advanced_download(request):
+    article = article_processing("https://meduza.io/feature/2021/05/23/v-minske-zaderzhali-byvshego-glavreda-nexta-romana-protasevicha-samolet-na-kotorom-on-letel-ekstrenno-posadili-v-belarusi-iz-za-soobscheniya-o-bombe")
+    print(f"Got the article link kinda {article.title}", flush=True)
+    return JsonResponse({"valid":False}, status = 200)
+
 # Create your views here.
 def index(request):
     class ArticleCompound:
@@ -96,7 +101,7 @@ def index(request):
         bing_number_merge = 3 # there are 100 results max per request, 25-30 articles /month/newsSource
         newsSourcesData = []
 
-        for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
+        for i in range(lowend, 5): # highend+1 create a list called newsSourcesData to gather desired newsSources
             if (i != 9):# FOR THE GUARDIAN SKIP
                 newsSourcesData.append(AllNewsSources.get(pk=i))
         responseSuccessful = False

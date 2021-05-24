@@ -2,23 +2,49 @@
 {% include 'message.html' %}
 {% load static %}
 <html>
+<head>
 {% block content %}
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <meta content="" name="description">
 <meta content="" name="keywords">
-
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Vendor CSS Files -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-
 <link href="../static/style.css" rel="stylesheet">
 <!--Online bootstrap testing https://www.codeply.com/go/6c6qWGrIpF/bootstrap-4-test-page -->
 <!-- About bootstrap grid https://getbootstrap.com/docs/4.1/layout/grid/ -->
+</head>
 
+<body class="body">
+<!-- from https://www.pluralsight.com/guides/work-with-ajax-django -->
+{% block javascript %}
+<script src= "../static/main.js"></script>
+<script type="text/javascript" src=" ../static/jquery-3.6.0.js"></script>
+<script>
+function runScript(text) {
+    console.log("Why do you leave me");
+    var $j = jQuery.noConflict();
+    //jQuery.ajaxSetup()
+    res = JSON.parse(jQuery.getJSON("https://meduza.io/"))
+    console.log(res.id);
+    jQuery.ajax({
+        // type: "GET",
+        url: '{{article_download}}', //The URL you defined in urls.py
+        data: {text:text},
+        success: function(data) {
+            console.log("ajax runScript activated");
+          //If you wish you can do additional data manipulation here.
+        },
+        failure: function(data) { 
+            console.log('Got an error dude');
+        }
+    });
+}
+</script>
+{% endblock javascript %}
 
-<!-- <body class="body"> -->
 <div class = "header">
   <div class = "container header_container">
     <div class = "row">
@@ -115,10 +141,12 @@
             </div>
             <div class="row">
               <div class="col-6"> 
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
               </div>
-              <div class="col-6 text-center"> 
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Left{{forloop.counter}}">Read More</a> 
+              <div class="col-6 text-center">
+                <input type='button' value='run_function' onclick='runScript("{{snippet.link}}")'> 
+                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Left{{forloop.counter}}">Read More</a>
+                <!-- #Left{{forloop.counter}}  -->
               </div>
             </div>
           </div>
@@ -431,6 +459,8 @@
 <div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
    Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
 </div>
-<!-- </body> -->
+</body>
 {% endblock %}
 </html>
+
+
