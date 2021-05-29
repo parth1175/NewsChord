@@ -12,10 +12,14 @@ from hello.models import NewsSource
 from googleapi import google
 # import googlesearch
 
+import pandas as pd
+from pytrends.request import TrendReq
+
 import nltk
 #libraries for text processing
 import re
 import heapq
+from re import sub
 
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
 search_term = "Microsoft"
@@ -75,9 +79,12 @@ def index(request):
         DropdownMenu = DropdownForm(request.POST)
         if form.is_valid() or DropdownMenu.is_valid(): ####################### The "or" will need to be changed to "and"
             query = form.cleaned_data['query']
+            print("This is the entered query", flush=True)
+            print(query, flush=True)
             global enteredQuery # add store the query in the global variable
             enteredQuery = query
-            menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
+            # menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
+            menuSelect = request.POST.get('searches', False)
             print("Form is valid", flush=True)
             data = {'query': query}
             form = TaskForm(data) # doing this allows you to present an empty form with the "render" statement
@@ -256,7 +263,7 @@ def index(request):
                     date = article['datePublished']
                     date = datetime.date(int(date[0:4]), int(date[5:7]), int(date[8:10]))
                 else:
-                    date = "Unknown publication date"    
+                    date = "Unknown publication date"
                 if ("description" in article):
                     summary = article['description'] #''.join(sent+"." for sent in article_summary(article.text)) #IMPORTANT CHANGE: no manual article porcessing for this option
                 else:
@@ -280,14 +287,14 @@ def index(request):
             index_of_article += 1
 
         return render(request, 'index.html', {'form': form, 'query':query, 'DropdownMenu':DropdownMenu, "articleCompounds": setOfArticleCompounds,
-        "leftArticleCompounds": setOfLeftArticleCompounds, "centerArticleCompounds": setOfCenterArticleCompounds, "rightArticleCompounds": setOfRightArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
-
+        "leftArticleCompounds": setOfLeftArticleCompounds, "centerArticleCompounds": setOfCenterArticleCompounds, "rightArticleCompounds": setOfRightArticleCompounds, "trending": trendingGoogle()})# re-renders the form with the url filled in and the url is passed to future html pages
+        # setOfArticleCompounds is NOT utilized
     else:
         print("GET request is being processed", flush=True)
         data = {'query': ""}
         form = TaskForm(data)
         DropdownMenu = DropdownForm()
-        return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu})
+        return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu, "trending": trendingGoogle()})
 
 def bing_formrequest(request, number_merge, sourceList, start_index):
     request = request + " ("
@@ -509,6 +516,20 @@ def GoogleURL(site, query):
         resultsYeilded = True
         print("responseSuccessful=True, resultsYielded = True ", flush=True)
     return search_results
+
+def trendingGoogle():
+    # this function returns a list containg the 20 most trending search terms in camel case
+    trending = {}
+    pytrend = TrendReq()
+    df = pytrend.trending_searches(pn='united_states')
+    df = df.to_dict()
+    dict_of_values = df.get(0)
+    for i in range(6): #Top 5 results
+        raw_string = dict_of_values.get(i)
+        string = sub(r"(_|-)+", " ", raw_string).title().replace(" ", "")
+        camelCase = string[0] + string[1:]
+        trending[camelCase] = raw_string
+    return trending #spliced list. Only return top 5 trending results
 
     #print(search_results[1].link) #URL to article
     #print(search_results[1].name) #name of article

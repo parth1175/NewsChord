@@ -40,30 +40,103 @@
 
   <div class="container" style="margin-top: 32px;">
     {% if form %}
+    <script>
+      function quickSearch(query){
+        var searchBar = document.getElementById('SearchBar');
+        var searchForm = document.getElementById('Search')
+        searchBar.value = query;
+        console.log(searchBar.value)
+        searchForm.submit();
+      }
+    </script>
       <div class="col text-center">
-        <form action="{% url 'index' %}" method="POST" value = "{{query}}">
+        <form action="{% url 'index' %}" method="POST" value = "{{query}}" id="Search">
             {% csrf_token %}
+
             <div class="row">
-                <div class="form-group col text-center" style="initial-value: rave;">
+              <div class="col text-center">
+                <ul class="list-inline">
+                  {% for key, value in trending.items %}
+                  <!-- <form hidden action="{% url 'index' %}" method="POST" value="{{value}}" id="quickSearch">{% csrf_token %}</form> -->
+                  <li class="list-inline-item"><a onclick="quickSearch('{{value}}');" href="#">#{{key}}</a></li>
+                  <!-- <li class="list-inline-item"><a href="#">#{{key}}</a></li> -->
+                  <!-- <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li> -->
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <div class="row form-row" style="margin-bottom: 22px;">
+
+                <!-- <div class="form-group col col-md-8 text-center" style="initial-value: rave;">
                   {{ form.query }}
                 </div>
+                <div class="form-group col col-md-3 text-center">
+                    <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal">
+                      Create news deck
+                    </button>
+                </div> -->
+                <div class = "col-md-4 text-center form-group">
+                  <style>
+                    #DropDown{
+                      border: 2px solid red !important;
+                    }
+                  </style>
+                  <label for="DropDown">Search mode</label> <br>
+                  {{ DropdownMenu.searches }}
+                </div>
+
+                <div class="col-md-8 text-center form-group">
+                  <div class = "d-flex flex-grow-1">
+                  <div class="mr-2 my-auto mx-auto w-80 d-inline-block order-1">
+                    <div class="input-group border text-center">
+
+                      <!-- <input type="text" class="form-control" placeholder="Enter the request you want to get news about" value="{{ form.query }}"> -->
+                      <!-- <span class="input-group-append"> -->
+                      <!-- <div class="form-group col col-md-8 text-center" style="initial-value: rave;"> -->
+                        <!-- {{ form.query }} -->
+                        <style>
+                          #SearchBar{
+                            border: none !important;
+                            margin-left: 12px;
+                          }
+                        </style>
+                        <!-- <input type="text" class="form-control" value="{{ form.query }}"> -->
+                        {{ form.query }}
+                        <span class="input-group-append"><button class="btn btn-primary" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-search"></i> </button></span>
+                      <!-- </div> -->
+                      <!-- <button class="btn btn-primary" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-search"></i> </button> -->
+                      <!-- </span> -->
+
+                    </div>
+                  </div>
+                  </div>
+                </div>
+
             </div>
-            <div class="row" style="font-size: 18px;">
+
+
+
+
+
+
+
+            <!-- <div class="row" style="font-size: 18px;">
               <div class="form-group col text-center" >
                 Leaning mode: {{ DropdownMenu.bias }}
               </div>
-            </div>
-            <div class="row">
-                <!-- <div class="form-group col-5 text-center"> -->
-                    <!-- <div class="btn-group float-right" role="group" aria-label="Basic example"> -->
+            </div> -->
+            <!-- <div class="row">
                     <div class="form-group col text-center">
-                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                         <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; margin-top: 32px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
                           Create news deck
                         </button>
                     </div>
-                <!-- </div> -->
-            </div>
+            </div> -->
         </form>
       </div>
         <!-- <div class="col-sm">
@@ -73,7 +146,7 @@
   </div>
 </div>
 
-
+{% if leftArticleCompounds or centerArticleCompounds or rightArticleCompounds%}
 <div class="container main_content">
   <div class="row text-center">
     <div class="col-xs-4 col-lg-4  col-md-4">
@@ -93,6 +166,7 @@
     </div>
   </div>
 </div>
+{% endif %}
 
 
 <div class="container main_content_area">

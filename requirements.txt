@@ -5,3 +5,4 @@ requests
 newspaper3k
 git+https://github.com/parth1175/ModifiedGoogleSearchAPI
 nltk
+pytrends
