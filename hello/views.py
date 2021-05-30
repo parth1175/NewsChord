@@ -518,7 +518,7 @@ def GoogleURL(site, query):
     return search_results
 
 def trendingGoogle():
-    # this function returns a list containg the 20 most trending search terms in camel case
+    # this function returns a dictionary containg the 20 most trending search terms in camel case and normal case
     trending = {}
     pytrend = TrendReq()
     df = pytrend.trending_searches(pn='united_states')
