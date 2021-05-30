@@ -4,6 +4,7 @@
 <html>
 <head>
 {% block content %}
+<script src= "../static/main.js"></script>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <meta content="" name="description">
@@ -18,29 +19,46 @@
 </head>
 
 <body class="body">
+<!-- <script src= "../static/main.js"></script> -->
 <!-- from https://www.pluralsight.com/guides/work-with-ajax-django -->
+<!-- SOMEHOW script doesn't work from main.js -->
+
 {% block javascript %}
-<script src= "../static/main.js"></script>
-<script type="text/javascript" src=" ../static/jquery-3.6.0.js"></script>
 <script>
-function runScript(text) {
+function runScript(artlink, counter) {
     console.log("Why do you leave me");
-    var $j = jQuery.noConflict();
-    //jQuery.ajaxSetup()
-    res = JSON.parse(jQuery.getJSON("https://meduza.io/"))
-    console.log(res.id);
+    // Get the modal
+    id_title = "#title-left-" + counter 
+    id_summary = "#summary-left-" + counter
+    id_modal = "#Left" + counter
+    
+    jQuery(document).ready(function($) {
+      console.log("Rdy");
+      var modal = document.getElementById(id_modal);
+      console.log("Obtained modal is", modal);
+    });
+    //var $j = jQuery.noConflict();
+    //jQuery.ajaxSetup();
     jQuery.ajax({
-        // type: "GET",
-        url: '{{article_download}}', //The URL you defined in urls.py
-        data: {text:text},
+        type: "GET",
+        url: "{% url 'article_download'%}", //The URL you defined in urls.py, after url name parameters should be going
+        data: {'link':artlink},
         success: function(data) {
-            console.log("ajax runScript activated");
+          console.log("ajax runScript activated", data.ready);
+          //title input
+          console.log("Id of element", id_title);
+          $(id_title).html(data.title)
+          $(id_summary).html(data.summary)
+          console.log("Id of modal got", id_modal);
+          modal.display = "block";
+          // jQuery(id_modal).modal("show")
           //If you wish you can do additional data manipulation here.
         },
         failure: function(data) { 
             console.log('Got an error dude');
         }
     });
+    //var csrftoken = getCookie('csrftoken');
 }
 </script>
 {% endblock javascript %}
@@ -144,8 +162,9 @@ function runScript(text) {
                 <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
               </div>
               <div class="col-6 text-center">
-                <input type='button' value='run_function' onclick='runScript("{{snippet.link}}")'> 
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Left{{forloop.counter}}">Read More</a>
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'> 
+                <!-- <a class="nav-link read-more-btn" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'>Read More</a> -->
+                <!-- href="javascript.void(0);" data-toggle="modal" data-target="#Left{{forloop.counter}}" -->
                 <!-- #Left{{forloop.counter}}  -->
               </div>
             </div>
@@ -175,7 +194,7 @@ function runScript(text) {
             </div>
             <div class="row">
               <div class="col-md-12">
-                <p class="news-info" style = "font-size: medium">{{snippet.title}}</p>
+                <p class="news-article-title">{{snippet.title}}</p>
               </div>
             </div>
             <div class="row">
@@ -242,7 +261,230 @@ function runScript(text) {
   Launch demo modal
 </button> -->
 
-<!-- Modal -->
+<!-- card of the left source  -->
+{% for snippet in leftArticleCompounds %}
+<div class="modal" id="Left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <h2 class="modal-news-title">{{snippet.name}}</h2>
+          </div>
+          <div class="col-sm-9">
+            <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
+            <!-- among search results vitally -->
+          </div>
+        </div>
+        <div class="row my-3">
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-diamond fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.reliability}}</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-balance-scale fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.leaning}}</h2>
+                <span class="news-characteristics">Leaning</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-eye fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.views}} mln</h2>
+                <span class="news-characteristics">Monthly views</span> </div>
+            </div>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <!-- <div class="row">
+          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 p-title">
+            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{snippet.summary}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+{% endfor %}
+<!-- card of the centered source  -->
+{% for snippet in centerArticleCompounds %}
+<div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <h2 class="modal-news-title">{{snippet.name}}</h2>
+          </div>
+          <div class="col-sm-9">
+            <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
+            <!-- among search results vitally -->
+          </div>
+        </div>
+        <div class="row my-2">
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5" > <i class="fa fa-diamond fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7" style="display: inline;">
+                <h2 class="news-char-value">{{snippet.reliability}}</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-balance-scale fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.leaning}}</h2>
+                <span class="news-characteristics">Leaning</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-eye fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.views}} mln</h2>
+                <span class="news-characteristics">Monthly views</span> </div>
+            </div>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <!-- <div class="row">
+          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 p-title">
+            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{snippet.summary}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+{% endfor %}
+<!-- card of the right source  -->
+{% for snippet in rightArticleCompounds %}
+<div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <h2 class="modal-news-title">{{snippet.name}}</h2>
+          </div>
+          <div class="col-sm-9">
+            <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
+            <!-- among search results vitally -->
+          </div>
+        </div>
+        <div class="row my-2">
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5" > <i class="fa fa-diamond fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7" style="display: inline;">
+                <h2 class="news-char-value">{{snippet.reliability}}</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-balance-scale fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.leaning}}</h2>
+                <span class="news-characteristics">Leaning</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-eye fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.views}} mln</h2>
+                <span class="news-characteristics">Monthly views</span> </div>
+            </div>
+          </div>
+        </div>
+        <hr class="bb-1"/>
+        <!-- <div class="row">
+          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 p-title">
+            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{snippet.summary}}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
+        </div>
+      </div>
+      <!-- <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>-->
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+
+<div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
+   Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
+</div>
+</body>
+
+<!-- Modal for long loading -->
 <!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -262,204 +504,7 @@ function runScript(text) {
     </div>
   </div>
 </div> -->
-<!-- card of the left source  -->
-{% for snippet in leftArticleCompounds %}
-<div class="modal fade" id="Left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="model-news-title">{{snippet.name}}</h2>
-          </div>
-          <div class="col-sm-9">
-            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
-          </div>
-        </div>
-        <hr class="bb-1"/>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
-              <div class="col-md-9 pl-35" style="display: inline;">
-                <h2 class="news-char-value">{{snippet.leaning}}</h2>
-                <span class="news-characteristics">Leaning</span> </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
-              <div class="col-md-9 pl-35">
-                <h2 class="news-char-value">High</h2>
-                <span class="news-characteristics">Reliability</span> </div>
-            </div>
-          </div>
-        </div>
-        <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
-        <div class="row">
-          <div class="col-md-12 p-title">
-            <h2>{{snippet.title}}</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <p style="font-size: medium;">{{snippet.summary}}</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
-          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
-        </div>
-      </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>-->
-    </div>
-  </div>
-</div>
-{% endfor %}
-<!-- card of the centered source  -->
-{% for snippet in centerArticleCompounds %}
-<div class="modal fade" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="model-news-title">{{snippet.name}}</h2>
-          </div>
-          <div class="col-sm-9">
-            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
-          </div>
-        </div>
-        <hr class="bb-1"/>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
-              <div class="col-md-8 pl-35">
-                <h2 class="news-char-value">{{snippet.leaning}}</h2>
-                <span class="news-characteristics">Leaning</span> </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
-              <div class="col-md-8 pl-35">
-                <h2 class="news-char-value">High</h2>
-                <span class="news-characteristics">Reliability</span> </div>
-            </div>
-          </div>
-        </div>
-        <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
-        <div class="row">
-          <div class="col-md-12 p-title">
-            <h2>{{snippet.title}}</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12" >
-            <p style="font-size: medium;">{{snippet.summary}}</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
-          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}" >Read full</a> </div>
-        </div>
-      </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>-->
-    </div>
-  </div>
-</div>
-{% endfor %}
-<!-- card of the right source  -->
-{% for snippet in rightArticleCompounds %}
-<div class="modal fade" id="Right{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">&times;</span> </button>
-      </div>
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="model-news-title">{{snippet.name}}</h2>
-          </div>
-          <div class="col-sm-9">
-            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
-          </div>
-        </div>
-        <hr class="bb-1"/>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
-              <div class="col-md-9 pl-35">
-                <h2 class="news-char-value">{{snippet.leaning}}</h2>
-                <span class="news-characteristics">Leaning</span> </div>
-            </div>
-          </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
-              <div class="col-md-9 pl-35">
-                <h2 class="news-char-value">High</h2>
-                <span class="news-characteristics">Reliability</span> </div>
-            </div>
-          </div>
-        </div>
-        <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
-        <div class="row">
-          <div class="col-md-12 p-title">
-            <h2>{{snippet.title}}</h2>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
-            <p style="font-size: medium">{{snippet.summary}}</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
-          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}" >Read full</a> </div>
-        </div>
-      </div>
-      <!-- <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>-->
-    </div>
-  </div>
-</div>
-{% endfor %}
 
-
-<div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
-   Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
-</div>
-</body>
 {% endblock %}
 </html>
 

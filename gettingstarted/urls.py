@@ -20,5 +20,5 @@ urlpatterns = [
     path('items/<str:newsSourceName>/', hello.views.render_items, name='source'),
     path("AboutUs/", hello.views.AboutUs_page),
     path("admin/", admin.site.urls),
-    path('article_download', hello.views.advanced_download)
+    path('article_download', hello.views.article_download_modal, name = 'article_download')
 ]
