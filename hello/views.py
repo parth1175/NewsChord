@@ -25,16 +25,16 @@ from re import sub
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
 search_term = "Microsoft"
 search_url = "https://api.bing.microsoft.com/v7.0/news/search"
-newsSourceMonthlyViews = [41.9, #AP
-68.1, #Reuters
-82.8, 82.5, 114.4, 38, 11.6,
-362.8,#NY Times
-300.2,
-1.8, #Boston Herald
-569.7, #CNN
-74.2, 47,
+newsSourceMonthlyViews = [41.9, #AP 
+68.1, #Reuters 
+82.8, 82.5, 114.4, 38, 11.6, 
+362.8,#NY Times 
+300.2, 
+1.8, #Boston Herald 
+569.7, #CNN 
+74.2, 47, 
 269.1 #Fox News
-]
+] 
 
 enteredQuery = '' # global variable for search query
 #function is not used
@@ -55,7 +55,7 @@ def render_items(request, newsSourceName):
     numberOfResults = len(results)
     # create SmallerArticleCompound objects for each result
     for i in range(numberOfResults):
-
+        
         # this_article = article_processing(results[i].link)
         if hasattr(results[i], "link"):
             name=results[i].name.split("https", 1)
@@ -78,12 +78,12 @@ def article_download_modal(request):
     link = request.GET['link']
     article = article_processing(link)
     summary = ''.join(sent+"." for sent in article_summary(article.text))
-    date = article.publish_date
-    print(date, flush=True)
-    image_link = article.top_img
-    print(f"Article text {article.text}", flush=True)
     print(f"Got the article title {article.title} for {request} with link {link}", flush=True)
+    string_date = str(article.publish_date)
+    date = datetime.date(int(string_date[0:4]), int(string_date[5:7]), int(string_date[8:10]))
     print(f"Date {date}", flush=True)
+    image_link = article.top_img
+    # print(f"Article text {article.text}", flush=True)
     print(f"Image link {image_link}", flush=True)
     print(f"Summary {summary}", flush=True )
     return JsonResponse({'title': article.title, 'summary': summary, 'date': date, 'image_link': image_link})
@@ -130,8 +130,7 @@ def index(request):
         the NewsSources entries in the database
         """
         results = []
-        # AllNewsSources = NewsSource.objects.all()
-        AllNewsSources = NewsSource.objects.filter(displayed=1)
+        AllNewsSources = NewsSource.objects.all()
         lowend,highend = 1,len(AllNewsSources) #start and end of the newsSource gathering
         #highend = 8 #end of newsSource gathering
         bing_number_merge = 3 # there are 100 results max per request, 25-30 articles /month/newsSource
@@ -161,7 +160,8 @@ def index(request):
                     #print(article_chosen["art"]['description'], flush = True)
                 else:
                     article_chosen = {"art": "empty", "has_results": False}
-                if (article_chosen["has_results"] == False):#Perform extra search if there is no available data on the article
+                #Perform extra search if there is no available data on the article
+                if (article_chosen["has_results"] == False):
                     source_request = query + " site:" + newsSourcesData[counter + k].homepage
                     single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
                     print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
@@ -310,7 +310,7 @@ def index(request):
                 date = article.publish_date
                 print(f"Date {date}", flush = True)
             # ArticleCompound adding below
-            a = ArticleCompound(article, title, date, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article],
+            a = ArticleCompound(article, title, date, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], 
             leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article], newsSourceMonthlyViews[index_of_article])
             if a.color == "blue":
                 setOfLeftArticleCompounds.append(a)

@@ -1,29 +1,88 @@
 {% extends "base.html" %}
-{% include 'message.html' %}
 {% load static %}
 <html>
+<head>
 {% block content %}
+<script src= "../static/main.js"></script>
 <meta charset="utf-8">
 <meta content="width=device-width, initial-scale=1.0" name="viewport">
 <meta content="" name="description">
 <meta content="" name="keywords">
-
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <!-- Vendor CSS Files -->
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-
 <link href="../static/style.css" rel="stylesheet">
 <!--Online bootstrap testing https://www.codeply.com/go/6c6qWGrIpF/bootstrap-4-test-page -->
 <!-- About bootstrap grid https://getbootstrap.com/docs/4.1/layout/grid/ -->
+</head>
 
-<style>
-  body{
-    background-color: #F1F1F1 !important;
-  }
-</style>
+<body class="body">
+<!-- <script src= "../static/main.js"></script> -->
+<!-- from https://www.pluralsight.com/guides/work-with-ajax-django -->
+<!-- SOMEHOW script doesn't work from main.js -->
 
-<!-- <body class="body"> -->
+<nav class="navbar navbar-default navbar-static-top navbar-inverse">
+  <div class="container" style="display: inline-block;">
+    <ul class="nav navbar-nav navbar-left" style="display: inline-block;">
+      <li class="active">
+        <a href="/" style="font-size: 16px;"><span class="glyphicon glyphicon-home"></span> Home</a>
+      </li>
+      <li class="active">
+        <a href="AboutUs/" style="font-size: 16px;"><span class="glyphicon glyphicon-info-sign"></span> About Us</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+{% block javascript %}
+<script>
+function runScript(artlink, counter, leaning) {
+  console.log("Why do you leave me");
+  // Get the modal
+  id_title = "#title-" + leaning + "-" + counter 
+  id_summary = "#summary-" + leaning + "-" + counter
+  id_date = "#date-" + leaning + "-" + counter
+  id_image = "#image_div-" + leaning + "-" + counter
+  id_modal = "#Left" + counter
+  
+  jQuery(document).ready(function($) {
+    console.log("Rdy");
+    var modal = document.getElementById(id_modal);
+    console.log("Obtained modal is", modal);
+  });
+  //var $j = jQuery.noConflict();
+  //jQuery.ajaxSetup();
+  jQuery.ajax({
+    type: "GET",
+    url: "{% url 'article_download'%}", //The URL you defined in urls.py, after url name parameters should be going
+    data: {'link':artlink},
+    success: function(response) {
+      console.log("ajax runScript activated", response.ready);
+      //title input
+      console.log("Id of element", id_title);
+      $(id_title).html(response["title"])
+      $(id_summary).html(response["summary"])
+      $(id_date).html(response["date"])
+      image_link=response["image_link"]
+      html_line = "<img src={image_link} width=\"100%\" alt=\"name\" id=\"image-left-{{forloop.counter}}\">"
+      // $(id_image).html("<img src=\"{image_link}\" width=\"100%\" alt=\"name\" id=\"image-left-{{forloop.counter}}\">")
+      $(id_image).html($('<img>',{id:"image-id",src:image_link, width:"100%", alt:"image"}))
+      console.log("Data title got", $(id_title).html());
+      console.log("Id of modal got", id_modal);
+      modal.display = "block";
+      // jQuery(id_modal).modal("show")
+      //If you wish you can do additional data manipulation here.
+    },
+    failure: function(data) { 
+        console.log('Got an error dude');
+    }
+  });
+  //var csrftoken = getCookie('csrftoken');
+}
+</script>
+{% endblock javascript %}
+
 <div class = "header">
   <div class = "container header_container">
     <div class = "row">
@@ -31,9 +90,9 @@
         <a href="/" class="lang-logo">
           <img src="{% static 'Newschord_logo_violet.jpg'%}" width="200">
         </a>
-        <h1 style="margin-bottom: 8px; margin-top: 0px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: xx-large;">Newschord</h1>
+        <h1 style="margin-bottom: 8px; margin-top: 0px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 54px;">Newschord</h1>
         <!-- <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1> -->
-        <h4 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: large;">Tune into your news</h4>
+        <h4 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 22px;">Tune into your news</h4>
       </div>
     </div>
   </div>
@@ -58,7 +117,7 @@
                 <ul class="list-inline">
                   {% for key, value in trending.items %}
                   <!-- <form hidden action="{% url 'index' %}" method="POST" value="{{value}}" id="quickSearch">{% csrf_token %}</form> -->
-                  <li class="list-inline-item"><a onclick="quickSearch('{{value}}');" href="#">#{{key}}</a></li>
+                  <li class="list-inline-item"><a onclick="quickSearch('{{value}}');" href="#" style="font-size: 16px;">#{{key}}</a></li>
                   <!-- <li class="list-inline-item"><a href="#">#{{key}}</a></li> -->
                   <!-- <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
                   <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
@@ -70,8 +129,8 @@
               </div>
             </div>
 
-            <div class="row form-row" style="margin-bottom: 22px;">
-
+            <div class="row form-row justify-content-center align-items-center" style="margin-bottom: 22px; ">
+              <!-- display:inline -->
                 <!-- <div class="form-group col col-md-8 text-center" style="initial-value: rave;">
                   {{ form.query }}
                 </div>
@@ -80,50 +139,45 @@
                       Create news deck
                     </button>
                 </div> -->
-                <div class = "col-md-4 text-center form-group">
+                <div class = "col-lg-3 no-gutters text-center pagination-centered form-group">
                   <style>
                     #DropDown{
-                      border: 2px solid red !important;
+                      font-size: 16px;
+                      /* border: 2px solid red !important; */
                     }
                   </style>
-                  <label for="DropDown">Search mode</label> <br>
                   {{ DropdownMenu.searches }}
                 </div>
-
-                <div class="col-md-8 text-center form-group">
-                  <div class = "d-flex flex-grow-1">
+                <!-- <label for="DropDown">Search mode</label> <br> -->
+                <div class="col-md-7 no-gutters text-center form-group">
+                  <div class = "d-flex flex-grow-1 flex-column-reverse text-center">
                   <div class="mr-2 my-auto mx-auto w-80 d-inline-block order-1">
-                    <div class="input-group border text-center">
-
+                    <div class="input-group text-center" style="border-radius: 20px;">
+                      <!-- border -->
                       <!-- <input type="text" class="form-control" placeholder="Enter the request you want to get news about" value="{{ form.query }}"> -->
-                      <!-- <span class="input-group-append"> -->
-                      <!-- <div class="form-group col col-md-8 text-center" style="initial-value: rave;"> -->
-                        <!-- {{ form.query }} -->
                         <style>
                           #SearchBar{
-                            border: none !important;
-                            margin-left: 12px;
+                            border: 2px solid !important;
+                            outline: none !important;
+                            border-radius: 20px 0 0 20px;
+                            /* margin-left: 12px; */
                           }
                         </style>
-                        <!-- <input type="text" class="form-control" value="{{ form.query }}"> -->
                         {{ form.query }}
-                        <span class="input-group-append"><button class="btn btn-primary" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-search"></i> </button></span>
-                      <!-- </div> -->
+                        <span class="input-group-append border-0" >
+                          <button class="btn btn-primary border-0 rounded-right" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B" data-toggle="modal" data-target="#exampleModal"> 
+                            <i class="fa fa-search"></i> 
+                          </button>
+                        </span>
+                      </div>
                       <!-- <button class="btn btn-primary" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-search"></i> </button> -->
                       <!-- </span> -->
-
                     </div>
-                  </div>
+                  <!-- </div> -->
                   </div>
                 </div>
 
             </div>
-
-
-
-
-
-
 
             <!-- <div class="row" style="font-size: 18px;">
               <div class="form-group col text-center" >
@@ -176,7 +230,9 @@
       {% for snippet in leftArticleCompounds %}
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
-        <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+        <div class="card mb-4"> 
+          <span class="top-right-color-box box-{{snippet.color}} d-inline-block"></span>
+          <span class="top-left-text-box d-inline-block">Source</span>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
               <div class="col-xs-3">
@@ -193,11 +249,14 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-6">
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
+              <div class="col-6"> 
+                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
               </div>
               <div class="col-6 text-center">
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Left{{forloop.counter}}">Read More</a>
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "left")'> 
+                <!-- <a class="nav-link read-more-btn" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'>Read More</a> -->
+                <!-- href="javascript.void(0);" data-toggle="modal" data-target="#Left{{forloop.counter}}" -->
+                <!-- #Left{{forloop.counter}}  -->
               </div>
             </div>
           </div>
@@ -226,7 +285,7 @@
             </div>
             <div class="row">
               <div class="col-md-12">
-                <p class="news-info" style = "font-size: medium">{{snippet.title}}</p>
+                <p class="news-article-title">{{snippet.title}}</p>
               </div>
             </div>
             <div class="row">
@@ -234,7 +293,7 @@
                 <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
               </div>
               <div class="col-xs-6  col-sm-6 text-center">
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Center{{forloop.counter}}">Read More</a>
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Center{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "center")'> 
               </div>
             </div>
           </div>
@@ -267,10 +326,10 @@
             </div>
             <div class="row">
               <div class="col-6">
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
+                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a>
               </div>
               <div class="col-6 text-center">
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Right{{forloop.counter}}">Read More</a>
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Right{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "right")'> 
               </div>
             </div>
           </div>
@@ -283,40 +342,10 @@
   </div>
 </div>
 
-<!-- <div class="table">
-<script type="text/javascript" src="{% static 'main.js'%}"></script>
-</div> -->
-
-
-<!-- Button trigger modal
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button> -->
-
-<!-- Modal -->
-<!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Search is launched</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Your search through different media is launched. Please, do not refresh the page, you will get articles' list in <b>5-15 seconds</b> depending on your internet connection. Thank you and have a concise reading!
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div> -->
 <!-- card of the left source  -->
 {% for snippet in leftArticleCompounds %}
-<div class="modal fade" id="Left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal" id="Left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
@@ -324,48 +353,61 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="model-news-title">{{snippet.name}}</h2>
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="60" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <!-- <h2 class="modal-news-title">{{snippet.name}}</h2> -->
           </div>
           <div class="col-sm-9">
-            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
+            <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
+            <!-- among search results vitally -->
           </div>
         </div>
-        <hr class="bb-1"/>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
-              <div class="col-md-9 pl-35" style="display: inline;">
+        <div class="row my-3">
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-diamond fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.reliability}}</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-balance-scale fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
                 <h2 class="news-char-value">{{snippet.leaning}}</h2>
                 <span class="news-characteristics">Leaning</span> </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
-              <div class="col-md-9 pl-35">
-                <h2 class="news-char-value">High</h2>
-                <span class="news-characteristics">Reliability</span> </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-eye fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.views}} mln</h2>
+                <span class="news-characteristics">Monthly views</span> </div>
             </div>
           </div>
         </div>
         <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
+        <div class="row mb-4">
+          <span class="news-characteristics" id="date-left-{{forloop.counter}}">{{date}}</span>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-left-{{forloop.counter}}">
+            <img src="" width="100%" alt="" id="image-left-{{forloop.counter}}"> 
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-12 p-title">
-            <h2>{{snippet.title}}</h2>
+            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <p style="font-size: medium;">{{snippet.summary}}</p>
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{summary}}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
           <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
         </div>
       </div>
@@ -379,8 +421,8 @@
 {% endfor %}
 <!-- card of the centered source  -->
 {% for snippet in centerArticleCompounds %}
-<div class="modal fade" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
@@ -388,49 +430,62 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="model-news-title">{{snippet.name}}</h2>
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="60" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <!-- <h2 class="modal-news-title">{{snippet.name}}</h2> -->
           </div>
           <div class="col-sm-9">
-            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
+            <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
+            <!-- among search results vitally -->
           </div>
         </div>
-        <hr class="bb-1"/>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
-              <div class="col-md-8 pl-35">
+        <div class="row my-2">
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5" > <i class="fa fa-diamond fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7" style="display: inline;">
+                <h2 class="news-char-value">{{snippet.reliability}}</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-balance-scale fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
                 <h2 class="news-char-value">{{snippet.leaning}}</h2>
                 <span class="news-characteristics">Leaning</span> </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
-              <div class="col-md-8 pl-35">
-                <h2 class="news-char-value">High</h2>
-                <span class="news-characteristics">Reliability</span> </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-eye fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.views}} mln</h2>
+                <span class="news-characteristics">Monthly views</span> </div>
             </div>
           </div>
         </div>
         <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
+        <div class="row mb-4">
+          <span class="news-characteristics" id="date-center-{{forloop.counter}}">{{date}}</span>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-center-{{forloop.counter}}">
+            <img src="" width="100%" alt=""> 
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-12 p-title">
-            <h2>{{snippet.title}}</h2>
+            <h2 class="news-article-title" id = "title-center-{{forloop.counter}}">{{snippet.title}}</h2>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12" >
-            <p style="font-size: medium;">{{snippet.summary}}</p>
+          <div class="col-md-12">
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-center-{{forloop.counter}}">{{summary}}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
-          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}" >Read full</a> </div>
+          <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
         </div>
       </div>
       <!-- <div class="modal-footer">
@@ -443,8 +498,8 @@
 {% endfor %}
 <!-- card of the right source  -->
 {% for snippet in rightArticleCompounds %}
-<div class="modal fade" id="Right{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+<div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
@@ -452,49 +507,61 @@
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="model-news-title">{{snippet.name}}</h2>
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="60" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <!-- <h2 class="modal-news-title">{{snippet.name}}</h2> -->
           </div>
           <div class="col-sm-9">
-            <p>{{snippet.name}} media was chosen by the Newschord's team based on independent research data. We believe that the presence of this source among search results vitally contributes to the all-around topic coverage. We encourage you always perceive information from different angles. Have a great reading!</p>
+            <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
+            <!-- among search results vitally -->
           </div>
         </div>
-        <hr class="bb-1"/>
-        <div class="row">
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"> <i class="fa fa-telegram popup-icon" aria-hidden="true"></i></div>
-              <div class="col-md-9 pl-35">
+        <div class="row my-2">
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5" > <i class="fa fa-diamond fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7" style="display: inline;">
+                <h2 class="news-char-value">{{snippet.reliability}}</h2>
+                <span class="news-characteristics">Reliability</span> </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-balance-scale fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
                 <h2 class="news-char-value">{{snippet.leaning}}</h2>
                 <span class="news-characteristics">Leaning</span> </div>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="row">
-              <div class="col-md-2"><i class="fa fa-check-square-o popup-icon" aria-hidden="true"></i> </div>
-              <div class="col-md-9 pl-35">
-                <h2 class="news-char-value">High</h2>
-                <span class="news-characteristics">Reliability</span> </div>
+          <div class="col-md-4">
+            <div class="row" style="display: inline;">
+              <div class="col-xs-5"><i class="fa fa-eye fa-3x" style = "align-self: center;" aria-hidden="true"></i></div>
+              <div class="col-xs-7">
+                <h2 class="news-char-value">{{snippet.views}} mln</h2>
+                <span class="news-characteristics">Monthly views</span> </div>
             </div>
           </div>
         </div>
         <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
+        <div class="row mb-4">
+          <span class="news-characteristics" id="date-right-{{forloop.counter}}">{{date}}</span>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-right-{{forloop.counter}}">
+            <img src="empty" width="100%" alt="article_image"> </div>
+        </div>
         <div class="row">
           <div class="col-md-12 p-title">
-            <h2>{{snippet.title}}</h2>
+            <h2 class="news-article-title" id = "title-right-{{forloop.counter}}">{{snippet.title}}</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <p style="font-size: medium">{{snippet.summary}}</p>
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-right-{{forloop.counter}}">{{snippet.summary}}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col-md-6"> <a href="javascript.void(0);" class="new-full-article">All results from {{snippet.name}}</a> </div>
-          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}" >Read full</a> </div>
+          <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
+          <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
         </div>
       </div>
       <!-- <div class="modal-footer">
@@ -505,11 +572,16 @@
   </div>
 </div>
 {% endfor %}
-
-
-<div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
-   Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
+<div class="row justify-content-center">
+<div style = "padding-top: 10px; margin-top: 10px; position:relative; font-size: 16px; text-align: center; align-self: center;" class="alert alert-success text-center col-8" role="alert">
+  Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
 </div>
-<!-- </body> -->
+</div>
+
+</body>
+
+
 {% endblock %}
 </html>
+
+

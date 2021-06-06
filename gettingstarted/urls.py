@@ -17,7 +17,8 @@ import hello.views
 urlpatterns = [
     path("", hello.views.index, name="index"),
     path("db/", hello.views.db, name="db"),
-    path('items/<str:newsSourceName>/',hello.views.render_items, name='source'),
-    path("AboutUs/",hello.views.AboutUs_page),
+    path('items/<str:newsSourceName>/', hello.views.render_items, name='source'),
+    path("AboutUs/", hello.views.AboutUs_page),
     path("admin/", admin.site.urls),
+    path('article_download', hello.views.article_download_modal, name = 'article_download')
 ]

@@ -1,11 +1,16 @@
+
 <!DOCTYPE html>
 <html>
 <head>
 <title>Newschord - conscious news reading</title>
-  <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-  <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-  <style type="text/css">
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>-->
+<script src= "../static/main.js"></script>
+<script type="text/javascript" src=" ../static/jquery-3.6.0.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css"/>
+<style type="text/css">
     .jumbotron {
         background: #ffffff;
         color: rgb(0, 0, 0);
@@ -14,10 +19,10 @@
     }
     .jumbotron .btn-primary {
         background: #32195B;
-        box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2);
+        outline: #32195B !important;
     }
     .jumbotron .btn-primary:hover {
-        /*background:#F8C100 /*#34b2c6*/
+        background:#32195B /*#34b2c6*/
     }
     .jumbotron p {
         color: #000000;
@@ -26,6 +31,7 @@
     }
     .navbar .jumbotron {
         margin-top: 0px;
+        display: inline-block;
     }
     .jumbotron .lang-logo {
         display: block;
@@ -48,7 +54,7 @@
     }
 /* Add some padding inside the card container */
     .container {
-        padding: 2px 16px;
+        padding: 2px 2px;
     }
     .card {
     /* Add shadows to create the "card" effect */
@@ -65,39 +71,26 @@
         align-content: left;
         text-align: left;
     }
-    /* Modify the backgorund color  NOT USED*/
-    .navbar-custom {
-    	background-color: #32195b;
-      opacity: 30%;
+    .news-char-value{
+        font-size: medium;
+    }
+    .modal-news-title{
+        font-size: large;
+    }
+    .modal-news-summary{
+        font-size: medium;
+    }
+     .news-article-title{
+        font-size: medium;
+        margin-bottom: 1rem;
     }
   </style>
-  <style type="text/css">
-  </style>
+  <!-- <style type="text/css">
+  </style> -->
 </head>
 <body>
 
-<nav class="navbar navbar-default navbar-static-top navbar-inverse navbar-expand-lg">
-  <div class="container">
-    <ul class="nav navbar-nav mr-auto">
-      <li class="nav-item active">
-        <a href="/"><span class="glyphicon glyphicon-home"></span> Home</a>
-      </li>
-      <li class="nav-item active">
-        <a href="AboutUs/"><span class="glyphicon glyphicon-info-sign"></span> About Us</a>
-      </li>
-    </ul>
-  </div>
-</nav>
-
-
-
-
-
 {% block content %}{% endblock %}
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 </body>
 </html>
