@@ -13,10 +13,14 @@ from hello.models import NewsSource
 from googleapi import google
 # import googlesearch
 
+import pandas as pd
+from pytrends.request import TrendReq
+
 import nltk
 #libraries for text processing
 import re
 import heapq
+from re import sub
 
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
 search_term = "Microsoft"
@@ -69,14 +73,20 @@ def AboutUs_page(request):
     return render(request, 'AboutUs.html')
 
 def article_download_modal(request):
-    if request.method == "GET":
-        print("GEETT", flush=True)
+    # if request.method == "GET":
+    #     print("GEETT", flush=True)
     link = request.GET['link']
     article = article_processing(link)
     summary = ''.join(sent+"." for sent in article_summary(article.text))
-    date = article.publish_date
-    print(f"Got the article title kinda {article.title}, aand {request}, aaand {link}", flush=True)
-    return JsonResponse({'title': article.title, 'summary': summary, 'date': date})
+    print(f"Got the article title {article.title} for {request} with link {link}", flush=True)
+    string_date = str(article.publish_date)
+    date = datetime.date(int(string_date[0:4]), int(string_date[5:7]), int(string_date[8:10]))
+    print(f"Date {date}", flush=True)
+    image_link = article.top_img
+    # print(f"Article text {article.text}", flush=True)
+    print(f"Image link {image_link}", flush=True)
+    print(f"Summary {summary}", flush=True )
+    return JsonResponse({'title': article.title, 'summary': summary, 'date': date, 'image_link': image_link})
 
 # Create your views here.
 def index(request):
@@ -102,9 +112,12 @@ def index(request):
         DropdownMenu = DropdownForm(request.POST)
         if form.is_valid() or DropdownMenu.is_valid(): ####################### The "or" will need to be changed to "and"
             query = form.cleaned_data['query']
+            print("This is the entered query", flush=True)
+            print(query, flush=True)
             global enteredQuery # add store the query in the global variable
             enteredQuery = query
-            menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
+            # menuSelect = request.POST.get('bias', False) #DropdownMenu.cleaned_data['bias'] #request.POST['bias']
+            menuSelect = request.POST.get('searches', False)
             print("Form is valid", flush=True)
             data = {'query': query}
             form = TaskForm(data) # doing this allows you to present an empty form with the "render" statement
@@ -147,7 +160,8 @@ def index(request):
                     #print(article_chosen["art"]['description'], flush = True)
                 else:
                     article_chosen = {"art": "empty", "has_results": False}
-                if (article_chosen["has_results"] == False):#Perform extra search if there is no available data on the article
+                #Perform extra search if there is no available data on the article
+                if (article_chosen["has_results"] == False):
                     source_request = query + " site:" + newsSourcesData[counter + k].homepage
                     single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
                     print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
@@ -283,7 +297,7 @@ def index(request):
                     date = article['datePublished']
                     date = datetime.date(int(date[0:4]), int(date[5:7]), int(date[8:10]))
                 else:
-                    date = "Unknown publication date"    
+                    date = "Unknown publication date"
                 if ("description" in article):
                     summary = article['description'] #''.join(sent+"." for sent in article_summary(article.text)) #IMPORTANT CHANGE: no manual article porcessing for this option
                 else:
@@ -308,14 +322,14 @@ def index(request):
             index_of_article += 1
 
         return render(request, 'index.html', {'form': form, 'query':query, 'DropdownMenu':DropdownMenu, "articleCompounds": setOfArticleCompounds,
-        "leftArticleCompounds": setOfLeftArticleCompounds, "centerArticleCompounds": setOfCenterArticleCompounds, "rightArticleCompounds": setOfRightArticleCompounds})# re-renders the form with the url filled in and the url is passed to future html pages
-
+        "leftArticleCompounds": setOfLeftArticleCompounds, "centerArticleCompounds": setOfCenterArticleCompounds, "rightArticleCompounds": setOfRightArticleCompounds, "trending": trendingGoogle()})# re-renders the form with the url filled in and the url is passed to future html pages
+        # setOfArticleCompounds is NOT utilized
     else:
         print("GET request is being processed", flush=True)
         data = {'query': ""}
         form = TaskForm(data)
         DropdownMenu = DropdownForm()
-        return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu})
+        return render(request, 'index.html', {'form': form, 'DropdownMenu':DropdownMenu, "trending": trendingGoogle()})
 
 def bing_formrequest(request, number_merge, sourceList, start_index):
     request = request + " ("
@@ -400,23 +414,29 @@ def bing_articlechoose(source_name, articles, query):
     i = 0
     source_articles_number = 0
     best_match_coeff = 0
-    best_match_index = -1
+    best_match_index = 0
     now = datetime.datetime.now()
     has_results = True
+    this_source_articles = []
     while (i < len(articles)):
         if (source_name in articles[i]["url"]):
             source_articles_number += 1
-            match_coeff = time_urgency_coeff(articles[i]["datePublished"], now) * (100 - source_articles_number)/100
-            print(f"Match coefficient {source_articles_number}: {match_coeff}", flush=True)
-            if (best_match_coeff < match_coeff):
-                best_match_coeff = match_coeff
-                best_match_index = i
+            this_source_articles.append(articles[i])
+            # #coefficient based article choice, not relevant
+            # match_coeff = time_urgency_coeff(articles[i]["datePublished"], now) * (100 - source_articles_number)/100
+            # # print(f"Match coefficient {source_articles_number}: {match_coeff}", flush=True)
+            # if (best_match_coeff < match_coeff):
+            #     best_match_coeff = match_coeff
+            #     best_match_index = i
         i += 1
+    #if there is less than 3 articles in list - we perform additional search
     if (source_articles_number < 3):
         has_results = False
         best_match_index = abs(best_match_index)
-        print("Too few articles to choose", flush=True)
-    chosen_article = articles[best_match_index]
+        print("Too few articles to choose right one", flush=True)
+        chosen_article = articles[0] #articles[best_match_index]
+    else:
+        chosen_article = this_source_articles[0]
     # if (query in chosen_article["description"]):
     #     print(f"Query {query} is in description")
     # else:
@@ -541,6 +561,22 @@ def GoogleURL(site, query):
         print("responseSuccessful=True, resultsYielded = True ", flush=True)
     print("Google search result " + f"{search_results[0]}", flush=True) #URL to article
     return search_results
+
+def trendingGoogle():
+    # this function returns a dictionary containg the 20 most trending search terms in camel case and normal case
+    trending = {}
+    pytrend = TrendReq()
+    df = pytrend.trending_searches(pn='united_states')
+    df = df.to_dict()
+    dict_of_values = df.get(0)
+    for i in range(6): #Top 5 results
+        raw_string = dict_of_values.get(i)
+        string = sub(r"(_|-)+", " ", raw_string).title().replace(" ", "")
+        camelCase = string[0] + string[1:]
+        trending[camelCase] = raw_string
+    return trending #spliced list. Only return top 5 trending results
+
+    #print(search_results[1].link) #URL to article
     #print(search_results[1].name) #name of article
     #print(search_results[1].description) #google description of article
 

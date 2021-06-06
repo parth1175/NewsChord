@@ -15,16 +15,22 @@ typesOfBiases = (
 ("right","Republican"),
 ("center","Center"))
 
+typesOfSearches = (
+("all","Balanced View (Default)"),
+("temp","Coming Soon")
+)
+
 class TaskForm(forms.Form):
     # id = forms.AutoField(primary_key=True)
     # when = forms.DateTimeField("date created", auto_now_add=True)
-    query = forms.CharField(max_length=200, label='Your website', initial = "Oh hi Mark", widget=forms.TextInput(attrs={'size': 60, 'placeholder':"Enter the topic you want to get news about", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
+    query = forms.CharField(max_length=200, label='Your website', initial = "Oh hi Mark", widget=forms.TextInput(attrs={'size': 60, 'id':'SearchBar', 'class':'form-control', 'placeholder':"Enter the topic you want to get news about", 'autocomplete':"off", 'style':"font-size:20px;text-color: #666;padding: 6px 12px;"}), required=False)
     #label = forms.CharField(initial = "inside_initial")
     #url = forms.URLField(label='Your website', widget=forms.URLInput(attrs={'size': 60, 'placeholder':"Enter the URL of the article you want to analyze", 'autocomplete':"off", 'style':"font-size:20px;padding: 6px 12px;border-radius: 4px;text-color: #666"}), required=False)
-    
+
 
 class DropdownForm(forms.Form):
-    bias = forms.ChoiceField(choices = typesOfBiases) #widget=forms.CheckboxSelect(attrs={'size': 5, 'style':"font-size: 20px; padding: 6px 12px; border-radius: 4px;"}))
+    # bias = forms.ChoiceField(choices=typesOfBiases, widget=forms.Select(attrs={'id':'DropDown'})) #widget=forms.CheckboxSelect(attrs={'size': 5, 'style':"font-size: 20px; padding: 6px 12px; border-radius: 4px;"}))
+    searches = forms.ChoiceField(choices=typesOfSearches, widget=forms.Select(attrs={'id':'DropDown'}))
 
 # we don't need all this data for the article
 class Article(models.Model):
@@ -36,6 +42,7 @@ class Article(models.Model):
     summary = models.TextField()
     url = models.URLField()
     newsSource = models.CharField(max_length=200)
+    # tempIgnore = models.CharField(max_length=200, default="n/a")
     def __str__(self):
        #return "This article is: %s each entry in the database %s, %s" (self.id, self.date, self.Title)
        return "Here you are trying to print an Article entry"

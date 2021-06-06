@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% include 'message.html' %}
 {% load static %}
 <html>
 <head>
@@ -23,42 +22,63 @@
 <!-- from https://www.pluralsight.com/guides/work-with-ajax-django -->
 <!-- SOMEHOW script doesn't work from main.js -->
 
+<nav class="navbar navbar-default navbar-static-top navbar-inverse">
+  <div class="container" style="display: inline-block;">
+    <ul class="nav navbar-nav navbar-left" style="display: inline-block;">
+      <li class="active">
+        <a href="/" style="font-size: 16px;"><span class="glyphicon glyphicon-home"></span> Home</a>
+      </li>
+      <li class="active">
+        <a href="AboutUs/" style="font-size: 16px;"><span class="glyphicon glyphicon-info-sign"></span> About Us</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+
 {% block javascript %}
 <script>
-function runScript(artlink, counter) {
-    console.log("Why do you leave me");
-    // Get the modal
-    id_title = "#title-left-" + counter 
-    id_summary = "#summary-left-" + counter
-    id_modal = "#Left" + counter
-    
-    jQuery(document).ready(function($) {
-      console.log("Rdy");
-      var modal = document.getElementById(id_modal);
-      console.log("Obtained modal is", modal);
-    });
-    //var $j = jQuery.noConflict();
-    //jQuery.ajaxSetup();
-    jQuery.ajax({
-        type: "GET",
-        url: "{% url 'article_download'%}", //The URL you defined in urls.py, after url name parameters should be going
-        data: {'link':artlink},
-        success: function(data) {
-          console.log("ajax runScript activated", data.ready);
-          //title input
-          console.log("Id of element", id_title);
-          $(id_title).html(data.title)
-          $(id_summary).html(data.summary)
-          console.log("Id of modal got", id_modal);
-          modal.display = "block";
-          // jQuery(id_modal).modal("show")
-          //If you wish you can do additional data manipulation here.
-        },
-        failure: function(data) { 
-            console.log('Got an error dude');
-        }
-    });
-    //var csrftoken = getCookie('csrftoken');
+function runScript(artlink, counter, leaning) {
+  console.log("Why do you leave me");
+  // Get the modal
+  id_title = "#title-" + leaning + "-" + counter 
+  id_summary = "#summary-" + leaning + "-" + counter
+  id_date = "#date-" + leaning + "-" + counter
+  id_image = "#image_div-" + leaning + "-" + counter
+  id_modal = "#Left" + counter
+  
+  jQuery(document).ready(function($) {
+    console.log("Rdy");
+    var modal = document.getElementById(id_modal);
+    console.log("Obtained modal is", modal);
+  });
+  //var $j = jQuery.noConflict();
+  //jQuery.ajaxSetup();
+  jQuery.ajax({
+    type: "GET",
+    url: "{% url 'article_download'%}", //The URL you defined in urls.py, after url name parameters should be going
+    data: {'link':artlink},
+    success: function(response) {
+      console.log("ajax runScript activated", response.ready);
+      //title input
+      console.log("Id of element", id_title);
+      $(id_title).html(response["title"])
+      $(id_summary).html(response["summary"])
+      $(id_date).html(response["date"])
+      image_link=response["image_link"]
+      html_line = "<img src={image_link} width=\"100%\" alt=\"name\" id=\"image-left-{{forloop.counter}}\">"
+      // $(id_image).html("<img src=\"{image_link}\" width=\"100%\" alt=\"name\" id=\"image-left-{{forloop.counter}}\">")
+      $(id_image).html($('<img>',{id:"image-id",src:image_link, width:"100%", alt:"image"}))
+      console.log("Data title got", $(id_title).html());
+      console.log("Id of modal got", id_modal);
+      modal.display = "block";
+      // jQuery(id_modal).modal("show")
+      //If you wish you can do additional data manipulation here.
+    },
+    failure: function(data) { 
+        console.log('Got an error dude');
+    }
+  });
+  //var csrftoken = getCookie('csrftoken');
 }
 </script>
 {% endblock javascript %}
@@ -70,39 +90,107 @@ function runScript(artlink, counter) {
         <a href="/" class="lang-logo">
           <img src="{% static 'Newschord_logo_violet.jpg'%}" width="200">
         </a>
-        <h1 style="margin-bottom: 8px; margin-top: 0px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: xx-large;">Newschord</h1>
+        <h1 style="margin-bottom: 8px; margin-top: 0px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 54px;">Newschord</h1>
         <!-- <h1 style="margin-bottom: -16px; margin-top: -16px; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;">Newschord</h1> -->
-        <h4 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: large;">Tune into your news</h4>
+        <h4 style="font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; font-size: 22px;">Tune into your news</h4>
       </div>
     </div>
   </div>
 
   <div class="container" style="margin-top: 32px;">
     {% if form %}
+    <script>
+      function quickSearch(query){
+        var searchBar = document.getElementById('SearchBar');
+        var searchForm = document.getElementById('Search')
+        searchBar.value = query;
+        console.log(searchBar.value)
+        searchForm.submit();
+      }
+    </script>
       <div class="col text-center">
-        <form action="{% url 'index' %}" method="POST" value = "{{query}}">
+        <form action="{% url 'index' %}" method="POST" value = "{{query}}" id="Search">
             {% csrf_token %}
+
             <div class="row">
-                <div class="form-group col text-center" style="initial-value: rave;">
+              <div class="col text-center">
+                <ul class="list-inline">
+                  {% for key, value in trending.items %}
+                  <!-- <form hidden action="{% url 'index' %}" method="POST" value="{{value}}" id="quickSearch">{% csrf_token %}</form> -->
+                  <li class="list-inline-item"><a onclick="quickSearch('{{value}}');" href="#" style="font-size: 16px;">#{{key}}</a></li>
+                  <!-- <li class="list-inline-item"><a href="#">#{{key}}</a></li> -->
+                  <!-- <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
+                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li> -->
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+
+            <div class="row form-row justify-content-center align-items-center" style="margin-bottom: 22px; ">
+              <!-- display:inline -->
+                <!-- <div class="form-group col col-md-8 text-center" style="initial-value: rave;">
                   {{ form.query }}
                 </div>
+                <div class="form-group col col-md-3 text-center">
+                    <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal">
+                      Create news deck
+                    </button>
+                </div> -->
+                <div class = "col-lg-3 no-gutters text-center pagination-centered form-group">
+                  <style>
+                    #DropDown{
+                      font-size: 16px;
+                      /* border: 2px solid red !important; */
+                    }
+                  </style>
+                  {{ DropdownMenu.searches }}
+                </div>
+                <!-- <label for="DropDown">Search mode</label> <br> -->
+                <div class="col-md-7 no-gutters text-center form-group">
+                  <div class = "d-flex flex-grow-1 flex-column-reverse text-center">
+                  <div class="mr-2 my-auto mx-auto w-80 d-inline-block order-1">
+                    <div class="input-group text-center" style="border-radius: 20px;">
+                      <!-- border -->
+                      <!-- <input type="text" class="form-control" placeholder="Enter the request you want to get news about" value="{{ form.query }}"> -->
+                        <style>
+                          #SearchBar{
+                            border: 2px solid !important;
+                            outline: none !important;
+                            border-radius: 20px 0 0 20px;
+                            /* margin-left: 12px; */
+                          }
+                        </style>
+                        {{ form.query }}
+                        <span class="input-group-append border-0" >
+                          <button class="btn btn-primary border-0 rounded-right" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B" data-toggle="modal" data-target="#exampleModal"> 
+                            <i class="fa fa-search"></i> 
+                          </button>
+                        </span>
+                      </div>
+                      <!-- <button class="btn btn-primary" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-search"></i> </button> -->
+                      <!-- </span> -->
+                    </div>
+                  <!-- </div> -->
+                  </div>
+                </div>
+
             </div>
-            <div class="row" style="font-size: 18px;">
+
+            <!-- <div class="row" style="font-size: 18px;">
               <div class="form-group col text-center" >
                 Leaning mode: {{ DropdownMenu.bias }}
               </div>
-            </div>
-            <div class="row">
-                <!-- <div class="form-group col-5 text-center"> -->
-                    <!-- <div class="btn-group float-right" role="group" aria-label="Basic example"> -->
+            </div> -->
+            <!-- <div class="row">
                     <div class="form-group col text-center">
-                        <!-- <button type="button" class="btn btn-default" data-dismiss="modal">Close</button> -->
                         <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; margin-top: 32px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
                           Create news deck
                         </button>
                     </div>
-                <!-- </div> -->
-            </div>
+            </div> -->
         </form>
       </div>
         <!-- <div class="col-sm">
@@ -112,7 +200,7 @@ function runScript(artlink, counter) {
   </div>
 </div>
 
-
+{% if leftArticleCompounds or centerArticleCompounds or rightArticleCompounds%}
 <div class="container main_content">
   <div class="row text-center">
     <div class="col-xs-4 col-lg-4  col-md-4">
@@ -132,6 +220,7 @@ function runScript(artlink, counter) {
     </div>
   </div>
 </div>
+{% endif %}
 
 
 <div class="container main_content_area">
@@ -141,11 +230,13 @@ function runScript(artlink, counter) {
       {% for snippet in leftArticleCompounds %}
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
-        <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+        <div class="card mb-4"> 
+          <span class="top-right-color-box box-{{snippet.color}} d-inline-block"></span>
+          <span class="top-left-text-box d-inline-block">Source</span>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
-              <div class="col-xs-3"> 
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              <div class="col-xs-3">
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
               <div class="col-xs-9 pl-4">
                 <h5 class="news-title" style = "font-size: small">{{snippet.name}}</h5>
@@ -162,7 +253,7 @@ function runScript(artlink, counter) {
                 <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
               </div>
               <div class="col-6 text-center">
-                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'> 
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "left")'> 
                 <!-- <a class="nav-link read-more-btn" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'>Read More</a> -->
                 <!-- href="javascript.void(0);" data-toggle="modal" data-target="#Left{{forloop.counter}}" -->
                 <!-- #Left{{forloop.counter}}  -->
@@ -180,12 +271,12 @@ function runScript(artlink, counter) {
       {% for snippet in centerArticleCompounds %}
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
-        <div class="card mb-4"> 
+        <div class="card mb-4">
           <span class="top-right-color-box box-{{snippet.color}}"></span>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
-              <div class="col-xs-3"> 
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              <div class="col-xs-3">
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
               <div class="col-xs-9 pl-4">
                 <h2 class="news-title">{{snippet.name}}</h2>
@@ -198,15 +289,15 @@ function runScript(artlink, counter) {
               </div>
             </div>
             <div class="row">
-              <div class="col-xs-6 col-sm-6"> 
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              <div class="col-xs-6 col-sm-6">
+                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
               </div>
-              <div class="col-xs-6  col-sm-6 text-center"> 
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Center{{forloop.counter}}">Read More</a> 
+              <div class="col-xs-6  col-sm-6 text-center">
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Center{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "center")'> 
               </div>
             </div>
           </div>
-        </div>  
+        </div>
         </div>
       </div>
       {% endfor %}
@@ -220,8 +311,8 @@ function runScript(artlink, counter) {
         <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
-              <div class="col-xs-3"> 
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg"> 
+              <div class="col-xs-3">
+                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
               <div class="col-xs-9 pl-4">
                 <h2 class="news-title">{{snippet.name}}</h2>
@@ -234,11 +325,11 @@ function runScript(artlink, counter) {
               </div>
             </div>
             <div class="row">
-              <div class="col-6"> 
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a> 
+              <div class="col-6">
+                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a>
               </div>
-              <div class="col-6 text-center"> 
-                <a href="javascript.void(0);"  class="nav-link read-more-btn" data-toggle="modal" data-target="#Right{{forloop.counter}}">Read More</a> 
+              <div class="col-6 text-center">
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Right{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "right")'> 
               </div>
             </div>
           </div>
@@ -251,20 +342,10 @@ function runScript(artlink, counter) {
   </div>
 </div>
 
-<!-- <div class="table">
-<script type="text/javascript" src="{% static 'main.js'%}"></script>
-</div> -->
-
-
-<!-- Button trigger modal
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-  Launch demo modal
-</button> -->
-
 <!-- card of the left source  -->
 {% for snippet in leftArticleCompounds %}
 <div class="modal" id="Left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
+  <div class="modal-dialog modal-md" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
@@ -272,8 +353,8 @@ function runScript(artlink, counter) {
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="modal-news-title">{{snippet.name}}</h2>
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="60" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <!-- <h2 class="modal-news-title">{{snippet.name}}</h2> -->
           </div>
           <div class="col-sm-9">
             <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
@@ -307,9 +388,14 @@ function runScript(artlink, counter) {
           </div>
         </div>
         <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
+        <div class="row mb-4">
+          <span class="news-characteristics" id="date-left-{{forloop.counter}}">{{date}}</span>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-left-{{forloop.counter}}">
+            <img src="" width="100%" alt="" id="image-left-{{forloop.counter}}"> 
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-12 p-title">
             <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
@@ -317,7 +403,7 @@ function runScript(artlink, counter) {
         </div>
         <div class="row">
           <div class="col-md-12">
-            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{snippet.summary}}</p>
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{summary}}</p>
           </div>
         </div>
         <div class="row">
@@ -336,7 +422,7 @@ function runScript(artlink, counter) {
 <!-- card of the centered source  -->
 {% for snippet in centerArticleCompounds %}
 <div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
@@ -344,8 +430,8 @@ function runScript(artlink, counter) {
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="modal-news-title">{{snippet.name}}</h2>
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="60" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <!-- <h2 class="modal-news-title">{{snippet.name}}</h2> -->
           </div>
           <div class="col-sm-9">
             <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
@@ -379,17 +465,22 @@ function runScript(artlink, counter) {
           </div>
         </div>
         <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
+        <div class="row mb-4">
+          <span class="news-characteristics" id="date-center-{{forloop.counter}}">{{date}}</span>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-center-{{forloop.counter}}">
+            <img src="" width="100%" alt=""> 
+          </div>
+        </div>
         <div class="row">
           <div class="col-md-12 p-title">
-            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
+            <h2 class="news-article-title" id = "title-center-{{forloop.counter}}">{{snippet.title}}</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{snippet.summary}}</p>
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-center-{{forloop.counter}}">{{summary}}</p>
           </div>
         </div>
         <div class="row">
@@ -408,7 +499,7 @@ function runScript(artlink, counter) {
 <!-- card of the right source  -->
 {% for snippet in rightArticleCompounds %}
 <div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
@@ -416,8 +507,8 @@ function runScript(artlink, counter) {
       </div>
       <div class="modal-body">
         <div class="row">
-          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="70" class="rounded-circle" alt="{{snippet.name}}"><br>
-            <h2 class="modal-news-title">{{snippet.name}}</h2>
+          <div class="col-sm-3 text-center"> <img src="{% static snippet.image_ind %}" width="60" class="rounded-circle" alt="{{snippet.name}}"><br>
+            <!-- <h2 class="modal-news-title">{{snippet.name}}</h2> -->
           </div>
           <div class="col-sm-9">
             <p>{{snippet.name}} was chosen by the Newschord's team based on independent research. We believe that the presence of this source contributes to the balanced coverage. We encourage you perceive information from different angles. Have a great reading!</p>
@@ -451,17 +542,21 @@ function runScript(artlink, counter) {
           </div>
         </div>
         <hr class="bb-1"/>
-        <!-- <div class="row">
-          <div class="col-md-12"><img src="assets/images/popup-img.png" width="100%" alt="popup-img.png"> </div>
-        </div> -->
+        <div class="row mb-4">
+          <span class="news-characteristics" id="date-right-{{forloop.counter}}">{{date}}</span>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-right-{{forloop.counter}}">
+            <img src="empty" width="100%" alt="article_image"> </div>
+        </div>
         <div class="row">
           <div class="col-md-12 p-title">
-            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
+            <h2 class="news-article-title" id = "title-right-{{forloop.counter}}">{{snippet.title}}</h2>
           </div>
         </div>
         <div class="row">
           <div class="col-md-12">
-            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{snippet.summary}}</p>
+            <p class = "modal-news-summary" style="font-size: medium;" id = "summary-right-{{forloop.counter}}">{{snippet.summary}}</p>
           </div>
         </div>
         <div class="row">
@@ -477,33 +572,14 @@ function runScript(artlink, counter) {
   </div>
 </div>
 {% endfor %}
-
-
-<div style = "padding-top: 10px; margin-top: 10px; position:relative" class="alert alert-success text-center" role="alert">
-   Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
+<div class="row justify-content-center">
+<div style = "padding-top: 10px; margin-top: 10px; position:relative; font-size: 16px; text-align: center; align-self: center;" class="alert alert-success text-center col-8" role="alert">
+  Thank you for using our service! Please, leave your feedback on <strong>sfast@yandex36.ru</strong> / <strong>parthp@gmail.com</strong>
 </div>
+</div>
+
 </body>
 
-<!-- Modal for long loading -->
-<!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Search is launched</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Your search through different media is launched. Please, do not refresh the page, you will get articles' list in <b>5-15 seconds</b> depending on your internet connection. Thank you and have a concise reading!
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Alright</button> 
-        <button type="button" class="btn btn-primary">Save changes</button> 
-      </div>
-    </div>
-  </div>
-</div> -->
 
 {% endblock %}
 </html>
