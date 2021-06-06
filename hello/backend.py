@@ -3,7 +3,28 @@ from newspaper import Article
 import re
 import heapq
 from re import sub
+import requests
+import os
+import datetime
+import math
+from hello.models import NewsSource
 
+
+subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
+search_term = "Microsoft"
+search_url = "https://api.bing.microsoft.com/v7.0/news/search"
+newsSourceMonthlyViews = [41.9, #AP
+68.1, #Reuters
+82.8, 82.5, 114.4, 38, 11.6,
+362.8,#NY Times
+300.2,
+1.8, #Boston Herald
+569.7, #CNN
+74.2, 47,
+269.1 #Fox News
+]
+
+enteredQuery = '' # global variable for search query
 
 def bing_formrequest(request, number_merge, sourceList, start_index):
     request = request + " ("
