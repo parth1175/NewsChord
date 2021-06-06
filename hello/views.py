@@ -5,6 +5,7 @@ import math
 #import numpy as np
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import JsonResponse
 from newspaper import Article
 
 from .models import TaskForm, DropdownForm
@@ -24,14 +25,25 @@ from re import sub
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
 search_term = "Microsoft"
 search_url = "https://api.bing.microsoft.com/v7.0/news/search"
+newsSourceMonthlyViews = [41.9, #AP
+68.1, #Reuters
+82.8, 82.5, 114.4, 38, 11.6,
+362.8,#NY Times
+300.2,
+1.8, #Boston Herald
+569.7, #CNN
+74.2, 47,
+269.1 #Fox News
+]
 
 enteredQuery = '' # global variable for search query
 #function is not used
 def render_items(request, newsSourceName):
     smallerArticleCompoundList = []
     class SmallerArticleCompound:
-        def __init__(self, article, summary, link):
-            self.article = article #entire article object
+        def __init__(self, title, date, summary, link):
+            self.title = title #entire article object
+            self.date = date
             self.summary = summary
             self.link = link
 
@@ -43,7 +55,11 @@ def render_items(request, newsSourceName):
     numberOfResults = len(results)
     # create SmallerArticleCompound objects for each result
     for i in range(numberOfResults):
-        smallerArticleCompoundList.append(SmallerArticleCompound(article_processing(results[i].link),"Pass summary here", results[i].link))
+
+        # this_article = article_processing(results[i].link)
+        if hasattr(results[i], "link"):
+            name=results[i].name.split("https", 1)
+            smallerArticleCompoundList.append(SmallerArticleCompound(name[0], "date", results[i].description, results[i].link))
 
     return render(request, 'items.html', {'newsSource': newsSourceName, 'articleCompounds':smallerArticleCompoundList})
 
@@ -56,10 +72,26 @@ def render_items(request, newsSourceName):
 def AboutUs_page(request):
     return render(request, 'AboutUs.html')
 
+def article_download_modal(request):
+    # if request.method == "GET":
+    #     print("GEETT", flush=True)
+    link = request.GET['link']
+    article = article_processing(link)
+    summary = ''.join(sent+"." for sent in article_summary(article.text))
+    date = article.publish_date
+    print(date, flush=True)
+    image_link = article.top_img
+    print(f"Article text {article.text}", flush=True)
+    print(f"Got the article title {article.title} for {request} with link {link}", flush=True)
+    print(f"Date {date}", flush=True)
+    print(f"Image link {image_link}", flush=True)
+    print(f"Summary {summary}", flush=True )
+    return JsonResponse({'title': article.title, 'summary': summary, 'date': date, 'image_link': image_link})
+
 # Create your views here.
 def index(request):
     class ArticleCompound:
-        def __init__(self, article, title, date, summary, link, image_ind, name, leaning, reliability, color):
+        def __init__(self, article, title, date, summary, link, image_ind, name, leaning, reliability, color, views):
             self.article = article
             self.title = title
             self.date = date
@@ -70,6 +102,7 @@ def index(request):
             self.leaning = leaning
             self.reliability = reliability
             self.color = color
+            self.views = views
 
     print(request.method, flush=True)
     if request.method == 'POST':
@@ -97,13 +130,14 @@ def index(request):
         the NewsSources entries in the database
         """
         results = []
-        AllNewsSources = NewsSource.objects.all()
+        # AllNewsSources = NewsSource.objects.all()
+        AllNewsSources = NewsSource.objects.filter(displayed=1)
         lowend,highend = 1,len(AllNewsSources) #start and end of the newsSource gathering
         #highend = 8 #end of newsSource gathering
         bing_number_merge = 3 # there are 100 results max per request, 25-30 articles /month/newsSource
         newsSourcesData = []
 
-        for i in range(lowend,highend+1): # create a list called newsSourcesData to gather desired newsSources
+        for i in range(lowend, 4): # FOR DEVELOPMENT highend+1 create a list called newsSourcesData to gather desired newsSources
             if (i != 9):# FOR THE GUARDIAN SKIP
                 newsSourcesData.append(AllNewsSources.get(pk=i))
         responseSuccessful = False
@@ -276,7 +310,8 @@ def index(request):
                 date = article.publish_date
                 print(f"Date {date}", flush = True)
             # ArticleCompound adding below
-            a = ArticleCompound(article, title, date, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
+            a = ArticleCompound(article, title, date, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article],
+            leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article], newsSourceMonthlyViews[index_of_article])
             if a.color == "blue":
                 setOfLeftArticleCompounds.append(a)
             elif (a.color == "green"):
@@ -368,7 +403,7 @@ def get_other_articles(source_name, articles, mediaOutlet, source_index):
         summary = ''.join(sent+"." for sent in article_summary(article.text))
         articleSummaries.append(summary)
         # ArticleCompound adding below
-        a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article])
+        a = ArticleCompound(article, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article], leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article], newsSourceMonthlyViews[index_of_article])
         setOfArticleCompounds.append(a)
         index_of_article += 1
     return setOfArticleCompounds
@@ -379,23 +414,29 @@ def bing_articlechoose(source_name, articles, query):
     i = 0
     source_articles_number = 0
     best_match_coeff = 0
-    best_match_index = -1
+    best_match_index = 0
     now = datetime.datetime.now()
     has_results = True
+    this_source_articles = []
     while (i < len(articles)):
         if (source_name in articles[i]["url"]):
             source_articles_number += 1
-            match_coeff = time_urgency_coeff(articles[i]["datePublished"], now) * (100 - source_articles_number)/100
-            print(f"Match coefficient {source_articles_number}: {match_coeff}", flush=True)
-            if (best_match_coeff < match_coeff):
-                best_match_coeff = match_coeff
-                best_match_index = i
+            this_source_articles.append(articles[i])
+            # #coefficient based article choice, not relevant
+            # match_coeff = time_urgency_coeff(articles[i]["datePublished"], now) * (100 - source_articles_number)/100
+            # # print(f"Match coefficient {source_articles_number}: {match_coeff}", flush=True)
+            # if (best_match_coeff < match_coeff):
+            #     best_match_coeff = match_coeff
+            #     best_match_index = i
         i += 1
+    #if there is less than 3 articles in list - we perform additional search
     if (source_articles_number < 3):
         has_results = False
         best_match_index = abs(best_match_index)
-        print("Too few articles to choose", flush=True)
-    chosen_article = articles[best_match_index]
+        print("Too few articles to choose right one", flush=True)
+        chosen_article = articles[0] #articles[best_match_index]
+    else:
+        chosen_article = this_source_articles[0]
     # if (query in chosen_article["description"]):
     #     print(f"Query {query} is in description")
     # else:
@@ -497,7 +538,10 @@ def adjust_leaning_wording(string):
 #GOOGLE SEARCH LEGACY
 def GoogleURL(site, query):
     #Takes a site homepage URL and query as input and returns google search objects (Google Search API class) for the results
-    GoogleQuery = ("site:%s %s after:2021-01-03"%(site, query,)) #in the format: 'site:https://www.wsj.com/ Trump concedes' after:2021-01-01
+    now = datetime.datetime.now()
+    after = now - datetime.timedelta(30)
+    print(f"After {after}", flush=True)
+    GoogleQuery = ("site:%s %s after:2021-01-03"%(site, query)) #in the format: 'site:https://www.wsj.com/ Trump concedes' after:2021-01-01
     num_pages = 1
     search_results = google.search(GoogleQuery, num_pages)
     if not search_results:
@@ -515,6 +559,7 @@ def GoogleURL(site, query):
         responseSuccessful = True
         resultsYeilded = True
         print("responseSuccessful=True, resultsYielded = True ", flush=True)
+    print("Google search result " + f"{search_results[0]}", flush=True) #URL to article
     return search_results
 
 def trendingGoogle():
