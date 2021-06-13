@@ -50,7 +50,7 @@ def filterKeywords(results, query):
     actual_query = raw_query.partition('(')[0] # this contains the actual query in string format
     words = actual_query.split() # this contains the query in list format
 
-    if(len(words)>=3):
+    if(len(words)>=4):
         #keyword analysis. DISCLAIMER: is slowwwww
         kw_extractor = yake.KeywordExtractor()
         keywords = kw_extractor.extract_keywords(actual_query)

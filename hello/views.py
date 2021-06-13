@@ -215,8 +215,8 @@ def index(request):
                     date = datetime.date(int(date[0:4]), int(date[5:7]), int(date[8:10]))
                 else:
                     date = "Unknown publication date"
-                if ("description" in article):
-                    summary = article['description'] #''.join(sent+"." for sent in article_summary(article.text)) #IMPORTANT CHANGE: no manual article porcessing for this option
+                if ("snippet" in article):
+                    summary = article['snippet'] #''.join(sent+"." for sent in article_summary(article.text)) #IMPORTANT CHANGE: no manual article porcessing for this option
                 else:
                     summary = "Open the full article to know more"
                 title = clear_of_symbols(title)
