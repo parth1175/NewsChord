@@ -143,7 +143,6 @@ function runScript(artlink, counter, leaning) {
                   <style>
                     #DropDown{
                       font-size: 16px;
-                      /* border: 2px solid red !important; */
                     }
                   </style>
                   {{ DropdownMenu.searches }}
@@ -230,11 +229,21 @@ function runScript(artlink, counter, leaning) {
       {% for snippet in leftArticleCompounds %}
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
-        <div class="card mb-4"> 
-          <span class="top-right-color-box box-{{snippet.color}} d-inline-block"></span>
-          <span class="top-left-text-box d-inline-block">Source</span>
-          <div class="card-body card-body-pt mb-2">
-            <div class="row">
+        <div class="card mb-4">
+          <div class="row align-items-center"> 
+            <div class="col-xs-1">
+              <img src="{% static snippet.image_ind %}" width="20" class="rounded-circle" alt="2copy.jpg">
+            </div>
+            <div class="col-xs-4 pagination-centered">
+              <span class="top-left-text-box d-inline-block" style = "font-size: 14px;">{{snippet.name}}</span>
+            </div>
+            <div class="col-xs-3 col-xs-offset-3 leaning-color-box pagination-centered" style="background-color: {{snippet.color}}; color:{{snippet.color}}; font-size: 12px;">
+               Left
+            </div>
+            <!-- <span class="top-right-color-box box-{{snippet.color}} d-inline-block d-inline-block"></span> -->
+          </div>
+          <div class="card-body card-body-pt mb-2 mt-2">
+            <!-- <div class="row">
               <div class="col-xs-3">
                 <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
@@ -242,14 +251,19 @@ function runScript(artlink, counter, leaning) {
                 <h5 class="news-title" style = "font-size: small">{{snippet.name}}</h5>
                 <span class="news-date">{{snippet.date}}</span>
               </div>
-            </div>
+            </div> -->
             <div class="row">
               <div class="col-md-12">
-                <p class="news-info" style = "font-size: medium">{{snippet.title}}</p>
+                <h2 class="news-info" style = "font-size: 16px">{{snippet.title}}</h2>
               </div>
             </div>
             <div class="row">
-              <div class="col-6"> 
+              <div class="col-md-12">
+                <p class="news-info" style = "font-size: 14px">{{snippet.summary}}</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-6 pagination-centered"> 
                 <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
               </div>
               <div class="col-6 text-center">
@@ -272,20 +286,36 @@ function runScript(artlink, counter, leaning) {
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
         <div class="card mb-4">
-          <span class="top-right-color-box box-{{snippet.color}}"></span>
+          <div class="row align-items-center"> 
+            <div class="col-xs-1">
+              <img src="{% static snippet.image_ind %}" width="20" class="rounded-circle" alt="2copy.jpg">
+            </div>
+            <div class="col-xs-4 pagination-centered">
+              <span class="top-left-text-box d-inline-block" style = "font-size: 14px;">{{snippet.name}}</span>
+            </div>
+            <div class="col-xs-3 col-xs-offset-3 leaning-color-box pagination-centered" style="background-color: {{snippet.color}}; color:{{snippet.color}}; font-size: 12px;">
+               Center
+            </div>
+            <!-- <span class="top-right-color-box box-{{snippet.color}} d-inline-block d-inline-block"></span> -->
+          </div>
           <div class="card-body card-body-pt mb-2">
-            <div class="row">
+            <!-- <div class="row">
               <div class="col-xs-3">
                 <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
               </div>
               <div class="col-xs-9 pl-4">
-                <h2 class="news-title">{{snippet.name}}</h2>
+                <h5 class="news-title" style = "font-size: small">{{snippet.name}}</h5>
                 <span class="news-date">{{snippet.date}}</span>
+              </div>
+            </div> -->
+            <div class="row">
+              <div class="col-md-12">
+                <h2 class="news-info" style = "font-size: 16px">{{snippet.title}}</h2>
               </div>
             </div>
             <div class="row">
               <div class="col-md-12">
-                <p class="news-article-title">{{snippet.title}}</p>
+                <p class="news-info" style = "font-size: 14px">{{snippet.summary}}</p>
               </div>
             </div>
             <div class="row">
