@@ -116,7 +116,8 @@ def index(request):
         """
         results = []
         AllNewsSources = NewsSource.objects.filter(displayed=True) # filtered newsSources
-        AllIds = AllNewsSources.values_list('id',flat=True) # IDs of those filtered newsSources
+        AllIds = AllNewsSources.values_list('id',flat=True)
+        newsSourceMonthlyViews = AllNewsSources.values_list('monthyViews', flat=True) # IDs of those filtered newsSources
         lowend,highend = 1,len(AllNewsSources) #start and end of the newsSource gathering
         bing_number_merge = 3 # there are 100 results max per request, 25-30 articles /month/newsSource
         newsSourcesData = []
@@ -144,15 +145,21 @@ def index(request):
                     article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles, query)
                     #print(article_chosen["art"]['description'], flush = True)
                 else:
+                    article_chosen = {"art": "empty", "has_results": False}
                 # #Perform extra search if there is no available data on the article
-                    source_request = query + " site:" + newsSourcesData[counter + k].homepage
-                    web_results = bing_websearch(subscription_key_micro, source_request, 40, "Month")
-                    print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
-                    if(web_results == "empty"):
-                        article_chosen["art"] = "empty"
-                    else:
-                        article_chosen["art"] = web_results[0]
-                        print("Additional search helped")
+                if (article_chosen["has_results"] == False):
+                    article_chosen["art"] = "empty"
+                    # !!! Do not delete
+                    # source_request = query + " site:" + newsSourcesData[counter + k].homepage
+                    # single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
+                    # print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
+                    # if ('webPages' in single_web_result):
+                    #     web_results = [article for article in single_web_result['webPages']['value']]
+                    #     article_chosen["art"] = web_results[0]
+                    #     print("Additional search helped")
+                    # else:
+                    #     article_chosen["art"] = "empty"
+                    #     print("Empty article", flush=True)
                 results.append(article_chosen["art"])#chosen article from result list and added if it is relevant, else nothing
             counter = counter + bing_number_merge
 

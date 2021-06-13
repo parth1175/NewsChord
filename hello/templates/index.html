@@ -44,7 +44,7 @@ function runScript(artlink, counter, leaning) {
   id_summary = "#summary-" + leaning + "-" + counter
   id_date = "#date-" + leaning + "-" + counter
   id_image = "#image_div-" + leaning + "-" + counter
-  id_modal = "#Left" + counter
+  id_modal = "#"+ leaning + counter
   
   jQuery(document).ready(function($) {
     console.log("Rdy");
@@ -232,42 +232,31 @@ function runScript(artlink, counter, leaning) {
         <div class="card mb-4">
           <div class="row align-items-center"> 
             <div class="col-xs-1">
-              <img src="{% static snippet.image_ind %}" width="20" class="rounded-circle" alt="2copy.jpg">
+              <a href="{{snippet.link}}">
+                <img src="{% static snippet.image_ind %}" width="32" class="rounded-circle" alt="Newschord_logo_violet.jpg">
+              </a>
             </div>
             <div class="col-xs-4 pagination-centered">
-              <span class="top-left-text-box d-inline-block" style = "font-size: 14px;">{{snippet.name}}</span>
+              <span class="top-left-text-box d-inline-block ml-4" style = "font-size: 16px;">{{snippet.name}}</span>
             </div>
-            <div class="col-xs-3 col-xs-offset-3 leaning-color-box pagination-centered" style="background-color: {{snippet.color}}; color:{{snippet.color}}; font-size: 12px;">
-               Left
+            <div class="col-xs-2 col-xs-offset-4 leaning-color-box pagination-centered" style="background-color: {{snippet.color}}; color:{{snippet.color}}; font-size: 16px;">
+              |--
             </div>
-            <!-- <span class="top-right-color-box box-{{snippet.color}} d-inline-block d-inline-block"></span> -->
           </div>
           <div class="card-body card-body-pt mb-2 mt-2">
-            <!-- <div class="row">
-              <div class="col-xs-3">
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
-              </div>
-              <div class="col-xs-9 pl-4">
-                <h5 class="news-title" style = "font-size: small">{{snippet.name}}</h5>
-                <span class="news-date">{{snippet.date}}</span>
-              </div>
-            </div> -->
             <div class="row">
               <div class="col-md-12">
                 <h2 class="news-info" style = "font-size: 16px">{{snippet.title}}</h2>
+                <span>Date</span>
+                <p class="news-info" style = "font-size: 14px; margin-top: -1em">{{snippet.summary}}</p>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-12">
-                <p class="news-info" style = "font-size: 14px">{{snippet.summary}}</p>
-              </div>
-            </div>
-            <div class="row">
+            <div class="row align-items-center">
               <div class="col-6 pagination-centered"> 
                 <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
               </div>
               <div class="col-6 text-center">
-                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "left")'> 
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "left")'> 
                 <!-- <a class="nav-link read-more-btn" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'>Read More</a> -->
                 <!-- href="javascript.void(0);" data-toggle="modal" data-target="#Left{{forloop.counter}}" -->
                 <!-- #Left{{forloop.counter}}  -->
@@ -288,42 +277,35 @@ function runScript(artlink, counter, leaning) {
         <div class="card mb-4">
           <div class="row align-items-center"> 
             <div class="col-xs-1">
-              <img src="{% static snippet.image_ind %}" width="20" class="rounded-circle" alt="2copy.jpg">
+              <a href="{{snippet.link}}">
+                <img src="{% static snippet.image_ind %}" width="32" class="rounded-circle" alt="Newschord_logo_violet.jpg">
+              </a>
             </div>
             <div class="col-xs-4 pagination-centered">
-              <span class="top-left-text-box d-inline-block" style = "font-size: 14px;">{{snippet.name}}</span>
+              <span class="top-left-text-box d-inline-block ml-4" style = "font-size: 16px;">{{snippet.name}}</span>
             </div>
-            <div class="col-xs-3 col-xs-offset-3 leaning-color-box pagination-centered" style="background-color: {{snippet.color}}; color:{{snippet.color}}; font-size: 12px;">
-               Center
+            <div class="col-xs-2 col-xs-offset-4 leaning-color-box pagination-centered" style="background-color: {{snippet.color}}; color:{{snippet.color}}; font-size: 16px;">
+              -|-
             </div>
             <!-- <span class="top-right-color-box box-{{snippet.color}} d-inline-block d-inline-block"></span> -->
           </div>
-          <div class="card-body card-body-pt mb-2">
-            <!-- <div class="row">
-              <div class="col-xs-3">
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
-              </div>
-              <div class="col-xs-9 pl-4">
-                <h5 class="news-title" style = "font-size: small">{{snippet.name}}</h5>
-                <span class="news-date">{{snippet.date}}</span>
-              </div>
-            </div> -->
+          <div class="card-body card-body-pt mb-2 mt-2">
             <div class="row">
               <div class="col-md-12">
                 <h2 class="news-info" style = "font-size: 16px">{{snippet.title}}</h2>
+                <span>Date</span>
+                <p class="news-info" style = "font-size: 14px; margin-top: -1em;">{{snippet.summary}}</p>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-12">
-                <p class="news-info" style = "font-size: 14px">{{snippet.summary}}</p>
+            <div class="row align-items-center">
+              <div class="col-6 pagination-centered"> 
+                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
               </div>
-            </div>
-            <div class="row">
-              <div class="col-xs-6 col-sm-6">
-                <a href="{{snippet.link}}" class="new-full-article" >Read Full Article</a>
-              </div>
-              <div class="col-xs-6  col-sm-6 text-center">
-                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Center{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "center")'> 
+              <div class="col-6 text-center">
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#center{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "center")'> 
+                <!-- <a class="nav-link read-more-btn" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'>Read More</a> -->
+                <!-- href="javascript.void(0);" data-toggle="modal" data-target="#Left{{forloop.counter}}" -->
+                <!-- #Left{{forloop.counter}}  -->
               </div>
             </div>
           </div>
@@ -338,28 +320,34 @@ function runScript(artlink, counter, leaning) {
       {% for snippet in rightArticleCompounds %}
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
-        <div class="card mb-4"> <span class="top-right-color-box box-{{snippet.color}}"></span>
+        <div class="card mb-4"> 
+          <div class="row align-items-center"> 
+            <div class="col-xs-1">
+              <a href="{{snippet.link}}">
+                <img src="{% static snippet.image_ind %}" width="32" class="rounded-circle" alt="Newschord_logo_violet.jpg">
+              </a>
+            </div>
+            <div class="col-xs-4 pagination-centered">
+              <span class="top-left-text-box d-inline-block ml-4" style = "font-size: 16px;">{{snippet.name}}</span>
+            </div>
+            <div class="col-xs-2 col-xs-offset-4 leaning-color-box pagination-centered" style="background-color: {{snippet.color}}; color:{{snippet.color}}; font-size: 16px;">
+              --|
+            </div>
+          </div>
           <div class="card-body card-body-pt mb-2">
             <div class="row">
-              <div class="col-xs-3">
-                <img src="{% static snippet.image_ind %}" width="50" class="rounded-circle" alt="2copy.jpg">
-              </div>
-              <div class="col-xs-9 pl-4">
-                <h2 class="news-title">{{snippet.name}}</h2>
-                <span class="news-date">{{snippet.date}}</span>
-              </div>
-            </div>
-            <div class="row">
               <div class="col-md-12">
-                <p class="news-info" style = "font-size: medium">{{snippet.title}}</p>
+                <h2 class="news-info" style = "font-size: 16px">{{snippet.title}}</h2>
+                <span>Date</span>
+                <p class="news-info" style = "font-size: 14px; margin-top: -1em">{{snippet.summary}}</p>
               </div>
             </div>
-            <div class="row">
+            <div class="row align-items-center">
               <div class="col-6">
                 <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a>
               </div>
               <div class="col-6 text-center">
-                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#Right{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "right")'> 
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#right{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "right")'> 
               </div>
             </div>
           </div>
@@ -374,8 +362,8 @@ function runScript(artlink, counter, leaning) {
 
 <!-- card of the left source  -->
 {% for snippet in leftArticleCompounds %}
-<div class="modal" id="Left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog modal-md" role="document">
+<div class="modal" id="left{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalLongTitle">&nbsp;</h5>
@@ -418,8 +406,16 @@ function runScript(artlink, counter, leaning) {
           </div>
         </div>
         <hr class="bb-1"/>
+        <!-- <div class="row mb-4">
+          <div class="news-characteristics col-md-12" id="date-left-{{forloop.counter}}">{{date}}</div>
+        </div> -->
+        <div class="row">
+          <div class="col-md-12 p-title">
+            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
+          </div>
+        </div>
         <div class="row mb-4">
-          <span class="news-characteristics" id="date-left-{{forloop.counter}}">{{date}}</span>
+          <div class="news-characteristics col-md-12" id="date-left-{{forloop.counter}}">{{date}}</div>
         </div>
         <div class="row">
           <div class="col-md-12" id="image_div-left-{{forloop.counter}}">
@@ -427,16 +423,11 @@ function runScript(artlink, counter, leaning) {
           </div>
         </div>
         <div class="row">
-          <div class="col-md-12 p-title">
-            <h2 class="news-article-title" id = "title-left-{{forloop.counter}}">{{snippet.title}}</h2>
-          </div>
-        </div>
-        <div class="row">
           <div class="col-md-12">
             <p class = "modal-news-summary" style="font-size: medium;" id = "summary-left-{{forloop.counter}}">{{summary}}</p>
           </div>
         </div>
-        <div class="row">
+        <div class="row align-items-center">
           <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
           <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
         </div>
@@ -451,7 +442,7 @@ function runScript(artlink, counter, leaning) {
 {% endfor %}
 <!-- card of the centered source  -->
 {% for snippet in centerArticleCompounds %}
-<div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal" id="center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -495,17 +486,17 @@ function runScript(artlink, counter, leaning) {
           </div>
         </div>
         <hr class="bb-1"/>
-        <div class="row mb-4">
-          <span class="news-characteristics" id="date-center-{{forloop.counter}}">{{date}}</span>
-        </div>
-        <div class="row">
-          <div class="col-md-12" id="image_div-center-{{forloop.counter}}">
-            <img src="" width="100%" alt=""> 
-          </div>
-        </div>
         <div class="row">
           <div class="col-md-12 p-title">
             <h2 class="news-article-title" id = "title-center-{{forloop.counter}}">{{snippet.title}}</h2>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="news-characteristics col-md-12" id="date-center-{{forloop.counter}}">{{date}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-center-{{forloop.counter}}">
+            <img src="" width="100%" alt="" id="image-center-{{forloop.counter}}"> 
           </div>
         </div>
         <div class="row">
@@ -513,7 +504,7 @@ function runScript(artlink, counter, leaning) {
             <p class = "modal-news-summary" style="font-size: medium;" id = "summary-center-{{forloop.counter}}">{{summary}}</p>
           </div>
         </div>
-        <div class="row">
+        <div class="row align-items-center">
           <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
           <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
         </div>
@@ -528,7 +519,7 @@ function runScript(artlink, counter, leaning) {
 {% endfor %}
 <!-- card of the right source  -->
 {% for snippet in rightArticleCompounds %}
-<div class="modal" id="Center{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+<div class="modal" id="right{{forloop.counter}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -572,16 +563,17 @@ function runScript(artlink, counter, leaning) {
           </div>
         </div>
         <hr class="bb-1"/>
-        <div class="row mb-4">
-          <span class="news-characteristics" id="date-right-{{forloop.counter}}">{{date}}</span>
-        </div>
-        <div class="row">
-          <div class="col-md-12" id="image_div-right-{{forloop.counter}}">
-            <img src="empty" width="100%" alt="article_image"> </div>
-        </div>
         <div class="row">
           <div class="col-md-12 p-title">
             <h2 class="news-article-title" id = "title-right-{{forloop.counter}}">{{snippet.title}}</h2>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="news-characteristics col-md-12" id="date-right-{{forloop.counter}}">{{date}}</div>
+        </div>
+        <div class="row">
+          <div class="col-md-12" id="image_div-right-{{forloop.counter}}">
+            <img src="" width="100%" alt="" id="image-right-{{forloop.counter}}"> 
           </div>
         </div>
         <div class="row">
@@ -589,7 +581,7 @@ function runScript(artlink, counter, leaning) {
             <p class = "modal-news-summary" style="font-size: medium;" id = "summary-right-{{forloop.counter}}">{{snippet.summary}}</p>
           </div>
         </div>
-        <div class="row">
+        <div class="row align-items-center">
           <div class="col-md-6"> <a href="{% url 'source' snippet.name %}" class="new-full-article">All results from {{snippet.name}}</a> </div>
           <div class="col-md-6 text-center"> <a class="nav-link read-full-btn" href="{{snippet.link}}">Read full</a> </div>
         </div>
