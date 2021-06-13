@@ -8,6 +8,7 @@ import os
 import datetime
 import math
 from hello.models import NewsSource
+import yake
 
 
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
@@ -26,6 +27,62 @@ newsSourceMonthlyViews = [41.9, #AP
 
 enteredQuery = '' # global variable for search query
 
+
+def filterVideos(results): #results is the json object returned from a search
+    """
+    filter for videos based on "video" in the URL of the article
+    Function is optimized for bing web search
+    """
+    for i in results:
+        if("video" in (i.get('url')).lower()):
+            results.remove(i)
+        # else:
+        #     # do nothing
+    return(results)
+
+def filterKeywords(results, query):
+    """
+    filter for keywords by checking if any of the query keywords are in the article titles
+    Function is hardwired to the search query formatting currently used
+    """
+
+    raw_query = (search_results['queryContext']).get('originalQuery')
+    actual_query = raw_query.partition('(')[0] # this contains the actual query in string format
+    words = actual_query.split() # this contains the query in list format
+
+    if(len(words)>=4):
+        #keyword analysis. DISCLAIMER: is slowwwww
+        kw_extractor = yake.KeywordExtractor()
+        keywords = kw_extractor.extract_keywords(actual_query)
+        for kw in keywords:
+            if((len(kw[0].split()))==1):
+                words.append(kw[0])
+            # else skip
+    for i in results:
+        pass_fail = False
+        for word in words:
+            contained = False # initialization
+            if(word.lower() in (i.get('name')).lower()):
+                contained = True
+            else:
+                contained = False
+            pass_fail = pass_fail or contained
+        if(pass_fail==False):
+            results.remove(i)
+    return results
+
+
+def filterDates(results, dateDesired):
+# date format = YYYY-MM-DD
+
+#check to see if each result was AFTER the dateDesired that was entered
+# Is going to be VERYYY tricky, how will you get the date of the article?
+    return none
+
+
+
+
+
 def bing_formrequest(request, number_merge, sourceList, start_index):
     request = request + " ("
     first = True
@@ -39,16 +96,18 @@ def bing_formrequest(request, number_merge, sourceList, start_index):
     print("Prepared request is " + request, flush=True)
     return request
 
-def bing_newssearch(subscriprion_key, search_term, freshness, count):
+def bing_newssearch(subscriprion_key, search_term, count, freshness=None):
     method_url = "https://api.bing.microsoft.com/v7.0/news/search"
     headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
     response = requests.get(method_url, headers=headers, params=params)
     response.raise_for_status()
     search_results = response.json()
-    return search_results
+    articles = [article for article in search_results['value']]
+    return articles
 
-def bing_websearch(subscriprion_key, search_term, freshness, count):
+
+def bing_websearch(subscriprion_key, search_term, count, freshness=None):
     method_url = "https://api.bing.microsoft.com/v7.0/search"
     headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
@@ -58,13 +117,19 @@ def bing_websearch(subscriprion_key, search_term, freshness, count):
     rank_response = response.json()["rankingResponse"]
     #print(f"Response status is {response.raise_for_status()}", flush=True)
     if  (len(rank_response) != 0):
-        print("Response rank is not {}", flush=True)
-        print(rank_response , flush=True)
+        if ('webPages' in search_results):
+            articles = [article for article in search_results['webPages']['value']]
+        else:
+            articles = "empty"
+            print("Empty search result", flush=True)
     else:
-        search_results = "empty"
-    #else:
-    #    search_results = "empty"
-    return search_results
+        articles = "empty"
+        print("Empty search result", flush=True)
+
+    #filter by Video here
+    #filter by Keyword here
+    #filter by Date here
+    return articles
 
 def get_other_articles(source_name, articles, mediaOutlet, source_index):
     i = 0
