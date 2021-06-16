@@ -40,12 +40,12 @@
 function runScript(artlink, counter, leaning) {
   console.log("Why do you leave me");
   // Get the modal
-  id_title = "#title-" + leaning + "-" + counter 
+  id_title = "#title-" + leaning + "-" + counter
   id_summary = "#summary-" + leaning + "-" + counter
   id_date = "#date-" + leaning + "-" + counter
   id_image = "#image_div-" + leaning + "-" + counter
   id_modal = "#"+ leaning + counter
-  
+
   jQuery(document).ready(function($) {
     console.log("Rdy");
     var modal = document.getElementById(id_modal);
@@ -74,7 +74,7 @@ function runScript(artlink, counter, leaning) {
       // jQuery(id_modal).modal("show")
       //If you wish you can do additional data manipulation here.
     },
-    failure: function(data) { 
+    failure: function(data) {
         console.log('Got an error dude');
     }
   });
@@ -118,27 +118,12 @@ function runScript(artlink, counter, leaning) {
                   {% for key, value in trending.items %}
                   <!-- <form hidden action="{% url 'index' %}" method="POST" value="{{value}}" id="quickSearch">{% csrf_token %}</form> -->
                   <li class="list-inline-item"><a onclick="quickSearch('{{value}}');" href="#" style="font-size: 16px;">#{{key}}</a></li>
-                  <!-- <li class="list-inline-item"><a href="#">#{{key}}</a></li> -->
-                  <!-- <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
-                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
-                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
-                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li>
-                  <li class="list-inline-item"><a href="#">#UKRoyalFamily</a></li> -->
                   {% endfor %}
                 </ul>
               </div>
             </div>
 
             <div class="row form-row justify-content-center align-items-center" style="margin-bottom: 22px; ">
-              <!-- display:inline -->
-                <!-- <div class="form-group col col-md-8 text-center" style="initial-value: rave;">
-                  {{ form.query }}
-                </div>
-                <div class="form-group col col-md-3 text-center">
-                    <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal">
-                      Create news deck
-                    </button>
-                </div> -->
                 <div class = "col-lg-3 no-gutters text-center pagination-centered form-group">
                   <style>
                     #DropDown{
@@ -164,37 +149,18 @@ function runScript(artlink, counter, leaning) {
                         </style>
                         {{ form.query }}
                         <span class="input-group-append border-0" >
-                          <button class="btn btn-primary border-0 rounded-right" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B" data-toggle="modal" data-target="#exampleModal"> 
-                            <i class="fa fa-search"></i> 
+                          <button class="btn btn-primary border-0 rounded-right" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B" data-toggle="modal" data-target="#exampleModal">
+                            <i class="fa fa-search"></i>
                           </button>
                         </span>
                       </div>
-                      <!-- <button class="btn btn-primary" type="submit" formmethod = "POST" style="font-size: 22px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100;" data-toggle="modal" data-target="#exampleModal"> <i class="fa fa-search"></i> </button> -->
-                      <!-- </span> -->
                     </div>
-                  <!-- </div> -->
                   </div>
                 </div>
 
             </div>
-
-            <!-- <div class="row" style="font-size: 18px;">
-              <div class="form-group col text-center" >
-                Leaning mode: {{ DropdownMenu.bias }}
-              </div>
-            </div> -->
-            <!-- <div class="row">
-                    <div class="form-group col text-center">
-                        <button type="submit" formmethod = "POST" class="btn btn-primary" style="font-size: 22px; margin-top: 32px; background-color:#32195B; box-shadow: 0 4px 4px 0 rgba(0,0,0,0.2); hover-background: #F8C100; margin-bottom: 22px;" data-toggle="modal" data-target="#exampleModal">
-                          Create news deck
-                        </button>
-                    </div>
-            </div> -->
         </form>
       </div>
-        <!-- <div class="col-sm">
-          One of three columns
-        </div> -->
     {% endif %}
   </div>
 </div>
@@ -230,7 +196,7 @@ function runScript(artlink, counter, leaning) {
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
         <div class="card mb-4">
-          <div class="row align-items-center"> 
+          <div class="row align-items-center">
             <div class="col-xs-1">
               <a href="{{snippet.link}}">
                 <img src="{% static snippet.image_ind %}" width="32" class="rounded-circle" alt="Newschord_logo_violet.jpg">
@@ -247,16 +213,16 @@ function runScript(artlink, counter, leaning) {
             <div class="row">
               <div class="col-md-12">
                 <h2 class="news-info" style = "font-size: 16px">{{snippet.title}}</h2>
-                <span>Date</span>
+                <!-- <span>Date</span> -->
                 <p class="news-info" style = "font-size: 14px; margin-top: -1em">{{snippet.summary}}</p>
               </div>
             </div>
             <div class="row align-items-center">
-              <div class="col-6 pagination-centered"> 
-                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
+              <div class="col-6 pagination-centered">
+                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a>
               </div>
               <div class="col-6 text-center">
-                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "left")'> 
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#left{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "left")'>
                 <!-- <a class="nav-link read-more-btn" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'>Read More</a> -->
                 <!-- href="javascript.void(0);" data-toggle="modal" data-target="#Left{{forloop.counter}}" -->
                 <!-- #Left{{forloop.counter}}  -->
@@ -275,7 +241,7 @@ function runScript(artlink, counter, leaning) {
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
         <div class="card mb-4">
-          <div class="row align-items-center"> 
+          <div class="row align-items-center">
             <div class="col-xs-1">
               <a href="{{snippet.link}}">
                 <img src="{% static snippet.image_ind %}" width="32" class="rounded-circle" alt="Newschord_logo_violet.jpg">
@@ -298,11 +264,11 @@ function runScript(artlink, counter, leaning) {
               </div>
             </div>
             <div class="row align-items-center">
-              <div class="col-6 pagination-centered"> 
-                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a> 
+              <div class="col-6 pagination-centered">
+                <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a>
               </div>
               <div class="col-6 text-center">
-                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#center{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "center")'> 
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#center{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "center")'>
                 <!-- <a class="nav-link read-more-btn" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}")'>Read More</a> -->
                 <!-- href="javascript.void(0);" data-toggle="modal" data-target="#Left{{forloop.counter}}" -->
                 <!-- #Left{{forloop.counter}}  -->
@@ -320,8 +286,8 @@ function runScript(artlink, counter, leaning) {
       {% for snippet in rightArticleCompounds %}
       <div class="row no-gutters">
         <div class="col-xs-12 col-md-12">
-        <div class="card mb-4"> 
-          <div class="row align-items-center"> 
+        <div class="card mb-4">
+          <div class="row align-items-center">
             <div class="col-xs-1">
               <a href="{{snippet.link}}">
                 <img src="{% static snippet.image_ind %}" width="32" class="rounded-circle" alt="Newschord_logo_violet.jpg">
@@ -347,7 +313,7 @@ function runScript(artlink, counter, leaning) {
                 <a href="{{snippet.link}}" class="new-full-article">Read Full Article</a>
               </div>
               <div class="col-6 text-center">
-                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#right{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "right")'> 
+                <input type='button' class="nav-link read-more-btn" value='Read More' data-toggle="modal" data-target="#right{{forloop.counter}}" onclick='runScript("{{snippet.link}}", "{{forloop.counter}}", "right")'>
               </div>
             </div>
           </div>
@@ -419,7 +385,7 @@ function runScript(artlink, counter, leaning) {
         </div>
         <div class="row">
           <div class="col-md-12" id="image_div-left-{{forloop.counter}}">
-            <img src="" width="100%" alt="" id="image-left-{{forloop.counter}}"> 
+            <img src="" width="100%" alt="" id="image-left-{{forloop.counter}}">
           </div>
         </div>
         <div class="row">
@@ -496,7 +462,7 @@ function runScript(artlink, counter, leaning) {
         </div>
         <div class="row">
           <div class="col-md-12" id="image_div-center-{{forloop.counter}}">
-            <img src="" width="100%" alt="" id="image-center-{{forloop.counter}}"> 
+            <img src="" width="100%" alt="" id="image-center-{{forloop.counter}}">
           </div>
         </div>
         <div class="row">
@@ -573,7 +539,7 @@ function runScript(artlink, counter, leaning) {
         </div>
         <div class="row">
           <div class="col-md-12" id="image_div-right-{{forloop.counter}}">
-            <img src="" width="100%" alt="" id="image-right-{{forloop.counter}}"> 
+            <img src="" width="100%" alt="" id="image-right-{{forloop.counter}}">
           </div>
         </div>
         <div class="row">
@@ -605,5 +571,3 @@ function runScript(artlink, counter, leaning) {
 
 {% endblock %}
 </html>
-
-
