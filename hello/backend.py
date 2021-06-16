@@ -114,7 +114,7 @@ def bing_websearch(subscriprion_key, search_term, count, freshness=None):
     response = requests.get(method_url, headers=headers, params=params)
     #UPDATED
     search_results = response.json()
-    rank_response = response.json()["rankingResponse"]
+    rank_response = response.json()["rankingResponse"] #<--This field doesn't exist for the single apnews websearch
     #print(f"Response status is {response.raise_for_status()}", flush=True)
     if  (len(rank_response) != 0):
         if ('webPages' in search_results):
