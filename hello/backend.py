@@ -40,13 +40,11 @@ def filterVideos(results): #results is the json object returned from a search
         #     # do nothing
     return(results)
 
-def filterKeywords(results, query):
+def filterKeywords(results, raw_query):
     """
     filter for keywords by checking if any of the query keywords are in the article titles
     Function is hardwired to the search query formatting currently used
     """
-
-    raw_query = (search_results['queryContext']).get('originalQuery')
     actual_query = raw_query.partition('(')[0] # this contains the actual query in string format
     words = actual_query.split() # this contains the query in list format
 
@@ -127,8 +125,9 @@ def bing_websearch(subscriprion_key, search_term, count, freshness=None):
         articles = "empty"
         print("Empty search result", flush=True)
     #filter by Video here
+    articles = filterVideos(articles)
     #filter by Keyword here
-    #filter by Date here
+    articles = filterKeywords(articles, raw_query)
     return articles
 
 def get_other_articles(source_name, articles, mediaOutlet, source_index):
@@ -189,8 +188,8 @@ def bing_articlechoose(source_name, articles, query):
             #     best_match_coeff = match_coeff
             #     best_match_index = i
         i += 1
-    #if there is less than 3 articles in list - we perform additional search
-    if (source_articles_number < 3):
+    #if there is less than 2 articles in list - we perform additional search
+    if (source_articles_number < 2):
         has_results = False
         best_match_index = abs(best_match_index)
         print("Too few articles to choose right one", flush=True)
