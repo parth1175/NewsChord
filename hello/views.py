@@ -18,16 +18,17 @@ from hello.backend import *
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
 search_term = "Microsoft"
 search_url = "https://api.bing.microsoft.com/v7.0/news/search"
-newsSourceMonthlyViews = [41.9, #AP
-68.1, #Reuters
-82.8, 82.5, 114.4, 38, 11.6,
-362.8,#NY Times
-300.2,
-1.8, #Boston Herald
-569.7, #CNN
-74.2, 47,
-269.1 #Fox News
-]
+newsSourceMonthlyViews = []
+# [41.9, #AP
+# 68.1, #Reuters
+# 82.8, 82.5, 114.4, 38, 11.6,
+# 362.8,#NY Times
+# 300.2,
+# 1.8, #Boston Herald
+# 569.7, #CNN
+# 74.2, 47,
+# 269.1 #Fox News
+# ]
 
 enteredQuery = '' # global variable for search query
 #function is not used
@@ -64,7 +65,7 @@ def article_download_modal(request):
     #     print("GEETT", flush=True)
     link = request.GET['link']
     article = article_processing(link)
-    summary = ''.join(sent+"." for sent in article_summary(article.text))
+    summary = ''.join(sent + "." for sent in article_summary(article.text))
     print(f"Got the article title {article.title} for {request} with link {link}", flush=True)
     string_date = str(article.publish_date)
     date = datetime.date(int(string_date[0:4]), int(string_date[5:7]), int(string_date[8:10]))
@@ -118,11 +119,13 @@ def index(request):
         AllNewsSources = NewsSource.objects.filter(displayed=True) # filtered newsSources
         AllIds = AllNewsSources.values_list('id',flat=True)
         newsSourceMonthlyViews = AllNewsSources.values_list('monthyViews', flat=True) # IDs of those filtered newsSources
+        print(f"Views {newsSourceMonthlyViews}", flush=True)
         lowend,highend = 1,len(AllNewsSources) #start and end of the newsSource gathering
         bing_number_merge = 3 # there are 100 results max per request, 25-30 articles /month/newsSource
         newsSourcesData = []
         for i in AllIds[0:highend]: #FOR DEVELOPMENT highend create a list called newsSourceData to further filter and gather desired newsSources
             newsSourcesData.append(AllNewsSources.get(pk=i))
+        print(f"Sources{newsSourcesData}", flush=True)
         responseSuccessful,resultsYeilded = False,False # Global variables changed in GoogleURL() func
         length_sources = len(newsSourcesData)
 
@@ -150,16 +153,16 @@ def index(request):
                 if (article_chosen["has_results"] == False):
                     article_chosen["art"] = "empty"
                     # !!! Do not delete
-                    # source_request = query + " site:" + newsSourcesData[counter + k].homepage
-                    # single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
-                    # print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
-                    # if ('webPages' in single_web_result):
-                    #     web_results = [article for article in single_web_result['webPages']['value']]
-                    #     article_chosen["art"] = web_results[0]
-                    #     print("Additional search helped")
-                    # else:
-                    #     article_chosen["art"] = "empty"
-                    #     print("Empty article", flush=True)
+                    source_request = query + " site:" + newsSourcesData[counter + k].homepage
+                    single_web_result = bing_websearch(subscription_key_micro, source_request, "Month", 40)
+                    print(f"Current source for extrasearch is {newsSourcesData[counter + k].homepage}", flush=True)
+                    if ('webPages' in single_web_result):
+                        web_results = [article for article in single_web_result['webPages']['value']]
+                        article_chosen["art"] = web_results[0]# we choose just the first article from additional search results
+                        print("Additional search helped")
+                    else:
+                        article_chosen["art"] = "empty"
+                        print("Empty article", flush=True)
                 results.append(article_chosen["art"])#chosen article from result list and added if it is relevant, else nothing
             counter = counter + bing_number_merge
 
@@ -177,6 +180,7 @@ def index(request):
         reliabilityList = [] # list of the "reliabilty" of each news source
         sourceNameList = []  # list of the name of each news source
         colorList = []
+        viewsList = []
         for counter,i in enumerate(results):
             if i == "empty": #TODO: Process the empty one anyway and show user there are no results from this source
                 print(f"Counter in the if is {counter}", flush=True)
@@ -198,10 +202,10 @@ def index(request):
                     reliabilityList.append(mediaOutlet.cred)
                     sourceNameList.append(mediaOutlet.newsSource)
                     imageIndexes.append(AllIds[counter])
+                    viewsList.append(newsSourceMonthlyViews[counter])
                     #results is already article list of article objects
                     articlesList.append(i)  #article_processing(i["url"])) # IMPORTANT CHANGE: no manual article porcessing to increase performance
                     linksList.append(i["url"])
-
         """
         This code chunk obtains the summaries for each article in articlesList (previous chunk above)
         and then finally adds all relevant information to an ArticleCompound object that is sent to
@@ -235,7 +239,7 @@ def index(request):
                 print(f"Date {date}", flush = True)
             # ArticleCompound adding below
             a = ArticleCompound(article, title, date, summary, linksList[index_of_article], imageIndexes[index_of_article], sourceNameList[index_of_article],
-            leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article], newsSourceMonthlyViews[index_of_article])
+            leaningList[index_of_article], reliabilityList[index_of_article], colorList[index_of_article], viewsList[index_of_article])
             if a.color == "blue":
                 setOfLeftArticleCompounds.append(a)
             elif (a.color == "green"):

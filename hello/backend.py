@@ -113,19 +113,19 @@ def bing_websearch(subscriprion_key, search_term, count, freshness=None):
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
     response = requests.get(method_url, headers=headers, params=params)
     #UPDATED
-    search_results = response.json()
-    rank_response = response.json()["rankingResponse"] #<--This field doesn't exist for the single apnews websearch
-    #print(f"Response status is {response.raise_for_status()}", flush=True)
-    if  (len(rank_response) != 0):
-        if ('webPages' in search_results):
-            articles = [article for article in search_results['webPages']['value']]
-        else:
-            articles = "empty"
-            print("Empty search result", flush=True)
+    search_results = response.json() #response valuable (to not parse again every time) 
+    if ('rankingResponse' in search_results):
+        rank_response = search_results["rankingResponse"] #<--This field doesn't exist for the single apnews websearch
+        #print(f"Response status is {response.raise_for_status()}", flush=True)
+        if  (len(rank_response) != 0):
+            if ('webPages' in search_results):
+                articles = [article for article in search_results['webPages']['value']]
+            else:
+                articles = "empty"
+                print("Empty search result", flush=True)
     else:
         articles = "empty"
         print("Empty search result", flush=True)
-
     #filter by Video here
     #filter by Keyword here
     #filter by Date here
