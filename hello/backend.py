@@ -121,13 +121,14 @@ def bing_websearch(subscriprion_key, search_term, count, freshness=None):
             else:
                 articles = "empty"
                 print("Empty search result", flush=True)
+        raw_query = (search_results['queryContext']).get('originalQuery')
+        #filter by Video here
+        articles = filterVideos(articles)
+        #filter by Keyword here
+        articles = filterKeywords(articles, raw_query)
     else:
         articles = "empty"
         print("Empty search result", flush=True)
-    #filter by Video here
-    articles = filterVideos(articles)
-    #filter by Keyword here
-    articles = filterKeywords(articles, raw_query)
     return articles
 
 def get_other_articles(source_name, articles, mediaOutlet, source_index):
