@@ -144,7 +144,7 @@ def index(request):
             articles = bing_websearch(subscription_key_micro, request_merged, 100, "Month")
             print(f"There are {len(articles)} from {newsSourcesData[counter].homepage} ... {newsSourcesData[counter+size_merge-1].homepage}", flush=True)
             for k in range(size_merge):
-                if (len(articles) != 0):
+                if ((len(articles) != 0) & (articles != "empty")):
                     article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles, query)
                     #print(article_chosen["art"]['description'], flush = True)
                 else:
