@@ -2,7 +2,6 @@ import requests
 import os
 import datetime
 import math
-#import numpy as np
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
