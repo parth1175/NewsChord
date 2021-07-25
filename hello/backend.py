@@ -9,6 +9,7 @@ import datetime
 import math
 from hello.models import NewsSource
 import yake
+from googleapi import google
 
 
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
@@ -311,11 +312,13 @@ def GoogleURL(site, query):
         # empty list = google server did not respond
         responseSuccessful = False
         resultsYeilded = False
+        search_results = "empty"
         print("if not search_results implemented", flush=True)
-    elif search_results[0]=="empty":
-        # a list containing "empty" = google responded, but no results yeilded
+    elif search_results[0] == "empty":
+        # a list containing "empty" = google responded, but no results yielded
         responseSuccessful = True
         resultsYeilded = False
+        search_results = "empty"
         print ("search_results = empty, ", flush=True)
     else:
         #  full list of google search objects
