@@ -34,19 +34,20 @@ def render_items(request, newsSourceName):
     # search db for the hompage of the newsSource
     AllNewsSources = NewsSource.objects.all()
     homepage = AllNewsSources.get(newsSource=newsSourceName).homepage
-    # make a google request to view all the search results
+    # make a google request to list all search results
     results = GoogleURL(homepage, enteredQuery)
     numberOfResults = len(results)
+    if (results == "empty"):
+        name = "This feature is coming soon. Thank you for interest!"
+    else:
+        name = newsSourceName 
     # create SmallerArticleCompound objects for each result
     for i in range(numberOfResults):
-
         # this_article = article_processing(results[i].link)
         if hasattr(results[i], "link"):
             name=results[i].name.split("https", 1)
             smallerArticleCompoundList.append(SmallerArticleCompound(name[0], "date", results[i].description, results[i].link))
-
-    return render(request, 'items.html', {'newsSource': newsSourceName, 'articleCompounds':smallerArticleCompoundList})
-
+    return render(request, 'items.html', {'newsSource': name, 'articleCompounds':smallerArticleCompoundList})
 def AboutUs_page(request):
     return render(request, 'AboutUs.html')
 
@@ -55,15 +56,18 @@ def article_download_modal(request):
     #     print("GEETT", flush=True)
     link = request.GET['link']
     article = article_processing(link)
-    summary = ''.join(sent + "." for sent in article_summary(article.text))
-    print(f"Got the article title {article.title} for {request} with link {link}", flush=True)
+    summary = ''.join(sent + ". " for sent in article_summary(article.text))
+    # print(f"Got the article {article.title} by {request} with link {link}", flush=True)
     string_date = str(article.publish_date)
-    date = datetime.date(int(string_date[0:4]), int(string_date[5:7]), int(string_date[8:10]))
+    if (string_date != "None"):
+        date = datetime.date(int(string_date[0:4]), int(string_date[5:7]), int(string_date[8:10]))
+    else: 
+        date = "No date available"
     print(f"Date {date}", flush=True)
     image_link = article.top_img
     # print(f"Article text {article.text}", flush=True)
     print(f"Image link {image_link}", flush=True)
-    print(f"Summary {summary}", flush=True )
+    # print(f"Summary {summary}", flush=True )
     return JsonResponse({'title': article.title, 'summary': summary, 'date': date, 'image_link': image_link})
 
 # Create your views here.
@@ -135,7 +139,7 @@ def index(request):
             articles = bing_websearch(subscription_key_micro, request_merged, 100, "Month")
             print(f"There are {len(articles)} from {newsSourcesData[counter].homepage} ... {newsSourcesData[counter+size_merge-1].homepage}", flush=True)
             for k in range(size_merge):
-                if (len(articles) != 0):
+                if ((len(articles) != 0) & (articles != "empty")):
                     article_chosen = bing_articlechoose(newsSourcesData[counter + k].homepage, articles, query)
                     #print(article_chosen["art"]['description'], flush = True)
                 else:

@@ -9,6 +9,7 @@ import datetime
 import math
 from hello.models import NewsSource
 import yake
+from googleapi import google
 
 
 subscription_key_micro = "2d0c9895db654195bacd7d51602501de"
@@ -121,11 +122,14 @@ def bing_websearch(subscription_key_micro, search_term, count, freshness=None):
             else:
                 articles = "empty"
                 print("Empty search result", flush=True)
+        else:
+            articles = "empty"        
         raw_query = (search_results['queryContext']).get('originalQuery')
-        #filter by Video here
-        articles = filterVideos(articles)
-        #filter by Keyword here
-        articles = filterKeywords(articles, raw_query)
+        if (articles != "empty"):
+            #filter by Video here
+            articles = filterVideos(articles)
+            #filter by Keyword here
+            articles = filterKeywords(articles, raw_query)
     else:
         articles = "empty"
         print("Empty search result", flush=True)
@@ -308,11 +312,13 @@ def GoogleURL(site, query):
         # empty list = google server did not respond
         responseSuccessful = False
         resultsYeilded = False
+        search_results = "empty"
         print("if not search_results implemented", flush=True)
-    elif search_results[0]=="empty":
-        # a list containing "empty" = google responded, but no results yeilded
+    elif search_results[0] == "empty":
+        # a list containing "empty" = google responded, but no results yielded
         responseSuccessful = True
         resultsYeilded = False
+        search_results = "empty"
         print ("search_results = empty, ", flush=True)
     else:
         #  full list of google search objects
