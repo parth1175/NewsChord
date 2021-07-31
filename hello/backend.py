@@ -94,7 +94,7 @@ def bing_formrequest(request, number_merge, sourceList, start_index):
     print("Prepared request is " + request, flush=True)
     return request
 
-def bing_newssearch(subscriprion_key, search_term, count, freshness=None):
+def bing_newssearch(subscription_key_micro, search_term, count, freshness=None):
     method_url = "https://api.bing.microsoft.com/v7.0/news/search"
     headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
@@ -105,13 +105,13 @@ def bing_newssearch(subscriprion_key, search_term, count, freshness=None):
     return articles
 
 
-def bing_websearch(subscriprion_key, search_term, count, freshness=None):
+def bing_websearch(subscription_key_micro, search_term, count, freshness=None):
     method_url = "https://api.bing.microsoft.com/v7.0/search"
     headers = {"Ocp-Apim-Subscription-Key" : subscription_key_micro}
     params  = {"q": search_term, "freshness": freshness, "count": count, "textDecorations": True, "textFormat": "HTML"}
     response = requests.get(method_url, headers=headers, params=params)
     #UPDATED
-    search_results = response.json() #response valuable (to not parse again every time) 
+    search_results = response.json() #response valuable (to not parse again every time)
     if ('rankingResponse' in search_results):
         rank_response = search_results["rankingResponse"] #<--This field doesn't exist for the single apnews websearch
         #print(f"Response status is {response.raise_for_status()}", flush=True)
@@ -335,6 +335,32 @@ def trendingGoogle():
         camelCase = string[0] + string[1:]
         trending[camelCase] = raw_string
     return trending #spliced list. Only return top 5 trending results
+
+def checkingTrending(search_term):
+    #checks whether the trending query should pass or not:
+    # False: Sports, Entertainment
+    subscription_key = "2d0c9895db654195bacd7d51602501de"
+    assert subscription_key
+    type = "news"
+    search_url = "https://api.bing.microsoft.com/v7.0/news/search"
+    headers = {"Ocp-Apim-Subscription-Key" : subscription_key, 'Accept': 'application/json'}
+    # Query Parameters
+    params  = {"q": search_term, "freshness":"Month", "textDecorations": True, "textFormat": "HTML"}
+    response = requests.get(search_url, headers=headers, params=params)
+    response.raise_for_status()
+    search_results = response.json()
+    counter = 0
+    # sometimes a result DOES NOT have a category value, in which case, just cycle to the next reuslt
+    while("category" not in search_results['value'][counter]):
+        print("trying again")
+        counter = counter + 1
+    category = search_results['value'][counter]['category']
+    if category == "Sports" or category == "Entertainment":
+        return False
+    else:
+        return True
+
+
 
     #print(search_results[1].link) #URL to article
     #print(search_results[1].name) #name of article

@@ -68,6 +68,7 @@ def article_download_modal(request):
 
 # Create your views here.
 def index(request):
+    print("testing")
     class ArticleCompound:
         def __init__(self, article, title, date, summary, link, image_ind, name, leaning, reliability, color, views):
             self.article = article
